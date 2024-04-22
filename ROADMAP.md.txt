@@ -54,4 +54,4 @@ class summary
     ROADMAP:Laura + Lea
 
     Sunday: prepare GUI
-    Tuesday 30.04.2024 - Meet
+    Tuesday 30.04.2024 - Meeting before biostatistics
