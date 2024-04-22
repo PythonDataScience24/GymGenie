@@ -40,7 +40,8 @@ Provide users with visualizations of their exercise data, such as weekly/monthly
     - `Duration`: Duration of the workout in minutes
     - `Calories`: Calories burned during the workout
     - `Distance`: Distance covered during the workout (if applicable)
-    - `Dataframe`: Pandas dataframe to store workout data
+    - `Dataframe`: Pandas dataframe to store workout data. 
+                  It is written in a csv file. When the user close the session the data is saved and then when it re-opens, we can read and re-use it.
     - `Impression`: Rating of the workout on a scale of 1 to 10
 - **Contributors**: Laura, Kristin
 - Create `main.py` to run the main program 
