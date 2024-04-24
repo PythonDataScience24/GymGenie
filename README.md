@@ -13,11 +13,6 @@ We are four Bioinformatics students: [Lea](https://github.com/leaf185), [Laura](
 3. Proofread the code to familiarize yourself with the projects structure and functionality.
 
 ## Find out more
-Where to find the key resource? Links to docs, ect
+Check out our [documentation](https://github.com/ddd42-star/fitnessTracker/tree/main/docs) to learn how to start the program and all the functionality.
 
 Feel free to explore and contribute to GymGenie. Let's make workout tracking an easy and encouraging experience 💪
-
-Notes for Dario: can you check that our names will be a link to out profiles?
-Just change anything you want to about the phrasing. 
-Maybe we should have somehting more specific about how to download and test our application, but i don't know how they will download it etc.
-We need to add some key resources, but I didn't know what they would be, so I didn't add any yet.
