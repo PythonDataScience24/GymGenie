@@ -12,7 +12,7 @@ Roadmap
 Welcome to the Roadmap of the fitness tracking application GymGenie. Here you can learn what this project is about, how to get involved, and which stages the development of our project includes.
 We are four Bioinformatics students developing the application. Our application is targeted to anyone who wants to simplify the process of tracking workouts and analysing the progress. With features for setting goals and visualising the progress towards them, we want to make it easier for users to be consistent in their workout schedule and to reach their goals.
 
-If you want to get involved as a contributor, we are happy to learn about suggestions for features our application should include. Or, once the project has developped a bit more, contributors might help by testing the application or proof-reading our code.  Feel free to reach out and send us an e-mail (laura.fernandez@students.unibe.ch, kristin.olsen@students.unibe.ch, lea.frei@students.unibe.ch, dario.bassi@students.unibe.ch).
+If you want to get involved as a contributor, we are happy to learn your suggestions for features our application should include. Or, once the project has developped a bit more, contributors can help by testing the application or proof-reading our code.  Feel free to reach out and send us an e-mail with your suggestions (laura.fernandez@students.unibe.ch, kristin.olsen@students.unibe.ch, dario.bassi@students.unibe.ch, lea.frei@students.unibe.ch).
 
 
 
