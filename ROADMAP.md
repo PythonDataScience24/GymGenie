@@ -45,7 +45,7 @@ Provide users with visualizations of their exercise data, such as weekly/monthly
 - Create `Goals` class for setting and managing fitness goals
   - Allow setting goals for duration, distance, or calories burned 
   - Provide tips for SMART goals
-  - Specify the timeframe (week/moth/year)
+  - Specify the timeframe (week/month/year)
 - Implement `Progress` class for tracking progress toward goals
   - Plot progress( in terms of duration/calories/distance) over time 
   - Provide feedback (a goal is reached / "keep going" / not reached yet) on goal achievement
