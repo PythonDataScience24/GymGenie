@@ -1,19 +1,19 @@
-class duration:
+class Duration:
     def __init__(self, hours=0, minutes=0):
-        self.hours = hours
-        self.minutes = minutes
+        self.minutes = minutes + 60*hours
 
     def __str__(self):
-        return f"{self.hours} hours, {self.minutes} minutes"
+        return self.short_str()
+        # return self.long_str()    
 
-    def minutes_to_hours(self):
-        return self.minutes / 60
+    def short_str(self):     
+            return f"{self.get_hours()}h{self.get_minutes()}"
     
-    def hours_to_minutes(self):
-        return self.hours * 60
+    def long_str(self):     
+        return f"{self.get_hours()} hours, {self.get_minutes()} minutes"
+
+    def get_hours(self):
+        return self.minutes // 60
     
-    def display_minutes(self):
-        return self.hours_to_minutes(self) + self.minutes
-    
-    def display_hours(self):
-        return self.minutes_to_hours(self) + self.hours
+    def get_minutes(self):
+        return self.minutes % 60
