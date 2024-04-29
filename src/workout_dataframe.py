@@ -5,26 +5,26 @@ class Workout_dataframe:
     Represents a Dataframe  that contains the information from the user.
 
     """
-    def __init__(self, exercise, date, duration, distance, calories, impression):
+    def __init__(self, exercise, date, duration, distance, calories, rating):
         self.exercise = exercise
         self.date = date
         self.duration = duration
         self.distance = distance
         self.calories = calories
-        self.impression = impression
+        self.rating = rating
     
-    def create_dataframe(self): #need to be tested, depends on kristin work
+    def create_dataframe(self): #need to be tested, confused in exercise/workout
         """
         Create a new dataframe with the columns:
-            exercise
+            exercise 
             date
             duration
             distance
             calories
-            impression
+            rating
         """
-        self.dataframe = pd.DataFrame({'exercise': exercise, 'date': date , 'duration' : duration,
-                                        'distance' : distance, 'calories' : calories, 'impression' : impression})
+        self.dataframe = pd.DataFrame({'exercise': exercise, 'date': self.date , 'duration (min)' : self.duration,
+                                        'distance (km)' : self.distance, 'calories (kcal)' : self.calories, 'rating' : self.rating})
     
     def read_dataframe(self):
         """

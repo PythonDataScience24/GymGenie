@@ -11,6 +11,7 @@ class Date:
     """
     def __init__(self, year, month, day, h, min) :
         self.date = date(year=year, month=month, day=day)
+        # Indicate the time to differenciate if in the same day the user did more than one workout.
         self.time = time(hour = h, minute = min)
 
 
