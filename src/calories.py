@@ -46,6 +46,8 @@ class Calories:
         self.calories = round(self.calories, 3)
         # Update the unit
         self.unit = b
+    def print(self):
+        return f"{self.calories} {self.unit}"
 
 
 # Example usage

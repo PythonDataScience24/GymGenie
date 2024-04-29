@@ -5,3 +5,5 @@ class Exercise:
     def select_type(self):
         selected_type = input("Select type of exercise: running, cycling, ")
         self.exercise_type = selected_type
+    def print(self):
+        return self.exercise_type
