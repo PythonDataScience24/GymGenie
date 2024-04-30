@@ -19,8 +19,8 @@ class Distance:
         self.distance = distance
         self.unit = unit.lower()
     
-    # I am not sure if this function is useful at all
-    def distance_setting(self, unit):
+    
+    def distance_unit_setting(self, unit):
         """
         Set the distance unit.
 

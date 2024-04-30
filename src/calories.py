@@ -11,7 +11,7 @@ class Calories:
         self.unit = unit
 
     # I am not sure if this function is useful at all
-    def calories_setting(self, unit):
+    def calories_unit_setting(self, unit):
         """
         Set the calories unit.
 

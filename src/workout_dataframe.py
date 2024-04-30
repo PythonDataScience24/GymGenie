@@ -13,7 +13,7 @@ class Workout_dataframe:
         self.calories = calories
         self.rating = rating
     
-    def create_dataframe(self): #need to be tested, confused in exercise/workout
+    def create_dataframe(self,exercise, date, duration, distance, calories, rating): #need to be tested, edit exercise
         """
         Create a new dataframe with the columns:
             exercise 
@@ -23,8 +23,8 @@ class Workout_dataframe:
             calories
             rating
         """
-        self.dataframe = pd.DataFrame({'exercise': exercise, 'date': self.date , 'duration (min)' : self.duration,
-                                        'distance (km)' : self.distance, 'calories (kcal)' : self.calories, 'rating' : self.rating})
+        self.dataframe = pd.DataFrame({'exercise': exercise, 'date': date , 'duration (min)' : duration,
+                                        'distance (km)' : distance, 'calories (kcal)' : calories, 'rating' : rating})
     
     def read_dataframe(self):
         """
