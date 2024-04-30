@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys
-import Activity, calories, date, distance, Duration, workout_dataframe, Workout, WorkoutRating
+import Activity, calories, date, distance, Duration, workout_dataframe, workoutlog, WorkoutRating
 
 def main():
     #start a dataframe to store the workouts in (later load this from a file)
@@ -47,7 +47,7 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
     confirm = ""
 
     while confirm != "y":
-        workout_respond, new_workout = Workout.Workout(exercise_types=exercise_types, distance_exercises=distance_exercises).workout()
+        workout_respond, new_workout = workoutlog.Workoutlog(exercise_types=exercise_types, distance_exercises=distance_exercises).workout()
 
         if workout_respond == "y":
             confirm = "y"

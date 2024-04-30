@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 import sys
-import Activity, calories, date, distance, Duration, WorkoutRating
+import Activity, calories, date, distance, duration, WorkoutRating
 
-class Workout:
+class Workoutlog:
 
 
     def __init__(self,exercise_types, distance_exercises):
@@ -34,7 +34,7 @@ class Workout:
         
         #enter exercise duration
         try:
-            exercise_duration = Duration.duration(minutes = input("Enter the duration of the workout in minutes.\n"))
+            exercise_duration = duration.Duration(minutes = input("Enter the duration of the workout in minutes.\n"))
         except ValueError:
             print(NUMBER)
             exercise_duration = np.NaN

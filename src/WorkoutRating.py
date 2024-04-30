@@ -1,6 +1,0 @@
-class WorkoutRating:
-    def __init__(self, rating):
-        self.rating = rating
-
-    def print(self):
-        return self.rating
