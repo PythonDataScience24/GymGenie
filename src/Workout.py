@@ -23,7 +23,7 @@ class Workout:
             elif len(exercise_date_list) == 5:
                 exercise_date = date.Date(year = int(exercise_date_list[2]), month = int(exercise_date_list[1]), day = int(exercise_date_list[0]), h=int(exercise_date_list[3]), min=int(exercise_date_list[4]))
         except ValueError:
-            print("Please enter your date in the format dd/mm/yyyy.")
+            print("Please enter your date in the format dd/mm/yyyy/h/min.")
             exercise_date = np.NaN
 
         #choose the exercise type
