@@ -23,16 +23,16 @@ Provide users with visualizations of their exercise data, such as weekly/monthly
 
 ### Milestone 1:
 
-- Create the parent class `Workout` with the properties: date, duration, calories, distance, and dataframe
-- Create the child class `Exercise` with a list of options for the user: running, cycling, strength, swimming, hiking/walking, skiing, others
-- Include subclasses for each property:
+- Create the parent class `Workout` with the properties: date, duration, calories, distance, and rating.
+- Create eight child classes `Running`, `Cycling`, `Strength`, `Swimming`,`Skiing`, `Walking`, `Climbing` and `Other` that represent the type of activity.
+- Include subclasses that represent the properties for each activity:
     - `Date`: Date of the workout
     - `Duration`: Duration of the workout in minutes
     - `Calories`: Calories burned during the workout
     - `Distance`: Distance covered during the workout (if applicable)
     - `Dataframe`: Pandas dataframe to store workout data. 
                   It is written in a csv file. When the user close the session the data is saved and then when it re-opens, we can read and re-use it.
-    - `Impression`: Rating of the workout on a scale of 1 to 10
+    - `Rating`: Rating of the workout on a scale of 1 to 10
 - **Contributors**: Laura, Kristin
 - Create `main.py` to run the main program 
 - Implement user interaction for inputting workout data sequentially
@@ -60,8 +60,8 @@ Provide users with visualizations of their exercise data, such as weekly/monthly
 - **Contributors**: Laura, Kristin, Lea, Dario
 
 ## Relevant timeframes:
-28.04.2024 - Prepare GUI
-20.04.2024 - Meeting before Biostatistics lecture
+31.04.2024 - End subtasks and write documentation
+
 
 
 
