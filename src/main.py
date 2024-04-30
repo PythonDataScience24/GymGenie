@@ -1,15 +1,15 @@
 import pandas as pd
 import numpy as np
 import sys
-import Activity, calories, date, distance, Duration, workout_dataframe, workoutlog, WorkoutRating
+import workoutlog
 
 def main():
     #start a dataframe to store the workouts in (later load this from a file)
     workouts_df = pd.DataFrame(columns=["date", "exercise type", "duration", "distance", "calories", "impression"])
 
     #define list of possible workouts
-    exercise_types = ["running", "cycling", "strength", "swimming", "hiking/walking", "skiing", "others"]
-    distance_exercises = ["running", "cycling", "swimming", "hiking/walking"]
+    exercise_types = ["running", "cycling", "strength", "swimming", "walking", "skiing", "others"]
+    distance_exercises = ["running", "cycling", "swimming", "walking"]
 
     choice = ""
 

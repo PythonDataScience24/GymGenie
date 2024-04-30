@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys
-import Activity, calories, date, distance, duration, WorkoutRating
+import calories, date, distance, duration, rating, workout_dataframe, workout
 
 class Workoutlog:
 
@@ -28,20 +28,20 @@ class Workoutlog:
 
         #choose the exercise type
         print(self.exercise_types)
-        exercise_type = Activity.Exercise(input("Enter the type of exercise you did. Choose from the list above.\n").lower())#really not robust way to do the input, but easiest thing i came up with
-        while exercise_type.print() not in self.exercise_types:
-            exercise_type = Activity.Exercise(input("Enter the type of exercise you did. Choose from the list above.\n").lower())
+        exercise_type = input("Enter the type of exercise you did. Choose from the list above.\n").lower()#really not robust way to do the input, but easiest thing i came up with
+        while exercise_type not in self.exercise_types:
+            exercise_type = input("Enter the type of exercise you did. Choose from the list above.\n").lower()
         
         #enter exercise duration
         try:
-            exercise_duration = duration.Duration(minutes = input("Enter the duration of the workout in minutes.\n"))
+            exercise_duration = duration.Duration(minutes = int(input("Enter the duration of the workout in minutes.\n")))
         except ValueError:
             print(NUMBER)
             exercise_duration = np.NaN
 
 
         #ask for distance if it is an exercise type where that is necessary
-        if exercise_type.print() in self.distance_exercises:
+        if exercise_type in self.distance_exercises:
             try:
                 distance_value = distance.Distance(input("Enter the distance you completed in your workout in km.\n"), "km")
             except ValueError:
@@ -58,14 +58,37 @@ class Workoutlog:
             calories_used = np.NaN
 
         #enter the impression
-        impression = WorkoutRating.WorkoutRating(input("How did your workout feel on a scale from 1 to 10 (1=easy, 10=super hard).\n"))
+        try:
+            impression = rating.Rating(int(input("How did your workout feel on a scale from 1 to 10 (1=easy, 10=super hard).\n")))
+        except ValueError:
+            print("Rating should be bewtween 1 and 10.")
+            impression = np.NAN
         
 
         #create a dataframe of these entries, then add them to the workouts dataframe (no idea if that is a good way to do it memory/computation wise?)
         #putting the values in a list was necessary to make the pd.DataFrame function run without error
-        new_workout = pd.DataFrame({"date":[exercise_date.print()], "exercise type":[exercise_type.print()], "duration":[exercise_duration.__str__()], "distance":[distance_value.print()], "calories":[calories_used.print()], "impression": [impression.print()]})
+        "running", "cycling", "strength", "swimming", "hiking/walking", "skiing", "others"
+        match exercise_type:
+            case "running":
+                exercise_name = workout.Running(calories=calories_used.print(), date=exercise_date.print(),distance=distance_value.print(),duration=exercise_duration.__str__(),rating=impression.print())
+            case "cycling":
+                exercise_name = workout.Cycling(calories_used.print(), exercise_date.print(),distance_value.print(),exercise_duration.__str__(),impression.print())
+            case "strength":
+                exercise_name = workout.Strength(calories_used.print(),exercise_date.print(),exercise_duration.__str__(),impression.print())
+            case "swimming":
+                exercise_name = workout.Swimming(calories_used.print(), exercise_date.print(),distance_value.print(),exercise_duration.__str__(),impression.print())
+            case "walking":
+                exercise_name = workout.Walking(calories_used.print(), exercise_date.print(),distance_value.print(),exercise_duration.__str__(),impression.print())
+            case "skiing":
+                exercise_name = workout.Skiing(calories_used.print(), exercise_date.print(),distance_value.print(),exercise_duration.__str__(),impression.print())
+            case "climbing":
+                exercise_name = workout.Climbing(calories_used.print(),exercise_date.print(),exercise_duration.__str__(),impression.print())
+            case "others":
+                exercise_name = workout.Other(calories_used.print(), exercise_date.print(),distance_value.print(),exercise_duration.__str__(),impression.print())
 
-        print(new_workout) #I'm not sure if it will actually print the objects in the dataframe (even if we have __str__ functions for each class) or just this kind of thing <WorkoutRating.WorkoutRating object at 0x00000...
+
+        new_workout = workout_dataframe.Workout_dataframe(exercise=exercise_name,date=exercise_name.get_date(), duration=exercise_name.get_duration(), distance=exercise_name.get_distance(),calories=exercise_name.get_calories(),rating=exercise_name.get_rating()).create_dataframe()
+        print(new_workout)
         confirm = input("This is your entry, do you want to save it [y/n] ? ").lower().strip()
 
         return confirm, new_workout

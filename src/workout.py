@@ -17,6 +17,36 @@ class Workout(ABC):
         self.distance = distance
         self.duration = duration
         self.rating = rating
+    
+    def get_calories(self):
+        """
+        Return the attribute of calories
+        """
+        return self.calories
+    
+    def get_date(self):
+        """
+        Return the attribute of date
+        """
+        return self.date
+    
+    def get_distance(self):
+        """
+        Return the attribute of distance
+        """
+        return self.distance
+    
+    def get_duration(self):
+        """
+        Return the attribute of duration
+        """
+        return self.duration
+    
+    def get_rating(self):
+        """
+        Return the attribute of rating
+        """
+        return self.rating
 
     @abstractmethod
     def subclass_name(self):

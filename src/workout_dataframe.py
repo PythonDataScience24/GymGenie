@@ -13,7 +13,7 @@ class Workout_dataframe:
         self.calories = calories
         self.rating = rating
     
-    def create_dataframe(self, workout, date, duration, distance, calories, rating): #need to be tested, edit exercise
+    def create_dataframe(self): #need to be tested, edit exercise
         """
         Create a new dataframe with the columns: 
             date
@@ -31,17 +31,18 @@ class Workout_dataframe:
             rating (int) : Represents the feeling on the workout on a scale of 1 to 10.
 
         """
-        activity = workout.subclass_name()
+        activity = self.exercise.subclass_name()
 
-        self.dataframe = pd.DataFrame({'activity': activity, 'date': date , 'duration (min)' : duration,
-                                        'distance (km)' : distance, 'calories (kcal)' : calories, 'rating' : rating})
+        dataframe = pd.DataFrame({'activity': [activity], 'date': [self.date] , 'duration (min)' : [self.duration],
+                                        'distance (km)' : [self.distance], 'calories (kcal)' : [self.calories], 'rating' : [self.rating]})
+        return dataframe
     
-    def read_dataframe(self):
+    def read_dataframe(self,dataframe):
         """
         Print the dataframe created.
 
         """
-        print(self.dataframe)
+        print(dataframe)
     
     def edit_dataframe(self, idx, column, new_value):# it needs to be checked
         """
