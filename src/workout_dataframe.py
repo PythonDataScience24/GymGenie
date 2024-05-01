@@ -33,7 +33,7 @@ class Workout_dataframe:
         """
         activity = self.exercise.subclass_name()
 
-        dataframe = pd.DataFrame({'activity': [activity], 'date': [self.date] , 'duration (min)' : [self.duration],
+        dataframe = pd.DataFrame({'activity': [activity], 'date': [self.date] , 'duration' : [self.duration],
                                         'distance (km)' : [self.distance], 'calories (kcal)' : [self.calories], 'rating' : [self.rating]})
         return dataframe
     
@@ -59,7 +59,7 @@ class Workout_dataframe:
                 self.exercise = new_value
             case 'date':
                 self.date = new_value
-            case 'duration (min)':
+            case 'duration':
                 self.duration = f"0h{new_value}"
             case 'distance (km)':
                 self.distance = f"{new_value} km"

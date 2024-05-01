@@ -19,7 +19,7 @@ def main():
         try:
             workouts_df = pd.read_csv(file_name)
         except FileNotFoundError:
-            workouts_df = pd.DataFrame(columns=['activity', 'date', 'duration (min)','distance (km)' , 'calories (kcal)', 'rating'])
+            workouts_df = pd.DataFrame(columns=['activity', 'date', 'duration','distance (km)' , 'calories (kcal)', 'rating'])
         #print(workouts_df)
         match choice.lower().strip():
             case "w":
