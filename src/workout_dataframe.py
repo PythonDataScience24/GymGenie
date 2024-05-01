@@ -13,7 +13,7 @@ class Workout_dataframe:
         self.calories = calories
         self.rating = rating
     
-    def create_dataframe(self): #need to be tested, edit exercise
+    def create_dataframe(self): 
         """
         Create a new dataframe with the columns: 
             date
@@ -44,7 +44,7 @@ class Workout_dataframe:
         """
         return self.create_dataframe()
     
-    def edit_dataframe(self, column, new_value):# it needs to be checked
+    def edit_dataframe(self, column, new_value):
         """
         Edit the information of the desired column and desired idx of the dataframe.
 
@@ -68,7 +68,7 @@ class Workout_dataframe:
             case 'rating':
                 self.rating = new_value
             case _:
-                print("Incorrect! Use a coloumn name valid.")
+                print("Incorrect! Use a column name valid.")
     
     def save_dataframe(self, path):
         """
@@ -80,4 +80,4 @@ class Workout_dataframe:
         self.create_dataframe.to_csv(path)
 
 
-#test everything
+
