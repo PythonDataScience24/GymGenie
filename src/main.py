@@ -5,7 +5,7 @@ import os
 
 def main():
     #define list of possible workouts
-    exercise_types = ["running", "cycling", "strength", "swimming", "walking", "skiing", "others"]
+    exercise_types = ["running", "cycling", "strength", "swimming", "walking", "skiing", "climbing", "others"]
     distance_exercises = ["running", "cycling", "swimming", "walking"]
 
     choice = ""
