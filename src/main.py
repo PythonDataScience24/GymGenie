@@ -1,12 +1,9 @@
 import pandas as pd
-import numpy as np
 import sys
 import workoutlog
+import os
 
 def main():
-    #start a dataframe to store the workouts in (later load this from a file)
-    workouts_df = pd.DataFrame(columns=["date", "exercise type", "duration", "distance", "calories", "impression"])
-
     #define list of possible workouts
     exercise_types = ["running", "cycling", "strength", "swimming", "walking", "skiing", "others"]
     distance_exercises = ["running", "cycling", "swimming", "walking"]
@@ -15,7 +12,15 @@ def main():
 
     while choice != "q":
         choice = input("Welcome to GymGenie!\n Press 'w' to log a workout\n Press 'g' to set a new goal\n Press 'o' to get an overview over your goals\n Press 's' to see some summary visualisations\n Press 'q' to quit\n User: ")
-
+        
+        #start a dataframe to store the workouts in (later load this from a file)
+        current_directory = os.getcwd().replace(os.sep,'/')
+        file_name = current_directory.replace(os.sep,'/') + "/logWorkouts.csv"
+        try:
+            workouts_df = pd.read_csv(file_name)
+        except FileNotFoundError:
+            workouts_df = pd.DataFrame(columns=['activity', 'date', 'duration (min)','distance (km)' , 'calories (kcal)', 'rating'])
+        #print(workouts_df)
         match choice.lower().strip():
             case "w":
                 logWorkout(workouts_df, exercise_types, distance_exercises)
@@ -51,7 +56,14 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
 
         if workout_respond == "y":
             confirm = "y"
-            workouts_df = pd.concat([workouts_df, new_workout])
+            workouts_df = pd.concat([workouts_df, new_workout.create_dataframe()], ignore_index=True)
+            print(workouts_df)
+            # save dataframe in a file csv
+            workouts_df.to_csv("logWorkouts.csv", encoding='utf-8', index=False)
+
+    
+   
+
 
 
 

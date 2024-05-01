@@ -1,4 +1,5 @@
 from datetime import date, time
+import numpy as np
 
 class Date:
     """

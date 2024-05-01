@@ -37,14 +37,14 @@ class Workout_dataframe:
                                         'distance (km)' : [self.distance], 'calories (kcal)' : [self.calories], 'rating' : [self.rating]})
         return dataframe
     
-    def read_dataframe(self,dataframe):
+    def read_dataframe(self):
         """
         Print the dataframe created.
 
         """
-        print(dataframe)
+        return self.create_dataframe()
     
-    def edit_dataframe(self, idx, column, new_value):# it needs to be checked
+    def edit_dataframe(self, column, new_value):# it needs to be checked
         """
         Edit the information of the desired column and desired idx of the dataframe.
 
@@ -53,8 +53,22 @@ class Workout_dataframe:
             column (str): desired column to be edited.(e.g. 'duration').
             new_value (int or str) : The new value to be assigned to the specified location.
         
-        """
-        self.dataframe.loc[idx , column] = new_value
+        """        
+        match column:
+            case 'activity':
+                self.exercise = new_value
+            case 'date':
+                self.date = new_value
+            case 'duration (min)':
+                self.duration = f"0h{new_value}"
+            case 'distance (km)':
+                self.distance = f"{new_value} km"
+            case 'calories (kcal)':
+                self.calories = f"{new_value} kcal"
+            case 'rating':
+                self.rating = new_value
+            case _:
+                print("Incorrect! Use a coloumn name valid.")
     
     def save_dataframe(self, path):
         """
@@ -63,7 +77,7 @@ class Workout_dataframe:
         Args:
             path : path that points where to save the dataframe.
         """
-        self.dataframe.to_csv(path)
+        self.create_dataframe.to_csv(path)
 
 
 #test everything

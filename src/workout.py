@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import numpy as np
 
 class Workout(ABC):
     """
@@ -82,7 +83,7 @@ class Strength(Workout):
     Distance is set to None for this type of Workout.
     """
     def __init__(self, calories, date, duration, rating):
-        super().__init__(calories, date, None, duration, rating)
+        super().__init__(calories, date, np.NaN, duration, rating)
 
     def subclass_name(self):
         return self.__class__.__name__
@@ -123,7 +124,7 @@ class Climbing(Workout):
     Distance is set to None in this type of Workout.
     """
     def __init__(self, calories, date,  duration, rating):
-        super().__init__(calories, date, None, duration, rating)
+        super().__init__(calories, date, np.NaN, duration, rating)
 
     def subclass_name(self):
         return self.__class__.__name__
