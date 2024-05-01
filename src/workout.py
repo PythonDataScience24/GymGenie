@@ -49,12 +49,11 @@ class Workout(ABC):
         """
         return self.rating
 
-    @abstractmethod
     def subclass_name(self):
         """
         Returns the name of the subclass (type of workout).
         """
-        pass
+        return self.__class__.__name__
 
 
 class Running(Workout):
@@ -64,18 +63,12 @@ class Running(Workout):
     def __init__(self, calories, date, distance, duration, rating):
         super().__init__(calories, date, distance, duration, rating)
 
-    def subclass_name(self):
-        return self.__class__.__name__
-
 class Cycling(Workout):
     """
     A cycling workout. See Workout for attributes.
     """
     def __init__(self, calories, date, distance, duration, rating):
         super().__init__(calories, date, distance, duration, rating)
-
-    def subclass_name(self):
-        return self.__class__.__name__
 
 class Strength(Workout):
     """
@@ -85,18 +78,12 @@ class Strength(Workout):
     def __init__(self, calories, date, duration, rating):
         super().__init__(calories, date, np.NaN, duration, rating)
 
-    def subclass_name(self):
-        return self.__class__.__name__
-
 class Swimming(Workout):
     """
     A swimming workout. See Workout for attributes.
     """
     def __init__(self, calories, date, distance, duration, rating):
         super().__init__(calories, date, distance, duration, rating)
-
-    def subclass_name(self):
-        return self.__class__.__name__
 
 class Skiing(Workout):
     """
@@ -105,18 +92,12 @@ class Skiing(Workout):
     def __init__(self, calories, date, distance, duration, rating):
         super().__init__(calories, date, distance, duration, rating)
 
-    def subclass_name(self):
-        return self.__class__.__name__
-
 class Walking(Workout):
     """
     A walking workout. See Workout for attributes.
     """
     def __init__(self, calories, date, distance, duration, rating):
         super().__init__(calories, date, distance, duration, rating)
-
-    def subclass_name(self):
-        return self.__class__.__name__
 
 class Climbing(Workout):
     """
@@ -126,9 +107,6 @@ class Climbing(Workout):
     def __init__(self, calories, date,  duration, rating):
         super().__init__(calories, date, np.NaN, duration, rating)
 
-    def subclass_name(self):
-        return self.__class__.__name__
-
 class Other(Workout):
     """
     A workout that is not running, cycling, strenght, swimming, skiing, walking and climbing. 
@@ -136,7 +114,3 @@ class Other(Workout):
     """
     def __init__(self, calories, date, distance, duration, rating):
         super().__init__(calories, date, distance, duration, rating)
-
-    def subclass_name(self):
-        return self.__class__.__name__
-    
