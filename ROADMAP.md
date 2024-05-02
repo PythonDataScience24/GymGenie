@@ -39,6 +39,7 @@ Provide users with visualizations of their exercise data, such as weekly/monthly
   - Show summary and allow user for modification or saving at the end
 - - **Contributors**: Lea, Dario
 - Open for future or to other contributors: suggest calories in-take
+- Open for contributors: testing with MAC operating system
 
 
 ### Milestone 2:
@@ -49,6 +50,7 @@ Provide users with visualizations of their exercise data, such as weekly/monthly
 - Implement `Progress` class for tracking progress toward goals
   - Plot progress( in terms of duration/calories/distance) over time 
   - Provide feedback (a goal is reached / "keep going" / not reached yet) on goal achievement
+  - Develop the GUI
 - **Contributors**: Laura, Kristin, Lea, Dario
 
 ### Milestone 3:

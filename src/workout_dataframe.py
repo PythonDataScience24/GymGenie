@@ -13,7 +13,7 @@ class Workout_dataframe:
         self.calories = calories
         self.rating = rating
     
-    def create_dataframe(self): #need to be tested, edit exercise
+    def create_dataframe(self): 
         """
         Create a new dataframe with the columns: 
             date
@@ -33,7 +33,7 @@ class Workout_dataframe:
         """
         activity = self.exercise.subclass_name()
 
-        dataframe = pd.DataFrame({'activity': [activity], 'date': [self.date] , 'duration (min)' : [self.duration],
+        dataframe = pd.DataFrame({'activity': [activity], 'date': [self.date] , 'duration' : [self.duration],
                                         'distance (km)' : [self.distance], 'calories (kcal)' : [self.calories], 'rating' : [self.rating]})
         return dataframe
     
@@ -44,7 +44,7 @@ class Workout_dataframe:
         """
         return self.create_dataframe()
     
-    def edit_dataframe(self, column, new_value):# it needs to be checked
+    def edit_dataframe(self, column, new_value):
         """
         Edit the information of the desired column and desired idx of the dataframe.
 
@@ -59,7 +59,7 @@ class Workout_dataframe:
                 self.exercise = new_value
             case 'date':
                 self.date = new_value
-            case 'duration (min)':
+            case 'duration':
                 self.duration = f"0h{new_value}"
             case 'distance (km)':
                 self.distance = f"{new_value} km"
@@ -68,7 +68,7 @@ class Workout_dataframe:
             case 'rating':
                 self.rating = new_value
             case _:
-                print("Incorrect! Use a coloumn name valid.")
+                print("Incorrect! Use a column name valid.")
     
     def save_dataframe(self, path):
         """
@@ -80,4 +80,4 @@ class Workout_dataframe:
         self.create_dataframe.to_csv(path)
 
 
-#test everything
+

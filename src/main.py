@@ -5,7 +5,7 @@ import os
 
 def main():
     #define list of possible workouts
-    exercise_types = ["running", "cycling", "strength", "swimming", "walking", "skiing", "others"]
+    exercise_types = ["running", "cycling", "strength", "swimming", "walking", "skiing", "climbing", "others"]
     distance_exercises = ["running", "cycling", "swimming", "walking"]
 
     choice = ""
@@ -19,7 +19,7 @@ def main():
         try:
             workouts_df = pd.read_csv(file_name)
         except FileNotFoundError:
-            workouts_df = pd.DataFrame(columns=['activity', 'date', 'duration (min)','distance (km)' , 'calories (kcal)', 'rating'])
+            workouts_df = pd.DataFrame(columns=['activity', 'date', 'duration','distance (km)' , 'calories (kcal)', 'rating'])
         #print(workouts_df)
         match choice.lower().strip():
             case "w":
