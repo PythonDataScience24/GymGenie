@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
-# This is a test
+#Test
 
 class Workout(ABC):
     """
