@@ -21,11 +21,11 @@ Go in the folder of the repository and type the following command:
 <pre> python .\src\main.py </pre>
 If you are using MacOS or Linux the path of the file has to be adjusted.
 
-After starting the programm it will appear the menu page of our programm.
+After starting the program it will appear the menu page of our program.
 ![alt text](image.png)
 
-Have fun exploring our programm.
+Have fun exploring our program.
 
 ### Functionality
 
-In the menu of the programm if you type *w*, it will appear the window to insert a workout. Instead if you type *g*, you will able to set up a goal according to your preferences. Typing *o*, you will check how much progress did you made towards your goal. Then typing *s*, you will see the summary of your workouts filtered by exercise, by the timeframe, ect. Finally, typing *q* you will exit the programm.
+In the menu of the program if you type *w*, it will appear the window to insert a workout. Instead if you type *g*, you will able to set up a goal according to your preferences. Typing *o*, you will check how much progress did you made towards your goal. Then typing *s*, you will see the summary of your workouts filtered by exercise, by the timeframe, ect. Finally, typing *q* you will exit the program.
