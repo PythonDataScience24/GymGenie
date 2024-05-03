@@ -13,7 +13,7 @@ class Goal:
         end_date (Date): date by which the goal should be reached
         exercise (Workout): type of workout in which you want to achieve the goal. Default is None, to include all types of exercises.
     """
-    def __init__(self, value, unit, time_scale, start_date, end_date, exercise = np.NaN):
+    def __init__(self, value: float, unit: str, time_scale: int, start_date: date.Date, end_date: date.Date, exercise = np.NaN):
         self.value = value
         self.unit = unit
         self.time_scale = time_scale
