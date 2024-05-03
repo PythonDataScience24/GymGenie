@@ -26,10 +26,13 @@ class GoalSummary:
         goalDataframe = self.goalDataframe
         index_list = goalDataframe.index[(goalDataframe['time_scale'] == time_frame) & (goalDataframe['start_date'] == start_time) & 
                                 (goalDataframe['end_date'] == end_time) & (goalDataframe['exercise'] == exercise)].tolist()
+        #print(goalDataframe)
+        #print(index_list)
+        #print(len(index_list))
         if len(index_list) > 0:
             return index_list[0]
         else:
-            return 0
+            return None
 
     # plot goal using barplot
     def plot_goal(self,time_frame, start_time, end_time,exercise):
@@ -39,12 +42,12 @@ class GoalSummary:
         """
         # retrieve the index goal
         index_goal = self.findGoal(time_frame,start_time,end_time,exercise)
-        if index_goal == 0:
+        if index_goal == None:
             return "Goal not found!"
         print(index_goal)
         # find the value of the goal
-        value_goal = self.goalDataframe.iloc[[index_goal]]['value']
-        unit_value = self.goalDataframe.iloc[[index_goal]]['unit']
+        value_goal = self.goalDataframe.iloc[[index_goal]]['value'].item()
+        unit_value = self.goalDataframe.iloc[[index_goal]]['unit'].item()
         print(value_goal)
         print(unit_value)
         # convert value in standard km, maybe we set up only goals in km
@@ -55,9 +58,9 @@ class GoalSummary:
 
         # filter the logWorkout dataframe, containing only all the activities with the same exercise
         # and according to the timeframe
-        filtered_workout_dataframe = self.logWorkoutDataframe[(self.logWorkoutDataframe['exercise'] == exercise) & 
-                                                               (self.logWorkoutDataframe['date'] >= start_time |
-                                                               self.logWorkoutDataframe['date'] <= end_time)]
+        filtered_workout_dataframe = self.logWorkoutDataframe[(self.logWorkoutDataframe['activity'] == exercise) & 
+                                                               (self.logWorkoutDataframe['date'] >= start_time) |
+                                                               (self.logWorkoutDataframe['date'] <= end_time)]
         print(filtered_workout_dataframe)
         # convert all distance in standard km? not necessary for the moment
         # create a bar plot (Usin the bar to shows the goal attribute for each session)
@@ -73,7 +76,7 @@ class GoalSummary:
                 plt.bar(filtered_workout_dataframe['date'], filtered_workout_dataframe['duration'])
                 ylabel = "Duration"
         # add goal line in the barplot
-        plt.hlines(value_goal, linestyles='--', lw=2,colors='black')
+        #plt.hlines(value_goal,xmin=0, xmax=len(filtered_workout_dataframe['date']), linestyles='--', lw=2,colors='black')
         plt.ylabel(ylabel)
         plt.show()
 
@@ -94,4 +97,4 @@ if __name__=="__main__":
 
     summary = GoalSummary(logWork,goalFrame)
 
-    summary.plot_goal(7,date(2024,4,20), date(2024,4,24), 'Running')
+    print(summary.plot_goal(7,date(2024,4,20), date(2024,4,24), 'Running'))

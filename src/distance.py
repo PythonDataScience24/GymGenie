@@ -62,12 +62,19 @@ class Distance:
         self.distance = round(self.distance, 3)
         # Update the unit
         self.unit = b
+    
     def print(self):
 
         if self.distance == np.NAN:
             return np.NAN
         else:
             return f"{self.distance} {self.unit}"
+        
+    def print_distance(self):
+        if self.distance == np.NaN:
+            return np.NaN
+        else:
+            return self.distance
 
         
         
