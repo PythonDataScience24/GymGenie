@@ -1,6 +1,6 @@
 import tkinter as tk
 
-black = "WHITE"
+black = "BLACK"
 white = "WHITE"
 dark_red = "#9B2226"
 red = "#AE2012"
@@ -11,6 +11,9 @@ dark_blue = "#005F73"
 blue = "#357F93"
 light_blue = "#5d99a9"
 
+# lage create_button funksjon(tar mye parametere som input)
+# liste med text
+# liste med funksjoner den skal bruke - lambda
 
 
 def display_start_page():
@@ -45,7 +48,8 @@ def display_start_page():
     label.grid(column=0, row=0)
 
     log_workout_button = tk.Button(
-        main_frame, 
+        main_frame,
+        command=lambda: choose_workout(root),
         text = "Log a workout",
         font =("Arial", 12, "bold"),
         background=dark_blue,
@@ -105,23 +109,14 @@ def display_start_page():
     )
     log_workout_button.grid(column=0, row=4)
 
-
-    #lbl_welcome = tk.Label(root, text="Welcome to GymGenie!")
-    #lbl_welcome.pack()
-
-    #btn_logWorkout = tk.Button(root, text="Log a workout", command=lambda: chooseWorkout(root))
-    #btn_logWorkout.pack()
- 
-    #btn_setGoal = tk.Button(root, text="Set a new goal")
-    #btn_setGoal.pack()
-
-    #btn_overviewGoals = tk.Button(root, text="Overview of your goals")
-    #btn_overviewGoals.pack()
-
-    #btn_quit = tk.Button(root, text="Quit")
-    #btn_quit.pack()
-
     tk.mainloop()
+
+def choose_workout(root):
+    for widget in root.winfo_children():
+        widget.destroy()
+        
+    choose_frame = tk.Frame(root, bg=blue, pady=40)
+    choose_frame.pack(fill=tk.BOTH, expand=True)
 
 def chooseWorkout(start_window):
     """
