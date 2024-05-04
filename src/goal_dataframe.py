@@ -16,6 +16,11 @@ class GoalDataframe():
         Add a new goal as a new row to the dataframe.
         """
         self.data = pd.concat([self.data, pd.DataFrame({"value":[goal.value], "unit":[goal.unit], "time_scale":[goal.time_scale], "start_date":[goal.start_date], "end_date":[goal.end_date], "exercise":[goal.exercise]})])
+
+        #make sure duplicated entries are not possible
+        if sum(self.data.duplicated()) > 0:
+            print("This goal is already present in the table, the second entry will be dropped.")
+            self.data.drop_duplicates(inplace = True)
     
     def save_dataframe(self, path: str):
         """
@@ -50,9 +55,13 @@ if __name__ == "__main__":
     my_end_date = date.Date(2024, 10, 31, 0 ,0)
     my_duration = duration.Duration(hours = 5)
     my_duration_goal = goal.DurationGoal(value = my_duration, time_scale = 7, start_date = my_start_date.print(), end_date = my_end_date.print())
+    my_duration = duration.Duration(minutes = 90)
+    my_duration_goal = goal.DurationGoal(value = my_duration, time_scale = 7, start_date = my_start_date, end_date = my_end_date)
 
     my_goals_df.add_goal(my_duration_goal)
     my_goals_df.print_dataframe()
+    
+    my_goals_df.add_goal(my_duration_goal)
 
-    my_goals_df.edit_dataframe("value", 0, 3)
+    my_goals_df.edit_dataframe("value", 0, duration.Duration(minutes = 120))
     my_goals_df.print_dataframe()
