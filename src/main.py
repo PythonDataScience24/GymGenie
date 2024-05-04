@@ -58,6 +58,12 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
             confirm = "y"
             workouts_df = pd.concat([workouts_df, new_workout.create_dataframe()], ignore_index=True)
             print(workouts_df)
+
+            #make sure duplicate entries are not possible
+            if sum(workouts_df.duplicated()) > 0:
+                print("This workout is already present in the table, the second entry will be dropped.")
+                workouts_df.drop_duplicates(inplace = True)
+
             # save dataframe in a file csv
             workouts_df.to_csv("logWorkouts.csv", encoding='utf-8', index=False)
 
