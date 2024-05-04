@@ -15,6 +15,9 @@ class Date:
         # Indicate the time to differenciate if in the same day the user did more than one workout.
         self.time = time(hour = h, minute = min)
     
+    def print(self):
+        return f'{self.date} - {self.time}'
+    
     def __str__(self):
         return f'{self.date} - {self.time}'
 
