@@ -45,6 +45,15 @@ class GoalDataframe():
         """
         self.data.loc[row_idx, column_name] = new_value
     
+    def delete_entry(self, row_idx: int):
+        """
+        Delete a row (one entry) of the dataframe.
+        
+        Args:
+        row_idx (int): Index of the row that should be removed.
+        """
+        self.data.drop(row_idx)
+    
 
 if __name__ == "__main__":
     my_goals_df = GoalDataframe()

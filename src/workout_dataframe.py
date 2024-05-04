@@ -79,5 +79,14 @@ class Workout_dataframe:
         """
         self.create_dataframe.to_csv(path)
 
+    def delete_entry(self, row_idx: int):
+        """
+        Delete a row (one entry) of the dataframe.
+        
+        Args:
+        row_idx (int): Index of the row that should be removed.
+        """
+        self.data.drop(row_idx)
+
 
 
