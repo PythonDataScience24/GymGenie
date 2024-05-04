@@ -79,27 +79,66 @@ class GoalSummary:
                 plt.bar(filtered_workout_dataframe['date'], filtered_workout_dataframe['duration'],edgecolor='gray')
                 ylabel = "Duration"
         # add goal line in the barplot
-        plt.axhline(value_goal, linestyle='--', lw=1.2,color='black', label="Goal", zorder=-1.5)
+        #plt.axhline(value_goal, linestyle='--', lw=1.2,color='black', label="Goal", zorder=-1.5)
         plt.ylabel(ylabel, fontsize=12)
         plt.xticks(rotation=-25, fontsize=8)
         #plt.xlabel('Time', fontsize=12)
         plt.legend(frameon=False)
         plt.title(exercise)
         plt.show()
+        plt.close()
 
-        return True
+        #return True
 
         # return the plot
+
+        # plot progression
+        progression = self.logWorkoutDataframe.groupby('date')['duration'].sum().reset_index()
+        print(progression)
+        progression['progression'] = progression['duration'].cumsum().fillna(progression['duration'][0])
+        print(progression['date'])
+        plt.bar(progression['date'], progression['progression'], color="red")
+        plt.bar_label(plt.bar(progression['date'], progression['progression'], color='red'),progression['progression'])
+        plt.ylim(0,value_goal + 50)
+        plt.axhline(value_goal, linestyle='--', lw=1.2,color='black', label="Goal", zorder=-1.5)
+        plt.ylabel(ylabel, fontsize=12)
+        plt.xticks(rotation=25, fontsize=8)
+        #plt.xlabel('Time', fontsize=12)
+        plt.tight_layout()
+        plt.legend(frameon=False)
+        plt.show()
+
+        # plot for each sport the different measure
+        grouped = self.logWorkoutDataframe.groupby(['activity', 'date']).sum().reset_index()
+        pivot_df = grouped.pivot(index='date', columns='activity', values='duration')
+        print(pivot_df)
+        #plt.bar(self.logWorkoutDataframe['date'], self.logWorkoutDataframe['duration'], color=self.logWorkoutDataframe['activity'])
+        pivot_df.plot(kind='bar',stacked=True)
+        # Adding labels on top of each bar
+        # it adds also the 0, not good!
+        #for container in ax.containers:
+        #    print(container)
+        #    ax.bar_label(container, label_type='center')
+        plt.xlabel("")
+        plt.ylabel('Duration')
+        plt.xticks(rotation=25)
+        plt.legend(title='Activity', frameon=False)
+        plt.tight_layout()
+        plt.show()
+
+
+
+
     # plot using progress pie chart to shows what is left
     # TODO
 
 
 if __name__=="__main__":
 
-    logWork = pd.DataFrame({'activity': ['Running','Cycling','Running','Swimming','Running'], 'date': [date(2024,4,20),date(2024,4,21),date(2024,4,22),date(2024,4,23),date(2024,4,24)] , 'duration' : [40,120,30,20,20],
-                                    'distance' : [9,40,6,2,8], 'calories' : [200,500,250,400,300], 'rating' : [8,9,4,5,6]})
+    logWork = pd.DataFrame({'activity': ['Running','Cycling','Cycling','Running','Swimming','Running'], 'date': [date(2024,4,20), date(2024,4,20),date(2024,4,21),date(2024,4,22),date(2024,4,23),date(2024,4,24)] , 'duration' : [40,80,120,30,20,20],
+                                    'distance' : [9,50,40,6,2,8], 'calories' : [200,300,500,250,400,300], 'rating' : [8,7,9,4,5,6]})
 
-    goalFrame = pd.DataFrame({"value":[35,100], "unit":['min','km'], "time_scale":[7,7], "start_date":[date(2024,4,20),date(2024,5,20)], 
+    goalFrame = pd.DataFrame({"value":[300,100], "unit":['min','km'], "time_scale":[7,7], "start_date":[date(2024,4,20),date(2024,5,20)], 
                                 "end_date":[date(2024,4,24), date(2024,5,24)], "exercise":['Running','Cycling']})
 
     summary = GoalSummary(logWork,goalFrame)
