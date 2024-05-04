@@ -37,7 +37,7 @@ class Goal:
 
     def subclass_name(self):
         """
-        Returns the name of the subclass (quantity for which the goal is set).
+        Returns the name of the subclass (quantity for which the goal is set, i.e. calories, duration or distance).
         """
         return self.__class__.__name__
 
@@ -83,3 +83,4 @@ if __name__ == "__main__":
     my_calories_goal = CalorieGoal(value = my_calories, time_scale = 7, start_date = my_start_date, end_date = my_end_date)
 
     print(my_duration_goal)
+    print(my_duration_goal.subclass_name())
