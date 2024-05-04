@@ -40,6 +40,8 @@ class GoalSummary:
         This function shows the plot of the progress through the goal
 
         """
+        # plot General goal for week/month/year
+        # plot Specific Exercise for week/month/year
         # retrieve the index goal
         index_goal = self.findGoal(time_frame,start_time,end_time,exercise)
         if index_goal == None:
