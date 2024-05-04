@@ -10,13 +10,16 @@ class Date:
         time (datetime.time) : the time when the exercise started.
 
     """
-    def __init__(self, year, month, day, h, min) :
+    def __init__(self, year, month, day) :#h, min
         self.date = date(year=year, month=month, day=day)
         # Indicate the time to differenciate if in the same day the user did more than one workout.
-        self.time = time(hour = h, minute = min)
+        # I think is not necessary anymore since we will differentiate by exercise
+        #self.time = time(hour = h, minute = min)
     
+#    def print(self):
+#        return f'{self.date} - {self.time}'
     def print(self):
-        return f'{self.date} - {self.time}'
+        return self.date
 
 
 

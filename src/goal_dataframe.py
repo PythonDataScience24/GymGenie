@@ -49,7 +49,7 @@ if __name__ == "__main__":
     my_start_date = date.Date(2024, 5, 3, 0, 0)
     my_end_date = date.Date(2024, 10, 31, 0 ,0)
     my_duration = duration.Duration(hours = 5)
-    my_duration_goal = goal.DurationGoal(value = my_duration, time_scale = 7, start_date = my_start_date, end_date = my_end_date)
+    my_duration_goal = goal.DurationGoal(value = my_duration, time_scale = 7, start_date = my_start_date.print(), end_date = my_end_date.print())
 
     my_goals_df.add_goal(my_duration_goal)
     my_goals_df.print_dataframe()
