@@ -1,4 +1,5 @@
 import tkinter as tk
+import ttkbootstrap as ttk
 import workout
 import numpy as np
 import tkcalendar
@@ -35,8 +36,8 @@ def create_button(frame, command, text, **kwargs):
         Additional keyword arguments to customize the button.
         Supported keyword arguments include:
             - font: Tuple specifying the font (default is ("Arial", 12, "bold"))
-            - width: Width of the button (default is 0)
-            - height: Height of the button (default is 0)
+            - width: Width of the button (default is 20)
+            - height: Height of the button (default is 1)
             - background: Background color of the button (default is dark blue)
             - foreground: Foreground color of the button (default is white)
             - activebackground: Background color of the button when active (default is light blue)
@@ -51,8 +52,8 @@ def create_button(frame, command, text, **kwargs):
     """
     # Default values
     font = kwargs.get("font", ("Arial", 12, "bold"))
-    width = kwargs.get("width", 0)
-    height = kwargs.get("height", 0)
+    width = kwargs.get("width", 20)
+    height = kwargs.get("height", 1)
     background = kwargs.get("background", dark_blue)
     foreground = kwargs.get("foreground", "white")
     activebackground = kwargs.get("activebackground", light_blue)
@@ -119,7 +120,7 @@ def create_entry(frame, **kwargs):
     )
     return entry
 
-def create_label(frame, text, **kwargs):
+def create_label(frame, **kwargs):
     """
     Creates a label widget with customizable properties.
 
@@ -128,12 +129,11 @@ def create_label(frame, text, **kwargs):
     frame : tkinter.Frame
         The frame in which the label should be placed.
 
-    text : str
-        The text to be displayed on the label.
-
     **kwargs : dict, optional
         Additional keyword arguments to customize the label.
         Supported keyword arguments include:
+            - text: String of the text to be displayed on the label.
+            - textvariable: tkinter.StringVar to associate with the label's text.
             - font: Tuple specifying the font (default is ("Arial", 10, "bold"))
             - background: Background color of the label (default is blue)
             - foreground: Foreground color of the label (default is white)
@@ -146,6 +146,8 @@ def create_label(frame, text, **kwargs):
         The created label widget.
     """
     # Default values
+    text = kwargs.get("text", "")
+    textvariable = kwargs.get("textvariable", None)
     font = kwargs.get("font", ("Arial", 10, "bold"))
     background = kwargs.get("background", blue)
     foreground = kwargs.get("foreground", white)
@@ -155,6 +157,7 @@ def create_label(frame, text, **kwargs):
     label = tk.Label(
         frame,
         text=text,
+        textvariable=textvariable,
         font=font,
         background=background,
         foreground=foreground,
@@ -163,20 +166,63 @@ def create_label(frame, text, **kwargs):
     )
     return label
 
-def open_calendar(root, date):
+def create_scale(frame, **kwargs):
     """
-    Opens a new window where you can choose a date and returns the chosen date.
+    Creates a Scale widget with customizable properties.
+
+    Parameters
+    ----------
+    frame : tkinter.Frame
+        The frame in which the scale should be placed.
+
+    **kwargs : dict, optional
+        Additional keyword arguments to customize the scale.
+        Supported keyword arguments include:
+            - from_: The starting value of the scale.
+            - to: The ending value of the scale.
+            - resolution: The resolution of the scale.
+            - variable: The tkinter variable associated with the scale.
+            - orient: Orientation of the scale ('horizontal' or 'vertical').
+            - length: Length of the scale widget.
+            - command: Function to be called when the scale value changes.
+            - bg: Background color of the scale.
+            - fg: Foreground color of the scale.
 
     Returns
     -------
-    date : 
-
+    scale : tkinter.Scale
+        The created Scale widget.
     """
-    def select_date(date):
-        selected_date = calendar.selection_get()
-        date.set(selected_date)
-        date_window.destroy()
-        return date
+    # Default values
+    from_ = kwargs.get('from_', 1)
+    to = kwargs.get('to', 10)
+    resolution = kwargs.get('resolution', 1)
+    variable = kwargs.get('variable', None)
+    orient = kwargs.get('orient', 'horizontal')
+    length = kwargs.get('length', 100)
+    command = kwargs.get('command', None)
+    bg = kwargs.get('bg', None)
+    fg = kwargs.get('fg', None)
+
+    # Create the scale widget
+    scale = tk.Scale(frame, from_=from_, to=to, resolution=resolution, variable=variable,
+                     orient=orient, length=length, command=command, bg=bg, fg=fg)
+    return scale
+
+def open_calendar(root, date):
+    """
+    Opens a new window where you can choose a date and updates the provided date variable with the 
+    chosen date.
+
+    Parameters
+    ----------
+    root : tkinter.Tk or tkinter.Toplevel
+        The root or top-level window where the calendar window will be opened.
+
+    date : tkinter.StringVar
+        A tkinter StringVar variable that stores the selected date.
+    """
+
 
     date_window = tk.Toplevel(root)
     date_window.title("Pick a Date")
@@ -184,8 +230,27 @@ def open_calendar(root, date):
     calendar = tkcalendar.Calendar(date_window)
     calendar.pack(padx=10, pady=10)
 
-    confirm_button = tk.Button(date_window, text="Confirm", command=lambda: select_date(date))
+    confirm_button = tk.Button(date_window, text="Confirm", command=lambda: select_date(date, calendar, date_window))
     confirm_button.pack(pady=10)
+
+def select_date(date, calendar, date_window):
+    """
+    Updates the provided Tkinter variable with the selected date from a calendar widget.
+
+    Parameters
+    ----------
+    date : tkinter.StringVar
+        The Tkinter variable to be updated with the selected date.
+
+    calendar : tkcalendar.Calendar
+        The calendar widget used for selecting the date.
+
+    date_window : tkinter.Toplevel
+        The window containing the calendar widget.
+    """
+    selected_date = calendar.selection_get()
+    date.set(selected_date)
+    date_window.destroy()
 
 def display_start_page():
     """
@@ -207,16 +272,9 @@ def display_start_page():
         main_frame.rowconfigure(i, weight=1)
 
     # Add welcome label
-    label = tk.Label(
-        main_frame, 
-        text = "Welcome to GymGenie!",
-        font =("Arial", 16, "bold"),
-        background=blue,
-        foreground=white,
-        width=20,
-        height = 1
-    )
-    label.grid(column=0, row=0)
+    welcome_label = create_label(frame=main_frame, text = "Welcome to GymGenie!", 
+                                 font =("Arial", 16, "bold"), width=20)
+    welcome_label.grid(column=0, row=0)
 
     # Initialize list of buttons containing the button-text and which command should be executed 
     # when the button is clicked.
@@ -228,8 +286,7 @@ def display_start_page():
     # Create and place the buttons on the main frame.
     for i, button in enumerate(start_page_buttons):
         start_page_button = create_button(frame=main_frame, command=button[1],
-                                          text=button[0], font=("Arial", 12, "bold"), 
-                                          width=20, height=2)
+                                          text=button[0], height=2)
         start_page_button.grid(column=0, row=i+1)
 
     tk.mainloop()
@@ -253,19 +310,12 @@ def choose_workout(root):
     choose_workout_frame.pack(fill=tk.BOTH, expand=True)
     choose_workout_frame.columnconfigure(0, weight=1)
     number_workout_types = len(workout.Workout.__subclasses__())
-    for i in range(number_workout_types+1): # include all workout types and one label for the number of rows.
+    for i in range(number_workout_types+1): # include all workout types + one label
         choose_workout_frame.rowconfigure(i, weight=1)
 
     # Add label that asks for the type of workout.
-    label = tk.Label(
-    choose_workout_frame, 
-    text = "What type of workout did you do?",
-    font =("Arial", 14, "bold"),
-    background=blue,
-    foreground=white,
-    width=40,
-    height = 1
-    )
+    label = create_label(frame=choose_workout_frame, text = "What type of workout did you do?",
+                         font =("Arial", 14, "bold"), width=40)
     label.grid(column=0, row=0)
 
     # Create list containing the names of all the workout types of class Workout.
@@ -275,8 +325,7 @@ def choose_workout(root):
     for i, workout_type in enumerate(workout_types):
         choose_workout_button = create_button(frame=choose_workout_frame, 
                                               command=lambda subclass=workout_type: log_workout(root, subclass),
-                                              text=workout_type, font=("Arial", 10, "bold"), 
-                                              width=20, height=1)
+                                              text=workout_type)
         choose_workout_button.grid(column=0, row=i+1)
 
 def log_workout(root, workout_type):
@@ -299,54 +348,69 @@ def log_workout(root, workout_type):
     # Create frame where you can choose log in all the dta from your workout.    
     log_workout_frame = tk.Frame(root, bg=blue, pady=10)
     log_workout_frame.pack(fill=tk.BOTH, expand=True)
+
+    # Configure 3 columns
     log_workout_frame.columnconfigure(0, weight=1)
     log_workout_frame.columnconfigure(1, weight=1)
     log_workout_frame.columnconfigure(2, weight=1)
 
+    # Configure rows according to the number of datatypes that should be logged for the specific workout type
     workout_type = getattr(workout, workout_type)
-    workout_datatypes_dict = vars(workout_type())
+    workout_datatypes_dict = vars(workout_type()) # create dictionary of the attributes and their default values of a subclass of Workout
     workout_datatypes_dict = {key: value for key, value in workout_datatypes_dict.items() if not np.isnan(value)}
     workout_datatypes = workout_datatypes_dict.keys()
-
     number_of_datatypes = len(workout_datatypes_dict.values())
     for i in range(number_of_datatypes+1): # include all datatypes and one label for the number of rows.
         log_workout_frame.rowconfigure(i, weight=1)
 
+    # Add top-label for the log workout-page
+    log_workout_label = create_label(frame=log_workout_frame, text="Log your workout:",
+                                     font=("Arial", 16, "bold"))
+    log_workout_label.grid(column=1, row=0, sticky="ew")
 
-    # Create an entry for each of the datatypes:
+    # Create widgets for entering the workout data.
     for i, workout_datatype in enumerate(workout_datatypes):
         workout_datatype = workout_datatype.capitalize()
-        label = tk.Label(
-        log_workout_frame, 
-        text = f"{workout_datatype}:",
-        font =("Arial", 10, "bold"),
-        background=blue,
-        foreground=white,
-        width=10,
-        height = 1
-        )
-        label.grid(column=0, row=i+1, sticky="e")
-        if workout_datatype == "Calories":
-            calories_entry = create_entry(log_workout_frame)
-            calories_entry.grid(column=1, row=i+1)
 
+        # Create labels for each datatype that should be inputed and place them in the first column.
+        datatype_label = create_label(frame=log_workout_frame, text = f"{workout_datatype}:")
+        datatype_label.grid(column=0, row=i+1, sticky="e")
+
+        # Calories: insert an entry and a label specifying the unit (kcal)
+        if workout_datatype == "Calories":
+            calories_entry = create_entry(frame=log_workout_frame)
+            calories_entry.grid(column=1, row=i+1)
+            calories_label = create_label(frame=log_workout_frame, text="kcal")
+            calories_label.grid(column=2, row=i+1)
+
+        # Distance: insert an entry and a label specifying unit (km)
         if workout_datatype == "Distance":
             distance_entry = create_entry(log_workout_frame)
             distance_entry.grid(column=1, row=i+1)
+            distance_label = create_label(frame=log_workout_frame, text="km")
+            distance_label.grid(column=2, row=i+1)
+
+        # Rating:
         if workout_datatype == "Rating":
-            rating_entry = create_entry(log_workout_frame)
-            rating_entry.grid(column=1, row=i+1)
+            rating_slider = create_scale(frame=log_workout_frame)
+            rating_slider.grid(column=1, row=i+1)
+
+        # Duration: insert an entry and a label specifying the unit (min)
         if workout_datatype == "Duration":
             duration_entry = create_entry(log_workout_frame)
             duration_entry.grid(column=1, row=i+1)
+            duration_label = create_label(frame=log_workout_frame, text="min")
+            duration_label.grid(column=2, row=i+1)
+
+        # Date: insert a label with the date and a button that allows user to choose the date.
         if workout_datatype == "Date":
             date = tk.StringVar()
-            date.set(datetime.date.today())
-            
-            current_date_label.grid(column=1, row=i+1)
-            calendar_button = create_button(log_workout_frame, command= lambda: open_calendar(root, date),
-                                            text="Select a date", font=("Arial", 10, "bold"),
-                                            width=15, height=1)
+            date.set(datetime.date.today()) # Set the date initial date to todays date.
+            date_label = create_label(frame=log_workout_frame, textvariable=date)
+            date_label.grid(column=1, row=i+1)
+            calendar_button = create_button(frame=log_workout_frame, 
+                                            command= lambda: open_calendar(root, date),
+                                            text="Select a date", font=("Arial", 10, "bold"), width=15)
             calendar_button.grid(column=2, row=i+1)
 
          
