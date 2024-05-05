@@ -117,7 +117,8 @@ class GoalSummary:
         # Adding labels on top of each bar
         # it adds also the 0, not good!
         #for container in ax.containers:
-        #    print(container)
+        #    print(container.pchanged())
+        #    print(container.get_label())
         #    ax.bar_label(container, label_type='center')
         plt.xlabel("")
         plt.ylabel('Duration')
@@ -127,10 +128,19 @@ class GoalSummary:
         plt.show()
 
 
-
-
-    # plot using progress pie chart to shows what is left
-    # TODO
+        # plot using progress pie chart to shows what is left
+        total_sum = progression['duration'].sum()
+        percentage_left = round((total_sum/value_goal)*100)
+        print(total_sum)
+        #slices = [total_sum,abs(value_goal-total_sum)]
+        slices = [value_goal]
+        plt.pie(slices, colors=['green'],startangle=90)
+        my_circle=plt.Circle( (0,0), 0.7, color='white')
+        p=plt.gcf()
+        p.gca().add_artist(my_circle)
+        plt.text(0,0,f"{percentage_left} %",verticalalignment='center', horizontalalignment='center', fontsize=35, fontname="fantasy")
+        plt.title("Total Progress Duration")
+        plt.show()
 
 
 if __name__=="__main__":
