@@ -10,6 +10,9 @@ class Calories:
         self.calories = calories
         self.unit = unit
 
+    def __str__(self):
+        return f"{self.calories} {self.unit}"
+
     # I am not sure if this function is useful at all
     def calories_unit_setting(self, unit):
         """
