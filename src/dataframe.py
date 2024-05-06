@@ -1,5 +1,5 @@
 import pandas as pd
-from abc import ABC, abstractmethod
+from abc import ABC
 import goal, date, duration, workout, calories
 
 class Dataframe(ABC):

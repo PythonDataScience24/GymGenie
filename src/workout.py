@@ -4,6 +4,7 @@ This module contains the Class Workout and subclasses for different types of exe
 
 from abc import ABC
 import numpy as np
+import calories, date, distance, duration, rating
 
 #Test
 
@@ -18,7 +19,7 @@ class Workout(ABC):
         duration (Duration): The duration of the workout.
         rating (Rating): Rating of how the workout felt.
     """
-    def __init__(self, calories, date, distance, duration, rating):
+    def __init__(self, calories: calories.Calories, date: date.Date, distance: distance.Distance, duration: duration.Duration, rating: rating.Rating):
         self.calories = calories
         self.date = date
         self.distance = distance
@@ -77,7 +78,7 @@ class Strength(Workout):
     A strength workout. See Workout for attributes.
     Distance is set to None for this type of Workout.
     """
-    def __init__(self, calories, date, duration, rating):
+    def __init__(self, calories: calories.Calories, date: date.Date, duration: duration.Duration, rating: rating.Rating):
         super().__init__(calories, date, np.NaN, duration, rating)
 
 class Swimming(Workout):
@@ -100,7 +101,7 @@ class Climbing(Workout):
     A climbing workout. See Workout for attributes.
     Distance is set to None in this type of Workout.
     """
-    def __init__(self, calories, date,  duration, rating):
+    def __init__(self, calories: calories.Calories, date: date.Date,  duration: duration.Duration, rating: rating.Rating):
         super().__init__(calories, date, np.NaN, duration, rating)
 
 class Other(Workout):
