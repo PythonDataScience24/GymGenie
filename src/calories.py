@@ -6,7 +6,7 @@ class Calories:
         calories (float) : Numeric value
         unit (str) : The unit of measurement ('kcal', 'kJ')
     """
-    def __init__(self, calories, unit) :
+    def __init__(self, calories:int, unit:str) :
         self.calories = calories
         self.unit = unit
 

@@ -8,7 +8,7 @@ class Distance:
         unit (str): The unit of measurement ('km', 'm' or 'miles')
     
     """
-    def __init__(self, distance, unit):
+    def __init__(self, distance:float, unit:str):
         """
         Initialize a Distance object
 

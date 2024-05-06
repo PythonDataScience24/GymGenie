@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import numpy as np
+import calories,date,distance,duration,rating
 
 #Test
 
@@ -14,7 +15,7 @@ class Workout(ABC):
         duration (Duration): The duration of the workout.
         rating (Rating): Rating of how the workout felt.
     """
-    def __init__(self, calories, date, distance, duration, rating):
+    def __init__(self, calories:calories.Calories, date:date.Date, distance:distance.Distance, duration:duration.Duration, rating:rating.Rating):
         self.calories = calories
         self.date = date
         self.distance = distance

@@ -6,7 +6,7 @@ import calories, date, distance, duration, rating, workout_dataframe, workout
 class Workoutlog:
 
 
-    def __init__(self,exercise_types, distance_exercises):
+    def __init__(self,exercise_types:list, distance_exercises:list):
         self.exercise_types = exercise_types
         self.distance_exercises = distance_exercises
 
