@@ -1,5 +1,4 @@
 import tkinter as tk
-import ttkbootstrap as ttk
 import workout
 import numpy as np
 import tkcalendar
