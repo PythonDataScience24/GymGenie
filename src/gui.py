@@ -104,7 +104,7 @@ def create_entry(frame, **kwargs):
     font = kwargs.get("font", ("Arial", 10, "normal"))
     background = kwargs.get("background", "white")
     foreground = kwargs.get("foreground", "black")
-    width = kwargs.get("width", 10)
+    width = kwargs.get("width", 15)
     show = kwargs.get("show", None)
     textvariable = kwargs.get("textvariable", None)
 
@@ -207,6 +207,52 @@ def create_scale(frame, **kwargs):
     scale = tk.Scale(frame, from_=from_, to=to, resolution=resolution, variable=variable,
                      orient=orient, length=length, command=command, bg=bg, fg=fg)
     return scale
+
+def create_option_menu(frame, options, selected_option, **kwargs):
+    """
+    Creates an OptionMenu widget with customizable properties.
+
+    Parameters
+    ----------
+    frame : tkinter.Frame
+        The frame in which the OptionMenu should be placed.
+
+    options : list
+        List of options for the dropdown menu.
+
+    selected_option : tkinter.StringVar
+        Variable to store the selected option.
+
+    command : function, optional
+        Function to be called when an option is selected (default is None).
+
+    **kwargs : dict, optional
+        Additional keyword arguments to customize the OptionMenu.
+        Supported keyword arguments include:
+            - command : Function to be called when an option is selected (default is None).
+            - font: Tuple specifying the font (default is ("Arial", 10, "bold"))
+            - background: Background color of the OptionMenu (default is None)
+            - foreground: Foreground color of the OptionMenu (default is None)
+            - width: Width of the OptionMenu (default is None)
+            - height: Height of the OptionMenu (default is None)
+
+    Returns
+    -------
+    option_menu : tkinter.OptionMenu
+        The created OptionMenu widget.
+    """
+    # Default values
+    command = kwargs.get("command", None)
+    font = kwargs.get("font", ("Arial", 10, "bold"))
+    background = kwargs.get("background", None)
+    foreground = kwargs.get("foreground", None)
+    width = kwargs.get("width", None)
+    height = kwargs.get("height", None)
+
+    # Create the OptionMenu widget
+    option_menu = tk.OptionMenu(frame, selected_option, *options, **kwargs)
+
+    return option_menu
 
 def open_calendar(root, date):
     """
@@ -348,10 +394,12 @@ def log_workout(root, workout_type):
     log_workout_frame = tk.Frame(root, bg=blue, pady=10)
     log_workout_frame.pack(fill=tk.BOTH, expand=True)
 
-    # Configure 3 columns
+    # Configure 5 columns
     log_workout_frame.columnconfigure(0, weight=1)
     log_workout_frame.columnconfigure(1, weight=1)
     log_workout_frame.columnconfigure(2, weight=1)
+    log_workout_frame.columnconfigure(3, weight=1)
+    log_workout_frame.columnconfigure(4, weight=1)
 
     # Configure rows according to the number of datatypes that should be logged for the specific workout type
     workout_type = getattr(workout, workout_type)
@@ -365,7 +413,7 @@ def log_workout(root, workout_type):
     # Add top-label for the log workout-page
     log_workout_label = create_label(frame=log_workout_frame, text="Log your workout:",
                                      font=("Arial", 16, "bold"))
-    log_workout_label.grid(column=1, row=0, sticky="ew")
+    log_workout_label.grid(column=1, row=0, columnspan=3, sticky="ew")
 
     # Create widgets for entering the workout data.
     for i, workout_datatype in enumerate(workout_datatypes):
@@ -375,31 +423,48 @@ def log_workout(root, workout_type):
         datatype_label = create_label(frame=log_workout_frame, text = f"{workout_datatype}:")
         datatype_label.grid(column=0, row=i+1, sticky="e")
 
-        # Calories: insert an entry and a label specifying the unit (kcal)
+        # Calories: insert an entry and a dropdown menu with options for the unit.
         if workout_datatype == "Calories":
             calories_entry = create_entry(frame=log_workout_frame)
             calories_entry.grid(column=1, row=i+1)
-            calories_label = create_label(frame=log_workout_frame, text="kcal")
-            calories_label.grid(column=2, row=i+1)
+            calories_units = ["kcal", "kJ"]
+            selected_unit_calories = tk.StringVar(root)
+            selected_unit_calories.set(calories_units[0])
+            calories_units_options = create_option_menu(frame=log_workout_frame, options=calories_units,
+                                                       selected_option=selected_unit_calories) 
+            calories_units_options.grid(column=2, row=i+1)
+            
 
-        # Distance: insert an entry and a label specifying unit (km)
+        # Distance: insert an entry and a dropdown menu with options for the unit.
         if workout_datatype == "Distance":
             distance_entry = create_entry(log_workout_frame)
             distance_entry.grid(column=1, row=i+1)
-            distance_label = create_label(frame=log_workout_frame, text="km")
-            distance_label.grid(column=2, row=i+1)
+            distance_units = ["km", "m", "miles"]
+            selected_unit_distance = tk.StringVar(root)
+            selected_unit_distance.set(distance_units[0])
+            distance_units_options = create_option_menu(frame=log_workout_frame, options=distance_units,
+                                                       selected_option=selected_unit_distance) 
+            distance_units_options.grid(column=2, row=i+1)
 
-        # Rating:
+        # Rating: insert slider and label describing the scale
         if workout_datatype == "Rating":
             rating_slider = create_scale(frame=log_workout_frame)
             rating_slider.grid(column=1, row=i+1)
+            rating_label = create_label(frame=log_workout_frame, text="Rate workout: 1=Easy, 10=Hard")
+            rating_label.grid(column=2, row=i+1, columnspan=2, sticky="ew")
+
 
         # Duration: insert an entry and a label specifying the unit (min)
         if workout_datatype == "Duration":
-            duration_entry = create_entry(log_workout_frame)
-            duration_entry.grid(column=1, row=i+1)
-            duration_label = create_label(frame=log_workout_frame, text="min")
-            duration_label.grid(column=2, row=i+1)
+            hours_entry = create_entry(log_workout_frame)
+            hours_entry.grid(column=1, row=i+1)
+            hours_label = create_label(frame=log_workout_frame, text="hours")
+            hours_label.grid(column=2, row=i+1, sticky="w")
+            minutes_entry = create_entry(log_workout_frame)
+            minutes_entry.grid(column=3, row=i+1)
+            minutes_label = create_label(frame=log_workout_frame, text="minutes")
+            minutes_label.grid(column=4, row=i+1, sticky="w")
+            
 
         # Date: insert a label with the date and a button that allows user to choose the date.
         if workout_datatype == "Date":
@@ -409,7 +474,7 @@ def log_workout(root, workout_type):
             date_label.grid(column=1, row=i+1)
             calendar_button = create_button(frame=log_workout_frame, 
                                             command= lambda: open_calendar(root, date),
-                                            text="Select a date", font=("Arial", 10, "bold"), width=15)
+                                            text="Select a date", font=("Arial", 10, "bold"), width=12)
             calendar_button.grid(column=2, row=i+1)
 
          
