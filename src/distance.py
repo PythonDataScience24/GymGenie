@@ -8,7 +8,7 @@ class Distance:
         unit (str): The unit of measurement ('km', 'm' or 'miles')
     
     """
-    def __init__(self, distance, unit):
+    def __init__(self, distance:float, unit:str):
         """
         Initialize a Distance object
 
@@ -62,12 +62,19 @@ class Distance:
         self.distance = round(self.distance, 3)
         # Update the unit
         self.unit = b
+    
     def print(self):
 
         if self.distance == np.NAN:
             return np.NAN
         else:
             return f"{self.distance} {self.unit}"
+        
+    def print_distance(self):
+        if self.distance == np.NaN:
+            return np.NaN
+        else:
+            return self.distance
 
         
         

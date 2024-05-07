@@ -1,8 +1,15 @@
 import tkinter as tk
-import workout
 import numpy as np
+import workout
 import tkcalendar
 import datetime
+from calories import Calories
+from date import Date
+from distance import Distance
+from duration import Duration
+from date import Date
+from rating import Rating
+from workout_dataframe import Workout_dataframe
 
 # Color palette for the GymGenie GUI.
 black = "BLACK"
@@ -297,6 +304,24 @@ def select_date(date, calendar, date_window):
     date.set(selected_date)
     date_window.destroy()
 
+def save_data(frame, workout_type):
+    """
+    Saves the logged workout data on the log workout-page.
+    """
+    calories = Calories(calories=calories_entry, unit=selected_unit_calories)
+    rating = Rating(rating=rating_slider)
+    duration = Duration(hours=hours_entry, minutes=minutes_entry)
+    date = selected_date
+    if distance_entry in globals():
+        distance = Distance(distance=distance_entry, unit=selected_unit_distance)
+    else:
+        distance = np.nan
+
+    my_workout = workout.workout_type(calories=calories, )
+
+
+
+
 def display_start_page():
     """
     Displays the startpage of the workout-application where the user can choose to log a workout,
@@ -407,7 +432,7 @@ def log_workout(root, workout_type):
     workout_datatypes_dict = {key: value for key, value in workout_datatypes_dict.items() if not np.isnan(value)}
     workout_datatypes = workout_datatypes_dict.keys()
     number_of_datatypes = len(workout_datatypes_dict.values())
-    for i in range(number_of_datatypes+1): # include all datatypes and one label for the number of rows.
+    for i in range(number_of_datatypes+2): # include all datatypes + title and save-button
         log_workout_frame.rowconfigure(i, weight=1)
 
     # Add top-label for the log workout-page
@@ -425,20 +450,25 @@ def log_workout(root, workout_type):
 
         # Calories: insert an entry and a dropdown menu with options for the unit.
         if workout_datatype == "Calories":
+            global calories_entry
             calories_entry = create_entry(frame=log_workout_frame)
             calories_entry.grid(column=1, row=i+1)
             calories_units = ["kcal", "kJ"]
+
+            global selected_unit_calories 
             selected_unit_calories = tk.StringVar(root)
             selected_unit_calories.set(calories_units[0])
             calories_units_options = create_option_menu(frame=log_workout_frame, options=calories_units,
                                                        selected_option=selected_unit_calories) 
-            calories_units_options.grid(column=2, row=i+1)
-            
+            calories_units_options.grid(column=2, row=i+1)       
 
         # Distance: insert an entry and a dropdown menu with options for the unit.
         if workout_datatype == "Distance":
+            global distance_entry
             distance_entry = create_entry(log_workout_frame)
             distance_entry.grid(column=1, row=i+1)
+
+            global selected_unit_distance
             distance_units = ["km", "m", "miles"]
             selected_unit_distance = tk.StringVar(root)
             selected_unit_distance.set(distance_units[0])
@@ -448,6 +478,7 @@ def log_workout(root, workout_type):
 
         # Rating: insert slider and label describing the scale
         if workout_datatype == "Rating":
+            global rating_slider
             rating_slider = create_scale(frame=log_workout_frame)
             rating_slider.grid(column=1, row=i+1)
             rating_label = create_label(frame=log_workout_frame, text="Rate workout: 1=Easy, 10=Hard")
@@ -456,10 +487,13 @@ def log_workout(root, workout_type):
 
         # Duration: insert an entry and a label specifying the unit (min)
         if workout_datatype == "Duration":
+            global hours_entry
             hours_entry = create_entry(log_workout_frame)
             hours_entry.grid(column=1, row=i+1)
             hours_label = create_label(frame=log_workout_frame, text="hours")
             hours_label.grid(column=2, row=i+1, sticky="w")
+
+            global minutes_entry
             minutes_entry = create_entry(log_workout_frame)
             minutes_entry.grid(column=3, row=i+1)
             minutes_label = create_label(frame=log_workout_frame, text="minutes")
@@ -468,14 +502,23 @@ def log_workout(root, workout_type):
 
         # Date: insert a label with the date and a button that allows user to choose the date.
         if workout_datatype == "Date":
-            date = tk.StringVar()
-            date.set(datetime.date.today()) # Set the date initial date to todays date.
-            date_label = create_label(frame=log_workout_frame, textvariable=date)
+            global selected_date
+            selected_date = tk.StringVar()
+            selected_date.set(datetime.date.today()) # Set the date initial date to todays date.
+            date_label = create_label(frame=log_workout_frame, textvariable=selected_date)
             date_label.grid(column=1, row=i+1)
             calendar_button = create_button(frame=log_workout_frame, 
-                                            command= lambda: open_calendar(root, date),
+                                            command= lambda: open_calendar(root, selected_date),
                                             text="Select a date", font=("Arial", 10, "bold"), width=12)
             calendar_button.grid(column=2, row=i+1)
+    
+    # Add save-button(save all the logged data put in by the user) at the bottom of the page.
+    save_button = create_button(frame=log_workout_frame, text="Save", width=15,
+                                command=lambda: save_data(frame=log_workout_frame, 
+                                                          workout_type=workout_type))
+    save_button.grid(columns=5, row=number_of_datatypes+1)
+
+        
 
          
 
