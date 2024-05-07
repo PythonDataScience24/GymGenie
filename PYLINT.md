@@ -143,25 +143,25 @@ class Other(Workout):
 # Running pylint on the file src/workout.py
 
 ************* Module dataframe
-dataframe.py:14:0: C0303: Trailing whitespace (trailing-whitespace)
-dataframe.py:26:0: C0303: Trailing whitespace (trailing-whitespace)
-dataframe.py:37:0: C0303: Trailing whitespace (trailing-whitespace)
-dataframe.py:52:0: C0301: Line too long (107/100) (line-too-long)
-dataframe.py:53:0: C0303: Trailing whitespace (trailing-whitespace)
-dataframe.py:58:0: C0301: Line too long (239/100) (line-too-long)
-dataframe.py:69:0: C0301: Line too long (110/100) (line-too-long)
-dataframe.py:75:0: C0301: Line too long (220/100) (line-too-long)
-dataframe.py:91:0: C0301: Line too long (145/100) (line-too-long)
-dataframe.py:95:0: C0301: Line too long (129/100) (line-too-long)
-dataframe.py:102:0: C0303: Trailing whitespace (trailing-whitespace)
-dataframe.py:106:0: C0304: Final newline missing (missing-final-newline)
-dataframe.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-dataframe.py:3:0: C0410: Multiple imports on one line (goal, date, duration, workout, calories) (multiple-imports)
-dataframe.py:54:26: W0621: Redefining name 'workout' from outer scope (line 3) (redefined-outer-name)
-dataframe.py:71:23: W0621: Redefining name 'goal' from outer scope (line 3) (redefined-outer-name)
+***dataframe.py:14:0: C0303: Trailing whitespace (trailing-whitespace)***
+***dataframe.py:26:0: C0303: Trailing whitespace (trailing-whitespace)***
+***dataframe.py:37:0: C0303: Trailing whitespace (trailing-whitespace)***
+***dataframe.py:52:0: C0301: Line too long (107/100) (line-too-long)***
+***dataframe.py:53:0: C0303: Trailing whitespace (trailing-whitespace)***
+***dataframe.py:58:0: C0301: Line too long (239/100) (line-too-long)***
+***dataframe.py:69:0: C0301: Line too long (110/100) (line-too-long)***
+***dataframe.py:75:0: C0301: Line too long (220/100) (line-too-long)***
+***dataframe.py:91:0: C0301: Line too long (145/100) (line-too-long)***
+***dataframe.py:95:0: C0301: Line too long (129/100) (line-too-long)***
+***dataframe.py:102:0: C0303: Trailing whitespace (trailing-whitespace)***
+***dataframe.py:106:0: C0304: Final newline missing (missing-final-newline)***
+***dataframe.py:1:0: C0114: Missing module docstring (missing-module-docstring)***
+***dataframe.py:3:0: C0410: Multiple imports on one line (goal, date, duration, workout, calories) (multiple-imports)***
+***dataframe.py:54:26: W0621: Redefining name 'workout' from outer scope (line 3) (redefined-outer-name)***
+***dataframe.py:71:23: W0621: Redefining name 'goal' from outer scope (line 3) (redefined-outer-name)***
 dataframe.py:88:20: E1121: Too many positional arguments for constructor call (too-many-function-args)
 dataframe.py:89:18: E1121: Too many positional arguments for constructor call (too-many-function-args)
-dataframe.py:2:0: C0411: standard import "from abc import ABC" should be placed before "import pandas as pd" (wrong-import-order)
+***dataframe.py:2:0: C0411: standard import "from abc import ABC" should be placed before "import pandas as pd" (wrong-import-order)***
 
 -----------------------------------
 Your code has been rated at 4.60/10

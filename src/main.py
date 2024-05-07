@@ -2,6 +2,11 @@ import pandas as pd
 import sys
 import workoutlog, goal_summary, date
 import os
+import dataframe
+import goal
+import duration
+import distance
+import calories
 
 def main():
     #define list of possible workouts
@@ -18,27 +23,36 @@ def main():
         current_directory = os.getcwd().replace(os.sep,'/')
         workout_file = current_directory + "/logWorkouts.csv"
         try:
-            workouts_df = pd.read_csv(workout_file)
+            workouts_df_data = pd.read_csv(workout_file)
+            #make it a WorkoutDataframe object
+            workouts_df = dataframe.WorkoutDataframe()
+            workouts_df.data = workouts_df_data
         except FileNotFoundError:
-            workouts_df = pd.DataFrame(columns=['activity', 'date', 'duration','distance (km)' , 'calories (kcal)', 'rating'])
+            workouts_df = dataframe.WorkoutDataframe()
         # start a dataframe to store the goals
         goal_file = current_directory + "/GoalData.csv"
         try:
-            goals_df = pd.read_csv(goal_file)
+            goals_df_data = pd.read_csv(goal_file)
+            #make it a GoalDataframe object
+            goals_df = dataframe.GoalDataframeDataframe()
+            goals_df.data = goals_df_data
         except FileNotFoundError:
-            goals_df = pd.DataFrame(columns=["value", "unit", "time_scale", "start_date", "end_date", "exercise"])
-        #print(workouts_df)
+            goals_df = dataframe.GoalDataframe()
+        
         match choice.lower().strip():
             case "w":
                 logWorkout(workouts_df, exercise_types, distance_exercises)
             case "g":
-                setGoal()
+                setGoal(goals_df, exercise_types)
             case "o":
                 seeGoals(workouts_df,goals_df,exercise_types)
             case "s":
                 summaryVisualisations()
             case "q":
                 sys.exit("GymGenie has been terminated.")
+                #save the workouts and goal dataframe when quitting
+                workout_df.save_dataframe(path = workout_file)
+                goals_df.save_dataframe(path = goal_file)
             case _:
                 print("Please type a valid option (w,g,o,s,q).")
 
@@ -74,14 +88,43 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
             # save dataframe in a file csv
             workouts_df.to_csv("logWorkouts.csv", encoding='utf-8', index=False)
 
+def setGoal(goal_df, exercise_types):
+    """
+    Allows the user to enter a workout and add it to the dataframe of workouts.
+
+    Parameters
+    ----------
+    goal_df : pandas.DataFrame
+        Dataframe containing entries of previously set goals.
+    exercise_types : list
+        List of possible types of exercises to choose for a workout.
+    """
     
-   
+    #ask for all the relevant user input
+    goal_type = input("Do you want to set a goal for duration (a), distance (b) or calories (c)?\n").strip().lower()
+    value = float(input("Which value do you want to reach with your goal? Please enter it in km, min or kcal.\n"))
+    time_scale = int(input("Per which timescale do you want to set your goal? Please enter the days.\n"))
+    start_date = input("At what date do you start working on that goal? (dd/mm/yyyy)\n").split("/")
+    end_date = input("Until which date do you want to reach the goal? (dd/mm/yyyy)\n").split("/")
+    print(exercise_types)
+    exercise_type = input("In which exercise do you want to achieve the goal? Choose from the list above or type 'all' to include all types of exercises.\n")
+        
+    #create a Goal object from the input
+    if goal_type == "a":
+        new_goal = goal.DurationGoal(value = duration.Duration(minutes = value), time_scale = time_scale, start_date = date.Date(year = int(start_date[2]), month = int(start_date[1]), day = int(start_date[0])), end_date = date.Date(year = int(end_date[2]), month = int(end_date[1]), day = int(end_date[0])), exercise = exercise_type)
+    
+    elif goal_type == "b":
+        new_goal = goal.DistanceGoal(value = distance.Distance(distance = value, unit = "km"), time_scale = time_scale, start_date = date.Date(year = int(start_date[2]), month = int(start_date[1]), day = int(start_date[0])), end_date = date.Date(year = int(end_date[2]), month = int(end_date[1]), day = int(end_date[0])), exercise = exercise_type)
+    
+    elif goal_type == "c":
+        new_goal = goal.CalorieGoal(value = calories.Calories(calories = value, unit = "kcal"), time_scale = time_scale, start_date = date.Date(year = int(start_date[2]), month = int(start_date[1]), day = int(start_date[0])), end_date = date.Date(year = int(end_date[2]), month = int(end_date[1]), day = int(end_date[0])), exercise = exercise_type)
 
+    print(new_goal)
+    confirm = input("This is your entry, do you want to save it? [y/n]\n").strip().lower()
 
+    if confirm == "y":
+        goal_df.add_goal(new_goal)
 
-
-def setGoal():
-    pass
 
 def seeGoals(workout_df,goals_df, exercise_types):
 

@@ -8,6 +8,7 @@ class Goal:
 
     Attributes:
         value: actual value that should be reached with this goal
+        unit: unit of the value the goal is set for
         time_scale: number of days over which you want to achieve your goal (e.g. 7 to set a goal of )
         start_date (Date): date at which the goal was set
         end_date (Date): date by which the goal should be reached
