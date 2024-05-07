@@ -1,5 +1,7 @@
 import tkinter as tk
 import numpy as np
+import os
+import pandas as pd
 import workout
 import tkcalendar
 import datetime
@@ -9,7 +11,7 @@ from distance import Distance
 from duration import Duration
 from date import Date
 from rating import Rating
-from workout_dataframe import Workout_dataframe
+from dataframe import WorkoutDataframe
 
 # Color palette for the GymGenie GUI.
 black = "BLACK"
@@ -307,20 +309,46 @@ def select_date(date, calendar, date_window):
 def save_data(frame, workout_type):
     """
     Saves the logged workout data on the log workout-page.
+
+    Parameters
+    ----------
+    frame : tkinter.Frame
+        The frame containing the logged workout data.
+
+    workout_type : workout.Workout
+        The type of workout being logged as a workout.Workout subclass.
     """
-    calories = Calories(calories=calories_entry, unit=selected_unit_calories)
-    rating = Rating(rating=rating_slider)
-    duration = Duration(hours=hours_entry, minutes=minutes_entry)
+
+    # Create objects for each datatype the user has entered.
+    calories = Calories(calories=calories_entry.get(), unit=selected_unit_calories.get())
+    rating = Rating(rating=rating_slider.get())
+    duration = Duration(hours=hours_entry.get(), minutes=minutes_entry.get())
     date = selected_date
     if distance_entry in globals():
-        distance = Distance(distance=distance_entry, unit=selected_unit_distance)
+        distance = Distance(distance=distance_entry.get(), unit=selected_unit_distance.get())
     else:
         distance = np.nan
 
-    my_workout = workout.workout_type(calories=calories, )
+    # Create a workout object and store it in a dataframe format.
+    workout_type = getattr(workout, workout_type)
+    my_workout = workout.workout_type(calories=calories, rating=rating, duration=duration, date=date, distance=distance)
+    my_workout_dataframe = WorkoutDataframe().add_workout(workout=my_workout)
 
+    # Check if a workout dataframe already exists. If not, create one.
+    current_directory = os.getcwd().replace(os.sep,'/')
+    workout_file = current_directory + "/logWorkouts.csv"
+    try:
+        workouts_df = pd.read_csv(workout_file)
+    except FileNotFoundError:
+        workouts_df = pd.DataFrame(columns=['activity', 'date', 'duration','distance (km)' , 'calories (kcal)', 'rating'])
 
+    # Add the workout object to the dataframe and save as csv file
+    workouts_df = pd.concat([workouts_df, my_workout_dataframe], ignore_index=True)
+    workouts_df.to_csv("logWorkouts.csv", encoding='utf-8', index=False)
 
+    root.destroy()
+
+    display_start_page()
 
 def display_start_page():
     """
@@ -329,6 +357,7 @@ def display_start_page():
     """
 
     # Create root window
+    global root
     root = tk.Tk()
     root.geometry("500x400")
     #root.resizeable(width=False, height=False) # in case we want to keep a constant size of the window
@@ -394,11 +423,11 @@ def choose_workout(root):
     # Create a button for each workout type with a command that let's the user log the workout.
     for i, workout_type in enumerate(workout_types):
         choose_workout_button = create_button(frame=choose_workout_frame, 
-                                              command=lambda subclass=workout_type: log_workout(root, subclass),
+                                              command=lambda: log_workout(workout_type),
                                               text=workout_type)
         choose_workout_button.grid(column=0, row=i+1)
 
-def log_workout(root, workout_type):
+def log_workout(workout_type):
     """
     Diplays the page where you can log workput data for a specific type of workput.
 
@@ -427,12 +456,11 @@ def log_workout(root, workout_type):
     log_workout_frame.columnconfigure(4, weight=1)
 
     # Configure rows according to the number of datatypes that should be logged for the specific workout type
-    workout_type = getattr(workout, workout_type)
-    workout_datatypes_dict = vars(workout_type()) # create dictionary of the attributes and their default values of a subclass of Workout
-    workout_datatypes_dict = {key: value for key, value in workout_datatypes_dict.items() if not np.isnan(value)}
-    workout_datatypes = workout_datatypes_dict.keys()
-    number_of_datatypes = len(workout_datatypes_dict.values())
-    for i in range(number_of_datatypes+2): # include all datatypes + title and save-button
+    if workout_type == "Climbing" or workout_type == "Strength":
+        workout_datatypes = ["Calories", "Date ", "Duration", "Rating"]
+    else:
+        workout_datatypes = ["Calories", "Date", "Distance", "Duration", "Rating"]
+    for i in range(len(workout_datatypes)+2): # include all datatypes + title and save-button
         log_workout_frame.rowconfigure(i, weight=1)
 
     # Add top-label for the log workout-page
@@ -442,8 +470,6 @@ def log_workout(root, workout_type):
 
     # Create widgets for entering the workout data.
     for i, workout_datatype in enumerate(workout_datatypes):
-        workout_datatype = workout_datatype.capitalize()
-
         # Create labels for each datatype that should be inputed and place them in the first column.
         datatype_label = create_label(frame=log_workout_frame, text = f"{workout_datatype}:")
         datatype_label.grid(column=0, row=i+1, sticky="e")
@@ -516,10 +542,7 @@ def log_workout(root, workout_type):
     save_button = create_button(frame=log_workout_frame, text="Save", width=15,
                                 command=lambda: save_data(frame=log_workout_frame, 
                                                           workout_type=workout_type))
-    save_button.grid(columns=5, row=number_of_datatypes+1)
-
-        
-
+    save_button.grid(columns=5, row=len(workout_datatypes)+1)
          
 
 def set_goal(root):
