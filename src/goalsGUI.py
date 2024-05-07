@@ -1,4 +1,7 @@
 import tkinter as tk
+from PIL import ImageTk, Image #You need to install Pillow
+import tkcalendar #Installing is needed
+import datetime
 
 #color palette
 black = "BLACK"
@@ -16,6 +19,54 @@ light_blue = "#5d99a9"
 root = tk.Tk()
 root.geometry("500x400")
 
+
+#####
+#Other functions (need to be on top)
+def select_date(date, calendar, date_window):
+    """
+    Updates the provided Tkinter variable with the selected date from a calendar widget.
+
+    Parameters
+    ----------
+    date : tkinter.StringVar
+        The Tkinter variable to be updated with the selected date.
+
+    calendar : tkcalendar.Calendar
+        The calendar widget used for selecting the date.
+
+    date_window : tkinter.Toplevel
+        The window containing the calendar widget.
+    """
+    selected_date = calendar.selection_get()
+    date.set(selected_date)
+    date_window.destroy()
+
+def open_calendar(root, date):
+    """
+    Opens a new window where you can choose a date and updates the provided date variable with the 
+    chosen date.
+
+    Parameters
+    ----------
+    root : tkinter.Tk or tkinter.Toplevel
+        The root or top-level window where the calendar window will be opened.
+
+    date : tkinter.StringVar
+        A tkinter StringVar variable that stores the selected date.
+    """
+
+
+    date_window = tk.Toplevel(root)
+    date_window.title("Pick a Date")
+
+    calendar = tkcalendar.Calendar(date_window)
+    calendar.pack(padx=10, pady=10)
+
+    confirm_button = tk.Button(date_window, text="Confirm", command=lambda: select_date(date, calendar, date_window))
+    confirm_button.pack(pady=10)
+
+
+
 def display_set_goal():
     """
     Displays the start page of setting the goal. 
@@ -23,6 +74,7 @@ def display_set_goal():
         Distance
         Duration
         Calories burned
+    After clicking each button a new page is displayed.
     
     """
     #Create the main frame
@@ -65,7 +117,6 @@ def display_set_goal():
             borderwidth=1, #Add border width
             relief="solid") #Add relief style 
 
-        
         btn.grid(column=0, row=1+i) 
 
 
@@ -86,6 +137,9 @@ def display_duration():
     main_frame.columnconfigure(0, weight=1)
     main_frame.columnconfigure(1, weight=1)
     main_frame.columnconfigure(2, weight=1)
+    main_frame.columnconfigure(3, weight=1)
+    main_frame.columnconfigure(4, weight=1)
+    main_frame.columnconfigure(5, weight=1)
     main_frame.rowconfigure(0, weight=1)
     main_frame.rowconfigure(1, weight=1)
     main_frame.rowconfigure(2, weight=1)
@@ -109,6 +163,8 @@ def display_duration():
     e_hours.grid(column=1, row=0)
     e_min.grid(column=2, row=0)
 
+    display_timeframe(main_frame , col = 0 , row = 1 )
+
 
 def display_distance():
     # Remove all widgets from the root window
@@ -124,6 +180,8 @@ def display_distance():
     main_frame.columnconfigure(1, weight=1)
     main_frame.columnconfigure(2, weight=1)
     main_frame.columnconfigure(3, weight=1)
+    main_frame.columnconfigure(4, weight=1)
+    main_frame.columnconfigure(5, weight=1)
     main_frame.rowconfigure(0, weight=1)
     main_frame.rowconfigure(1, weight=1)
     main_frame.rowconfigure(2, weight=1)
@@ -150,7 +208,7 @@ def display_distance():
     e_m.grid(column=2, row=0)
     e_miles.grid(column=3, row=0)
 
-
+    display_timeframe(main_frame , col = 0 , row = 1 )
 
 
 def display_calories():
@@ -167,6 +225,9 @@ def display_calories():
     main_frame.columnconfigure(0, weight=1)
     main_frame.columnconfigure(1, weight=1)
     main_frame.columnconfigure(2, weight=1)
+    main_frame.columnconfigure(3, weight=1)
+    main_frame.columnconfigure(4, weight=1)
+    main_frame.columnconfigure(5, weight=1)
     main_frame.rowconfigure(0, weight=1)
     main_frame.rowconfigure(1, weight=1)
     main_frame.rowconfigure(2, weight=1)
@@ -182,24 +243,105 @@ def display_calories():
             height = 1)
     calories_label.grid(column=0, row=0)
 
-    #create kcal and kJ entry
+    #create kcal and kJ entries
     e_kcal = tk.Entry(main_frame)
     e_kcal.insert(tk.END, "kcal")
     e_kJ = tk.Entry(main_frame)
     e_kJ.insert(tk.END, "kJ")
     e_kcal.grid(column=1, row=0)
     e_kJ.grid(column=2, row=0)
+    display_timeframe(main_frame , col = 0 , row = 1 )
+
+
+
+def display_timeframe(main_frame, col , row):
+    """
+    Displays the timeframe label and its entries to set the start and end to fix the goal dates.
+
+    Args:
+        main_frame : frame where to be displayed.
+        col (int) : column number of the grid of the actual frame.
+        row (int) : row number of the grid of the actual frame.
+    
+    """
+    #create timeframe, start and end label
+    timeframe_label = tk.Label(main_frame, text="Timeframe:",
+                        font =("Arial", 16, "bold"),
+            background=blue,
+            foreground=white,
+            width=20,
+            height = 1)
+    
+    start_button = tk.Button(main_frame, text="Start date",
+                    font =("Arial", 12, "bold"),
+                    background=blue,
+                    foreground=black,
+                    width=20,
+                    height = 1,
+                    command=lambda: open_calendar(root, start_date))
+    
+    end_button = tk.Button(main_frame, text="End date",
+                font =("Arial", 12, "bold"),
+                background=blue,
+                foreground=black,
+                width=20,
+                height = 1,
+                command=lambda: open_calendar(root, end_date))
+
+    #Create start date 
+    start_date = tk.StringVar()
+    start_date.set(datetime.date.today()) # Set the date initial date to todays date.
+    start_date_label = tk.Label(main_frame,
+                font =("Arial", 12, "bold"),
+                background=blue,
+                foreground=white,
+                width=20,
+                height = 1, 
+                textvariable=start_date)
+    
+    #Create end date 
+    end_date = tk.StringVar()
+    end_date.set(datetime.date.today()) # Set the date initial date to todays date.
+    end_date_label = tk.Label(main_frame,
+                font =("Arial", 12, "bold"),
+                background=blue,
+                foreground=white,
+                width=20,
+                height = 1, 
+                textvariable=end_date)
+    
+    #Configure columns and rows and display widgets
+    timeframe_label.grid(column=col, row=row)
+    start_button.grid(column=col+1, row=row)
+    start_date_label.grid(column=col+2, row=row)
+    end_button.grid(column=col+3, row=row)
+    end_date_label.grid(column=col+4, row=row)
 
 
 
 
 
 
-
-
-
-
-
+#run it
 display_set_goal()
-#display_duration()
+
+# Create and display exit button
+button_quit = tk.Button(root, text = "Exit", command=root.quit)
+button_quit.pack()
 root.mainloop()
+
+
+#Add timeframe
+
+#Add smart tips
+
+#Add picture
+
+
+
+
+# my_img = ImageTk.PhotoImage(Image.open(""))
+# my_img.pack()
+
+
+
