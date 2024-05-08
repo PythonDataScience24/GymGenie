@@ -323,7 +323,7 @@ def save_data(frame, workout_type):
     calories = Calories(calories=calories_entry.get(), unit=selected_unit_calories.get())
     rating = Rating(rating=rating_slider.get())
     duration = Duration(hours=hours_entry.get(), minutes=minutes_entry.get())
-    date = selected_date
+    date = selected_date.get()
     if distance_entry in globals():
         distance = Distance(distance=distance_entry.get(), unit=selected_unit_distance.get())
     else:
@@ -331,7 +331,7 @@ def save_data(frame, workout_type):
 
     # Create a workout object and store it in a dataframe format.
     workout_type = getattr(workout, workout_type)
-    my_workout = workout.workout_type(calories=calories, rating=rating, duration=duration, date=date, distance=distance)
+    my_workout = workout_type(calories=calories, rating=rating, duration=duration, date=date, distance=distance)
     my_workout_dataframe = WorkoutDataframe().add_workout(workout=my_workout)
 
     # Check if a workout dataframe already exists. If not, create one.
