@@ -67,11 +67,13 @@ class Running(Workout):
     """
     A running workout. See Workout for attributes.
     """
+    pass
 
 class Cycling(Workout):
     """
     A cycling workout. See Workout for attributes.
     """
+    pass
 
 class Strength(Workout):
     """
@@ -85,17 +87,18 @@ class Swimming(Workout):
     """
     A swimming workout. See Workout for attributes.
     """
+    pass
 
 class Skiing(Workout):
     """
     A skiing workout. See Workout for attributes.
     """
-
+    pass
 class Walking(Workout):
     """
     A walking workout. See Workout for attributes.
     """
-
+    pass
 class Climbing(Workout):
     """
     A climbing workout. See Workout for attributes.
@@ -109,3 +112,4 @@ class Other(Workout):
     A workout that is not running, cycling, strenght, swimming, skiing, walking or climbing. 
     See Workout for attributes.
     """
+    pass

@@ -1,7 +1,5 @@
-import pandas as pd
 import numpy as np
-import sys
-import calories, date, distance, duration, rating, workout_dataframe, workout
+import calories, date, distance, duration, rating, dataframe, workout
 
 class Workoutlog:
 
@@ -15,19 +13,11 @@ class Workoutlog:
         NUMBER = "Please enter a number."
         #enter the date of the workout, make it NA if the input was invalid (maybe better do some way of asking again?)
         try:
-            exercise_date_list = input("Enter the date you did this workout [dd/mm/yyyy/h/min]: ").split("/")
-            
-            if len(exercise_date_list) == 3:
-                exercise_date = date.Date(year = int(exercise_date_list[2]), month = int(exercise_date_list[1]), day = int(exercise_date_list[0]), h=0, min=0)
-            elif len(exercise_date_list) == 4:
-                exercise_date = date.Date(year = int(exercise_date_list[2]), month = int(exercise_date_list[1]), day = int(exercise_date_list[0]), h=int(exercise_date_list[3]), min=0)
-            elif len(exercise_date_list) == 5:
-                exercise_date = date.Date(year = int(exercise_date_list[2]), month = int(exercise_date_list[1]), day = int(exercise_date_list[0]), h=int(exercise_date_list[3]), min=int(exercise_date_list[4]))
-            elif len(exercise_date_list) < 3:
-                exercise_date = date.Date(1,1,1,0,0)
+            exercise_date_list = input("Enter the date you did this workout [dd/mm/yyyy]: ").split("/")
+            exercise_date = date.Date(year = int(exercise_date_list[2]), month = int(exercise_date_list[1]), day = int(exercise_date_list[0]))
         except ValueError:
-            print("Please enter your date in the format dd/mm/yyyy/h/min.")
-            exercise_date = date.Date(1,1,1,0,0)
+            print("Please enter your date in the format dd/mm/yyyy.")
+            exercise_date = date.Date(1,1,1)
 
         #choose the exercise type
         print(self.exercise_types)
@@ -65,7 +55,7 @@ class Workoutlog:
             impression = rating.Rating(int(input("How did your workout feel on a scale from 1 to 10 (1=easy, 10=super hard).\n")))
         except ValueError:
             print("Rating should be bewtween 1 and 10.")
-            impression = rating.Rating(np.NaN)
+            impression = rating.Rating(1)
         
 
         #create a dataframe of these entries, then add them to the workouts dataframe (no idea if that is a good way to do it memory/computation wise?)
@@ -90,8 +80,9 @@ class Workoutlog:
                 exercise_name = workout.Other(calories_used.print(), exercise_date.print(),distance_value.print(),exercise_duration.__str__(),impression.print())
 
 
-        new_workout = workout_dataframe.Workout_dataframe(exercise=exercise_name,date=exercise_name.get_date(), duration=exercise_name.get_duration(), distance=exercise_name.get_distance(),calories=exercise_name.get_calories(),rating=exercise_name.get_rating())
-        print(new_workout.read_dataframe())
+        new_workout = dataframe.WorkoutDataframe()
+        new_workout.add_workout(exercise_name)
+        print(new_workout.print_dataframe())
         confirm = input("This is your entry, do you want to save it [y/n]? ").lower().strip()
 
-        return confirm, new_workout
+        return confirm, exercise_name

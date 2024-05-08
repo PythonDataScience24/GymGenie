@@ -49,10 +49,11 @@ def main():
             case "s":
                 summaryVisualisations()
             case "q":
-                sys.exit("GymGenie has been terminated.")
                 #save the workouts and goal dataframe when quitting
-                workout_df.save_dataframe(path = workout_file)
+                workouts_df.save_dataframe(path = workout_file)
                 goals_df.save_dataframe(path = goal_file)
+                # exit the program
+                sys.exit("GymGenie has been terminated.")
             case _:
                 print("Please type a valid option (w,g,o,s,q).")
 
@@ -77,16 +78,11 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
 
         if workout_respond == "y":
             confirm = "y"
-            workouts_df = pd.concat([workouts_df, new_workout.create_dataframe()], ignore_index=True)
-            print(workouts_df)
-
-            #make sure duplicate entries are not possible
-            if sum(workouts_df.duplicated()) > 0:
-                print("This workout is already present in the table, the second entry will be dropped.")
-                workouts_df.drop_duplicates(inplace = True)
+            workouts_df.add_workout(new_workout)
+            print(workouts_df.print_dataframe())
 
             # save dataframe in a file csv
-            workouts_df.to_csv("logWorkouts.csv", encoding='utf-8', index=False)
+            workouts_df.save_dataframe("logWorkouts.csv")
 
 def setGoal(goal_df, exercise_types):
     """

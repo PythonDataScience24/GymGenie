@@ -23,7 +23,7 @@ class Dataframe(ABC):
         """
         Save the dataframe to a specified path.
         """
-        self.data.to_csv(path)
+        self.data.to_csv(path,encoding='utf-8', index=False)
 
     def print_dataframe(self):
         """

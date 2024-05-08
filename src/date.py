@@ -15,7 +15,7 @@ class Date:
     
 #    def print(self):
 #        return f'{self.date} - {self.time}'
-    def get_date(self):
+    def print(self):
         return self.date_time
 
 
