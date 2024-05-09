@@ -5,3 +5,11 @@ We applied the prinicple of abstraction in our code when creating the class Data
 # Change 2: Decomposition of the main program
 
 We used some decomposition on a coarse level when designing the main program. The components are all the main functionalities our program should have, like logging a new workout, setting a goal or showing the progress, and each of them was put into their own function. The functions are wrapped together in the main program to create the full logic for the user experience.
+
+# Change 3: Plot Goal and Progress
+
+In task 2, we needed to produce some plot about the goal and the workouts. For each type of plot we did a different function because they are all indipendent from each other and in this way we kept clean the structure of our code.
+
+# Change 4: GUI
+
+In parallel we implemented a GUI. The user will be able to choose if they wants to interact with the terminal or with the GUI made with Tkinter. Each window and functionality needed a function to be implemented, using all the object created in the last task.
