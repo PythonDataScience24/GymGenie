@@ -3,6 +3,7 @@ import numpy as np
 import distance,date,duration
 import matplotlib.pyplot as plt
 import seaborn as sns
+from datetime import date as _date
 import dataframe
 
 class GoalSummary:
@@ -39,21 +40,21 @@ class GoalSummary:
             return None
 
     # plot goal using barplot
-    def plot_goal(self,time_frame:int, start_time:date.Date, end_time:date.Date,exercise:str,type:str):
+    def plot_goal(self, index_goal):
         """
         This function shows the plot of the progress through the goal
 
         """
+       
         # plot General goal for week/month/year
         # plot Specific Exercise for week/month/year
-        # retrieve the index goal
-        index_goal = self.find_goal(time_frame,start_time,end_time,exercise)
-        if index_goal == None:
-            return "Goal not found!"
-        print(index_goal)
+        
         # find the value of the goal
-        value_goal = self.goal_data_frame.iloc[[index_goal]]['value'].item()
-        unit_value = self.goal_data_frame.iloc[[index_goal]]['unit'].item()
+        value_goal = float(self.goal_data_frame.data.iloc[[index_goal]]['value'].item())
+        unit_value = self.goal_data_frame.data.iloc[[index_goal]]['unit'].item()
+        exercise = self.goal_data_frame.data.iloc[[index_goal]]['exercise'].item()
+        start_time = self.goal_data_frame.data.iloc[[index_goal]]['start_date'].item()
+        end_time = self.goal_data_frame.data.iloc[[index_goal]]['end_date'].item()
         print(value_goal)
         print(unit_value)
         # DO NOT DELETE YET
@@ -127,7 +128,7 @@ class GoalSummary:
                 unit = 'duration'
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
-        progression = dataframe.groupby('date')[unit].sum().reset_index()
+        progression = dataframe.data.groupby('date')[unit].sum().reset_index()
         print(progression)
         # create a new column called progress and use the function cumsum
         # that will do partial sum of the row before
@@ -137,7 +138,7 @@ class GoalSummary:
         # add the label of the partial sum on the top of the bar
         plt.bar_label(plt.bar(progression['date'], progression['progression'], color='red'),progression['progression'])
         # Adjust the ylim to have a 'space' after the goal line : Check that is valid for all the cases
-        plt.ylim(0,value_goal + 50)
+        plt.ylim(0, value_goal + 50)
         # Draw the horizontal line showing the goal
         plt.axhline(value_goal, linestyle='--', lw=1.2,color='black', label="Goal", zorder=-1.5)
         plt.ylabel(unit.capitalize(), fontsize=12)
@@ -161,7 +162,7 @@ class GoalSummary:
             case "min":
                 unit = 'duration'
         # group each day every sport
-        grouped_dataframe = dataframe.groupby(['activity', 'date']).sum().reset_index()
+        grouped_dataframe = dataframe.data.groupby(['activity', 'date']).sum().reset_index()
         # create a pivot table
         pivot_df = grouped_dataframe.pivot(index='date', columns='activity', values=unit)
         print(pivot_df)
@@ -199,7 +200,7 @@ class GoalSummary:
                 unit = 'duration'
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
-        progression = dataframe.groupby('date')[unit].sum().reset_index()
+        progression = dataframe.data.groupby('date')[unit].sum().reset_index()
         # plot using progress pie chart to shows what is left
         # find th total workout
         total_sum = progression[unit].sum()
@@ -231,7 +232,7 @@ class WorkoutSummary():
     """
 
     def __init__(self, workout_df: dataframe.WorkoutDataframe):
-        self.data = workout_df
+        self.data = workout_df.data
     
     def plot_summary(self, timescale: int, quantity: str):
         """
@@ -244,7 +245,7 @@ class WorkoutSummary():
 
         #first, define the cutoff date from which on you want to do the plot
         latest_date = self.data['date'].max()
-        cutoff_date = latest_date - pd.Timedelta(days = timescale)
+        cutoff_date = _date(latest_date) - pd.Timedelta(days = timescale)
 
         #select the relevant data from the total of logged workouts
         current_data = self.data.loc[self.data['date'] >= cutoff_date, ['date', quantity, 'activity']]
@@ -274,7 +275,7 @@ class WorkoutSummary():
 
         #first, define the cutoff date from which on you want to do the plot
         latest_date = self.data['date'].max()
-        cutoff_date = latest_date - pd.Timedelta(days = timescale)
+        cutoff_date = _date(latest_date) - pd.Timedelta(days = timescale)
 
         #select the relevant data from the total of logged workouts
         current_data = self.data.loc[self.data['date'] >= cutoff_date, ['date', 'activity', quantity]]
@@ -314,7 +315,7 @@ class WorkoutSummary():
         #select the relevant data, if a timescale argument is given
         if timescale is not None:
             latest_date = self.data['date'].max()
-            cutoff_date = latest_date - pd.Timedelta(days = timescale)
+            cutoff_date = _date(latest_date) - pd.Timedelta(days = timescale)
             current_data = self.data.loc[self.data['date'] >= cutoff_date, ['activity', 'rating']]
         else:
             current_data = self.data.loc[:, ['activity', 'rating']]
