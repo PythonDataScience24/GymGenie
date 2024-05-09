@@ -51,6 +51,13 @@ class Dataframe(ABC):
         """
         self.data.drop(row_idx)
 
+    def read_from_csv(self, path: str):
+        """
+        Read data from a csv file and store it as a dataframe in the data attribute.
+        """
+        input_data = pd.read_csv(path)
+        self.data = input_data
+
 class WorkoutDataframe(Dataframe):
     """
     Dataframe  that contains the information about the workouts the user entered.
@@ -89,8 +96,8 @@ class GoalDataframe(Dataframe):
         self.data = pd.concat([self.data, pd.DataFrame({"value":[new_entry.value],
                                                         "unit":[new_entry.unit],
                                                         "time_scale":[new_entry.time_scale],
-                                                        "start_date":[new_entry.start_date],
-                                                        "end_date":[new_entry.end_date], 
+                                                        "start_date":[new_entry.start_date.print()],
+                                                        "end_date":[new_entry.end_date.print()], 
                                                         "exercise":[new_entry.exercise]})])
         #make sure duplicated entries are not possible
         if sum(self.data.duplicated()) > 0:
