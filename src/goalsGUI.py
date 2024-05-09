@@ -1,7 +1,11 @@
 import tkinter as tk
 from PIL import ImageTk, Image #You need to install Pillow
 import tkcalendar #Installing is needed
+from tkinter import messagebox
 import datetime
+import workout
+import random
+
 
 #color palette
 black = "BLACK"
@@ -164,6 +168,8 @@ def display_duration():
     e_min.grid(column=2, row=0)
 
     display_timeframe(main_frame , col = 0 , row = 1 )
+    display_exercise_type(main_frame)
+    display_smarttips(main_frame)
 
 
 def display_distance():
@@ -209,6 +215,8 @@ def display_distance():
     e_miles.grid(column=3, row=0)
 
     display_timeframe(main_frame , col = 0 , row = 1 )
+    display_exercise_type(main_frame)
+    display_smarttips(main_frame)
 
 
 def display_calories():
@@ -250,7 +258,10 @@ def display_calories():
     e_kJ.insert(tk.END, "kJ")
     e_kcal.grid(column=1, row=0)
     e_kJ.grid(column=2, row=0)
+
     display_timeframe(main_frame , col = 0 , row = 1 )
+    display_exercise_type(main_frame)
+    display_smarttips(main_frame)
 
 
 
@@ -274,7 +285,7 @@ def display_timeframe(main_frame, col , row):
     
     start_button = tk.Button(main_frame, text="Start date",
                     font =("Arial", 12, "bold"),
-                    background=blue,
+                    background=white,
                     foreground=black,
                     width=20,
                     height = 1,
@@ -282,7 +293,7 @@ def display_timeframe(main_frame, col , row):
     
     end_button = tk.Button(main_frame, text="End date",
                 font =("Arial", 12, "bold"),
-                background=blue,
+                background=white,
                 foreground=black,
                 width=20,
                 height = 1,
@@ -317,8 +328,82 @@ def display_timeframe(main_frame, col , row):
     end_button.grid(column=col+3, row=row)
     end_date_label.grid(column=col+4, row=row)
 
+def display_exercise_type(main_frame):
+    #Create label
+    timeframe_label = tk.Label(main_frame, 
+                        text="Type of workout:",
+                        font =("Arial", 16, "bold"),
+                        background=blue,
+                        foreground=white,
+                        width=20,
+                        height = 1)
+    timeframe_label.grid(column=0 , row = 3)
+
+    # Create list containing the names of all the workout types of class Workout.
+    workout_types = [subclass.__name__ for subclass in workout.Workout.__subclasses__()]
+
+    # Variable to keep track of the option 
+    # selected in OptionMenu 
+    value_inside = tk.StringVar(main_frame) 
+
+    # Set the default value of the variable 
+    value_inside.set("Select") 
+
+    # Create the optionmenu widget and passing the workout_types and value_inside to it. 
+    question_menu = tk.OptionMenu(main_frame, value_inside, *workout_types, ) 
+    question_menu.grid(column = 1, row = 3) 
 
 
+
+#Maybe do a button and from button pop up a message?
+
+def display_smarttips(main_frame, col = 3, row = 3):
+    """
+    Displays the SMART tips button and the pop up message.
+
+    Args:
+        main_frame : frame where to be displayed.
+        col (int) : column number of the grid of the actual frame.
+        row (int) : row number of the grid of the actual frame.
+    
+    """
+    #Create button
+    tip_button = tk.Button(main_frame, text="SMART TIP", command=popup_smarttips,
+                           width= 15, height=10,
+                            activebackground=yellow, 
+                            activeforeground="white",
+                            anchor="center",
+                            bd=3,
+                            bg='turquoise1',
+                            cursor="hand2",
+                            disabledforeground=light_blue,
+                            fg="black",
+                            font=("Tahoma", 12, "bold"),
+                            highlightbackground="black",
+                            highlightcolor="green",
+                            highlightthickness=2,
+                            justify="center",
+                            overrelief="raised")
+    tip_button.grid(column=col, row=row)
+
+
+
+def popup_smarttips():
+    """
+    It creates a message box that contains a SMART tip randomly selected between a list of different statements.
+    
+    """
+    TIPS = ["S - Specific: What will you achieve? ",
+            "M - Measurable: What data will you use to decide whether you have met your goal?",
+            "A - Achievable: Do you have the right skills to achieve this?",
+            "A - Achievable: Are you sure you can do it?",
+            "A - Achievable: Don't set goals where achieving lies in someone else’s power, it should be entirely down to you.",
+            "R - Relevant: Does the goal align with those of your team or organization?",
+            "T - Time bound: What is the deadline for accomplishing the goal?What is the deadline for accomplishing the goal?"]
+    tk.messagebox.showinfo("BE SMART !", random.choice(TIPS))
+    
+    
+    
 
 
 
@@ -331,17 +416,19 @@ button_quit.pack()
 root.mainloop()
 
 
-#Add timeframe
 
-#Add smart tips
+
+
+
+#NOTES FOR ME
+#Fix entries in distance and calories, create button to select the unit
+#Exit button for all the pages
+
 
 #Add picture
 
 
-
+#In the second page, add options for the type of exercise.
 
 # my_img = ImageTk.PhotoImage(Image.open(""))
 # my_img.pack()
-
-
-
