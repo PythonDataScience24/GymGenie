@@ -5,6 +5,11 @@ from tkinter import messagebox
 import datetime
 import workout
 import random
+from calories import Calories
+from date import Date
+from distance import Distance
+from duration import Duration
+from date import Date
 
 
 #color palette
@@ -128,7 +133,10 @@ def display_set_goal():
 
 
 def display_duration():
+    """
+    Displays a new page with the parameters to set the duration goal.
 
+    """
     # Remove all widgets from the root window
     for widget in root.winfo_children():
         widget.destroy()
@@ -167,12 +175,23 @@ def display_duration():
     e_hours.grid(column=1, row=0)
     e_min.grid(column=2, row=0)
 
+    #Display other common parameters: timeframe, type of exercise and smart tips.
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
+    display_timescale(main_frame)
+
+    #Create objects for each datatype the user enters.
+
+
+
 
 
 def display_distance():
+    """
+    Displays a new page with the parameters to set the distance goal.
+    
+    """
     # Remove all widgets from the root window
     for widget in root.winfo_children():
         widget.destroy()
@@ -216,10 +235,14 @@ def display_distance():
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
+    display_timescale(main_frame)
 
 
 def display_calories():
-
+    """
+    Displays a new page with the parameters to set the calories goal.
+    
+    """
     # Remove all widgets from the root window
     for widget in root.winfo_children():
         widget.destroy()
@@ -263,12 +286,13 @@ def display_calories():
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
+    display_timescale(main_frame)
 
 
 
 def display_timeframe(main_frame, col , row):
     """
-    Displays the timeframe label and its entries to set the start and end to fix the goal dates.
+    Displays the timeframe label and its entries to set the start and end dates.
 
     Args:
         main_frame : frame where to be displayed.
@@ -331,14 +355,14 @@ def display_timeframe(main_frame, col , row):
 
 def display_exercise_type(main_frame):
     #Create label
-    timeframe_label = tk.Label(main_frame, 
+    exercise_label = tk.Label(main_frame, 
                         text="Type of workout:",
                         font =("Arial", 16, "bold"),
                         background=blue,
                         foreground=white,
                         width=20,
                         height = 1)
-    timeframe_label.grid(column=0 , row = 3)
+    exercise_label.grid(column=0 , row = 4)
 
     # Create list containing the names of all the workout types of class Workout.
     workout_types = [subclass.__name__ for subclass in workout.Workout.__subclasses__()]
@@ -352,7 +376,7 @@ def display_exercise_type(main_frame):
 
     # Create the optionmenu widget and passing the workout_types and value_inside to it. 
     question_menu = tk.OptionMenu(main_frame, value_inside, *workout_types, ) 
-    question_menu.grid(column = 1, row = 3) 
+    question_menu.grid(column = 1, row = 4) 
 
 
 def display_smarttips(main_frame, col = 3, row = 3):
@@ -399,8 +423,31 @@ def popup_smarttips():
             "R - Relevant: Does the goal align with those of your team or organization?",
             "T - Time bound: What is the deadline for accomplishing the goal?What is the deadline for accomplishing the goal?"]
     tk.messagebox.showinfo("BE SMART !", random.choice(TIPS))
+
+
+def display_timescale(main_frame):
+    """
+    Displays time-scale and option menu to set a goal as weekly, monthly or yearly.
     
-    
+    """
+
+
+    #create timescale label
+    timescale_label = tk.Label(main_frame, text="Time-scale:",
+                        font =("Arial", 16, "bold"),
+            background=blue,
+            foreground=white,
+            width=20,
+            height = 1)
+    timescale_label.grid(column=0, row=3)
+
+    #create option menu
+    options = ["weekly", "monthly","yearly"]
+    selected_option = tk.StringVar(main_frame)
+    #Set default variable
+    selected_option.set(options[0])
+    scale_options = tk.OptionMenu(main_frame, selected_option, *options) 
+    scale_options.grid(column=1, row=3)
     
 
 
@@ -408,7 +455,7 @@ def popup_smarttips():
 #run it
 display_set_goal()
 
-# Create and display exit button
+
 
 #FIX: Exit button for all the pages
 button_quit = tk.Button(root, text = "Exit", command=root.quit)
@@ -421,7 +468,17 @@ root.mainloop()
 
 
 #NOTES FOR ME
-#Fix entries in distance and calories, create button to select the unit
+# Create and display exit button
+
+
+
+
+# Add save-button(save all the logged data put in by the user) at the bottom of the page.
+# save_button = create_button(frame=log_workout_frame, text="Save", width=15,
+#                             command=lambda: save_data(frame=log_workout_frame, 
+#                                                         workout_type=workout_type))
+# save_button.grid(columns=5, row=len(workout_datatypes)+1)
+
 
 
 
