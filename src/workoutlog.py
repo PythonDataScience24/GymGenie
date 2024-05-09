@@ -2,7 +2,12 @@ import numpy as np
 import calories, date, distance, duration, rating, dataframe, workout
 
 class Workoutlog:
-
+    """
+    This class collect the information of a workout of a user and save it in a workout data object
+    Args:
+    exercise_types: list of different types of exercises
+    distance_exercises: list of exercises that requires a distance question
+    """
 
     def __init__(self,exercise_types:list, distance_exercises:list):
         self.exercise_types = exercise_types
@@ -10,6 +15,9 @@ class Workoutlog:
 
 
     def workout(self):
+        """
+        This function ask the users multiple question related to the different object present in a workout object.
+        """
         NUMBER = "Please enter a number."
         #enter the date of the workout, make it NA if the input was invalid (maybe better do some way of asking again?)
         try:
@@ -21,7 +29,7 @@ class Workoutlog:
 
         #choose the exercise type
         print(self.exercise_types)
-        exercise_type = input("Enter the type of exercise you did. Choose from the list above.\n").lower()#really not robust way to do the input, but easiest thing i came up with
+        exercise_type = input("Enter the type of exercise you did. Choose from the list above.\n").lower()
         while exercise_type not in self.exercise_types:
             exercise_type = input("Enter the type of exercise you did. Choose from the list above.\n").lower()
         
@@ -58,8 +66,8 @@ class Workoutlog:
             impression = rating.Rating(1)
         
 
-        #create a dataframe of these entries, then add them to the workouts dataframe (no idea if that is a good way to do it memory/computation wise?)
-        #putting the values in a list was necessary to make the pd.DataFrame function run without error
+        # refactor this part of the code in a better way
+        # TODO
         "running", "cycling", "strength", "swimming", "hiking/walking", "skiing", "others"
         match exercise_type:
             case "running":

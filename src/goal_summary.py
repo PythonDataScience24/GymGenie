@@ -10,8 +10,8 @@ class GoalSummary:
     This class retrives the goal for each esercise and plot the current situation, showing what is left
 
     Attributes:
-    TODO
-
+    log_workout_dataframe: The dataframe of the workouts of the user
+    goal_data_frame: The dataframe of the goals of the user
     """
 
     def __init__(self, log_workout_dataframe:pd.DataFrame, goal_data_frame:pd.DataFrame):
@@ -25,6 +25,11 @@ class GoalSummary:
     def find_goal(self, time_frame:int, start_time:date.Date, end_time:date.Date, exercise:str):
         """
         This function find the unique goal in the dataframe
+        Args:
+        time_frame: number of days over which you want to achieve your goal (e.g. 7 to set a goal of )
+        start_time (Date): date at which the goals was set
+        end_time (Date): date at which the goals should be reached
+        exercise: type of workout in which you want to achieve the goal. Default is None, to include all types of exercises
         """
         index_list = self.goal_data_frame.index[(self.goal_data_frame['time_scale'] == time_frame) & 
                                          (self.goal_data_frame['start_date'] == start_time) & 
@@ -42,7 +47,12 @@ class GoalSummary:
     def plot_goal(self,time_frame:int, start_time:date.Date, end_time:date.Date,exercise:str,type:str):
         """
         This function shows the plot of the progress through the goal
-
+        Args:
+        time_frame: number of days over which you want to achieve your goal (e.g. 7 to set a goal of )
+        start_time (Date): date at which the goals was set
+        end_time (Date): date at which the goals should be reached
+        exercise: type of workout in which you want to achieve the goal. Default is None, to include all types of exercises
+        type: used to differentiate between showing a spefic evercise (ie. Cycling,Running,ect) or the general workouts (np.NaN)
         """
         # plot General goal for week/month/year
         # plot Specific Exercise for week/month/year
@@ -82,8 +92,12 @@ class GoalSummary:
         """
         This function plot for every specific workout activity the progress
         made towards the specific goal
-        Attributes:
-        TODO
+        Args:
+        workout_datafram: dataframe of the workouts of the user
+        exercise:type of workout in which you want to achieve the goal. Default is None, to include all types of exercises
+        start_time (Date): date at which the goals was set
+        end_time (Date): date at which the goals should be reached
+        unit_value: specific properties that the user wants to see (kcal,km or min)
         """
         # filter the logWorkout dataframe, containing only all the activities with the same exercise
         # and according to the timeframe
@@ -114,8 +128,10 @@ class GoalSummary:
     def plot_progression(self, dataframe:pd.DataFrame, unit_value:str, value_goal:int):
         """
         This function shows the total progression made towards these goal
-        Attribute:
-        TODO
+        Args:
+        dataframe: the dataframe of the workouts of the user
+        unit_value: specific properties that the user wants to see (kcal,km or min)
+        value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
         match unit_value:
@@ -149,8 +165,9 @@ class GoalSummary:
     def plot_general_workout(self, dataframe:pd.DataFrame, unit_value:str):
         """
         This function shows the different types of exercise did every day with different color
-        Arguments
-        TODO
+        Args:
+        dataframe: the dataframe of the workouts of the user
+        unit_value: specific properties that the user wants to see (kcal,km or min)
         """
         # Depending on the unit choosen in the goal dataframe select different column
         match unit_value:
@@ -186,8 +203,10 @@ class GoalSummary:
         This function plot the a pie chart with the marked workout done towards the goal.
         If the goal has been reached, the pie chart will be color full otherwise only the part
         that has been completed with the percentage
-        Attribute
-        TODO
+        Args:
+        dataframe: the dataframe of the workouts of the user
+        unit_value: specific properties that the user wants to see (kcal,km or min)
+        value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
         match unit_value:

@@ -10,11 +10,10 @@ class Date:
         time (datetime.time) : the time when the exercise started.
 
     """
-    def __init__(self, year:int, month:int, day:int) :#h, min
+    def __init__(self, year:int, month:int, day:int) :
         self.date_time = date(year=year, month=month, day=day)
     
-#    def print(self):
-#        return f'{self.date} - {self.time}'
+
     def print(self):
         return self.date_time
 
