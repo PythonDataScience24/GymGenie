@@ -332,7 +332,9 @@ def save_data(frame, workout_type):
     # Create a workout object and store it in a dataframe format.
     workout_type = getattr(workout, workout_type)
     my_workout = workout_type(calories=calories, rating=rating, duration=duration, date=date, distance=distance)
-    my_workout_dataframe = WorkoutDataframe().add_workout(workout=my_workout)
+    my_workout_dataframe = WorkoutDataframe()
+    my_workout_dataframe.add_workout(workout=my_workout)
+    print(my_workout_dataframe)
 
     # Check if a workout dataframe already exists. If not, create one.
     current_directory = os.getcwd().replace(os.sep,'/')
