@@ -203,16 +203,15 @@ def display_distance():
             height = 1)
     distance_label.grid(column=0, row=0)
 
-    #create km, m, miles  entries
-    e_km = tk.Entry(main_frame)
-    e_km.insert(tk.END, "km")
-    e_m = tk.Entry(main_frame)
-    e_m.insert(tk.END, "m")
-    e_miles = tk.Entry(main_frame)
-    e_miles.insert(tk.END, "miles")
-    e_km.grid(column=1, row=0)
-    e_m.grid(column=2, row=0)
-    e_miles.grid(column=3, row=0)
+    #create entry
+    e_distance= tk.Entry(main_frame)
+    e_distance.grid(column=1, row=0)
+    #create option menu
+    distance_units = ["km", "m","miles"]
+    selected_unit_distance = tk.StringVar(main_frame)
+    selected_unit_distance.set(distance_units[0])
+    distance_units_options = tk.OptionMenu(main_frame, selected_unit_distance, *distance_units) 
+    distance_units_options.grid(column=2, row=0)
 
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
@@ -251,13 +250,15 @@ def display_calories():
             height = 1)
     calories_label.grid(column=0, row=0)
 
-    #create kcal and kJ entries
-    e_kcal = tk.Entry(main_frame)
-    e_kcal.insert(tk.END, "kcal")
-    e_kJ = tk.Entry(main_frame)
-    e_kJ.insert(tk.END, "kJ")
-    e_kcal.grid(column=1, row=0)
-    e_kJ.grid(column=2, row=0)
+    #create entry
+    e_calories = tk.Entry(main_frame)
+    e_calories.grid(column=1, row=0)
+    #create option menu
+    calories_units = ["kcal", "kJ"]
+    selected_unit_calories = tk.StringVar(main_frame)
+    selected_unit_calories.set(calories_units[0])
+    calories_units_options = tk.OptionMenu(main_frame, selected_unit_calories, *calories_units) 
+    calories_units_options.grid(column=2, row=0)
 
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
@@ -354,9 +355,6 @@ def display_exercise_type(main_frame):
     question_menu.grid(column = 1, row = 3) 
 
 
-
-#Maybe do a button and from button pop up a message?
-
 def display_smarttips(main_frame, col = 3, row = 3):
     """
     Displays the SMART tips button and the pop up message.
@@ -411,6 +409,8 @@ def popup_smarttips():
 display_set_goal()
 
 # Create and display exit button
+
+#FIX: Exit button for all the pages
 button_quit = tk.Button(root, text = "Exit", command=root.quit)
 button_quit.pack()
 root.mainloop()
@@ -422,13 +422,10 @@ root.mainloop()
 
 #NOTES FOR ME
 #Fix entries in distance and calories, create button to select the unit
-#Exit button for all the pages
 
 
-#Add picture
 
 
-#In the second page, add options for the type of exercise.
-
+#Commands for img
 # my_img = ImageTk.PhotoImage(Image.open(""))
 # my_img.pack()
