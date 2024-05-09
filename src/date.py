@@ -6,11 +6,9 @@ class Date:
     Represents the date and time in which the exercise was completed.
 
     Attributes:
-        date (datetime.date) : the date when the exercise was completed.
-        time (datetime.time) : the time when the exercise started.
-
+        date_time (datetime.date) : the date when the exercise was completed.
     """
-    def __init__(self, year:int, month:int, day:int) :#h, min
+    def __init__(self, year: int, month: int, day: int) :#h, min
         self.date_time = date(year=year, month=month, day=day)
     
 #    def print(self):

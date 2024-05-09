@@ -338,7 +338,7 @@ if __name__=="__main__":
 
     summary = GoalSummary(logWork,goalFrame)
 
-    #print(summary.plot_goal(7,date.Date(2024,4,20).print(), date.Date(2024,4,24).print(), 'Running', 'Running'))
+    print(summary.plot_goal(7,date.Date(2024,4,20).print(), date.Date(2024,4,24).print(), 'Running', 'Running'))
 
     #check the general plotting functions
     workout_summary = WorkoutSummary(logWork)
