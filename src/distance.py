@@ -65,8 +65,8 @@ class Distance:
     
     def print(self):
 
-        if self.distance == np.NAN:
-            return np.NAN
+        if self.distance == np.NaN:
+            return np.NaN
         else:
             return f"{self.distance} {self.unit}"
         

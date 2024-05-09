@@ -366,17 +366,20 @@ def save_data(frame, workout_type):
     # Create objects for each datatype the user has entered.
     calories = Calories(calories=calories_entry.get(), unit=selected_unit_calories.get())
     rating = Rating(rating=rating_slider.get())
-    duration = Duration(hours=hours_entry.get(), minutes=minutes_entry.get())
-    print(duration)
-    date = selected_date.get()
-    if distance_entry in globals():
-        distance = Distance(distance=distance_entry.get(), unit=selected_unit_distance.get())
+    duration = Duration(hours=int(hours_entry.get()), minutes=int(minutes_entry.get()))
+    date_tmp = selected_date.get().split('-')
+    date = Date(int(date_tmp[0]), int(date_tmp[1]), int(date_tmp[2]))
+    # globals is a dictionary. If you want to verify if contains a value you need to extract all values of the keys using values()
+    if distance_entry in globals().values():
+        distance_value = Distance(distance=distance_entry.get(), unit=selected_unit_distance.get())
     else:
-        distance = np.nan
+        distance_value = Distance(distance=np.NaN,unit='km')
 
     # Create a workout object and store it in a dataframe format.
+    print(type(workout_type))
     workout_type = getattr(workout, workout_type)
-    my_workout = workout_type(calories=calories, rating=rating, duration=duration, date=date, distance=distance)
+    print(workout_type)
+    my_workout = workout_type(calories=calories.print(), rating=rating.print(), duration=duration.__str__(), date=date.print(), distance=distance_value.print())
 
     # Check if a workout dataframe already exists. If not, create one.
     current_directory = os.getcwd().replace(os.sep,'/')
@@ -460,9 +463,14 @@ def choose_workout(root):
     workout_types = [subclass.__name__ for subclass in workout.Workout.__subclasses__()]
 
     # Create a button for each workout type with a command that let's the user log the workout.
+    # Thanks to stackoverflow there is a solution.Before it always had as workout class Other(last in the list)
+    # because it call the function after the loop and for this was always the last values.
+    # Since you are in a list I think you can just do for workout_type in workout_types, but I leave it to you if you
+    # want to change or not.
     for i, workout_type in enumerate(workout_types):
+        print(workout_type)
         choose_workout_button = create_button(frame=choose_workout_frame, 
-                                              command=lambda: log_workout(workout_type),
+                                              command=lambda workout_type=workout_type: log_workout(workout_type),
                                               text=workout_type)
         choose_workout_button.grid(column=0, row=i+1)
 
