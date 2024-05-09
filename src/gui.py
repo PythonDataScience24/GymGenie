@@ -5,13 +5,14 @@ import pandas as pd
 import workout
 import tkcalendar
 import datetime
+import dataframe
 from calories import Calories
 from date import Date
 from distance import Distance
 from duration import Duration
 from date import Date
 from rating import Rating
-from dataframe import WorkoutDataframe
+
 
 # Color palette for the GymGenie GUI.
 black = "BLACK"
@@ -24,6 +25,49 @@ yellow = "#EE9B00"
 dark_blue = "#005F73"
 blue = "#357F93"
 light_blue = "#5d99a9"
+
+def create_frame(root, **kwargs):
+    """
+    Creates a frame with customizable properties.
+
+    Parameters
+    ----------
+    root : tkinter.Tk or tkinter.Toplevel
+        The root or top-level window in which the frame should be placed.
+
+    **kwargs : dict, optional
+        Additional keyword arguments to customize the frame.
+        Supported keyword arguments include:
+            - bg: Background color of the frame (default is "blue")
+            - pady: Padding in the y-direction (default is 20)
+            - rows: Number of rows to configure in the frame (default is 1)
+            - columns: Number of rows to configure in the frame (default is 1)
+
+    Returns
+    -------
+    frame : tkinter.Frame
+        The created frame widget.
+    """
+    # Default values
+    bg = kwargs.get("bg", blue)
+    pady = kwargs.get("pady", 20)
+    rows = kwargs.get("rows", 1)
+    columns = kwargs.get("columns", 1)
+
+    # Create frame
+    frame = tk.Frame(root, bg=bg, pady=pady)
+    frame.pack(fill=tk.BOTH, expand=True)
+
+    # Configure rows
+    for i in range(rows):
+        frame.rowconfigure(i, weight=1)
+
+    # Configure columns
+    for i in range(columns):
+        frame.columnconfigure(i, weight=1)
+
+    return frame
+
 
 def create_button(frame, command, text, **kwargs):
     """
@@ -315,14 +359,15 @@ def save_data(frame, workout_type):
     frame : tkinter.Frame
         The frame containing the logged workout data.
 
-    workout_type : workout.Workout
-        The type of workout being logged as a workout.Workout subclass.
+    workout_type : str
+        The type of workout being logged as a string.
     """
 
     # Create objects for each datatype the user has entered.
     calories = Calories(calories=calories_entry.get(), unit=selected_unit_calories.get())
     rating = Rating(rating=rating_slider.get())
     duration = Duration(hours=hours_entry.get(), minutes=minutes_entry.get())
+    print(duration)
     date = selected_date.get()
     if distance_entry in globals():
         distance = Distance(distance=distance_entry.get(), unit=selected_unit_distance.get())
@@ -332,24 +377,25 @@ def save_data(frame, workout_type):
     # Create a workout object and store it in a dataframe format.
     workout_type = getattr(workout, workout_type)
     my_workout = workout_type(calories=calories, rating=rating, duration=duration, date=date, distance=distance)
-    my_workout_dataframe = WorkoutDataframe()
-    my_workout_dataframe.add_workout(workout=my_workout)
-    print(my_workout_dataframe)
 
     # Check if a workout dataframe already exists. If not, create one.
     current_directory = os.getcwd().replace(os.sep,'/')
     workout_file = current_directory + "/logWorkouts.csv"
     try:
-        workouts_df = pd.read_csv(workout_file)
+        workouts_df_data = pd.read_csv(workout_file)
+        workouts_df = dataframe.WorkoutDataframe()
+        workouts_df.data = workouts_df_data
     except FileNotFoundError:
-        workouts_df = pd.DataFrame(columns=['activity', 'date', 'duration','distance (km)' , 'calories (kcal)', 'rating'])
+        workouts_df = dataframe.WorkoutDataframe()
 
     # Add the workout object to the dataframe and save as csv file
-    workouts_df = pd.concat([workouts_df, my_workout_dataframe], ignore_index=True)
-    workouts_df.to_csv("logWorkouts.csv", encoding='utf-8', index=False)
+    workouts_df.add_workout(my_workout)
 
+    # Save dataframe in a file csv
+    workouts_df.save_dataframe("logWorkouts.csv")
+
+    # Close root window and display start page again. 
     root.destroy()
-
     display_start_page()
 
 def display_start_page():
@@ -362,15 +408,10 @@ def display_start_page():
     global root
     root = tk.Tk()
     root.geometry("500x400")
-    #root.resizeable(width=False, height=False) # in case we want to keep a constant size of the window
     root.title("GymGenie")
 
     # Create frame for the main page
-    main_frame = tk.Frame(root, bg=blue, pady=30)
-    main_frame.pack(fill=tk.BOTH, expand=True)
-    main_frame.columnconfigure(0, weight=1)
-    for i in range(5): # configure 5 rows: one for a label and 4 for buttons
-        main_frame.rowconfigure(i, weight=1)
+    main_frame = create_frame(root=root, rows=5)
 
     # Add welcome label
     welcome_label = create_label(frame=main_frame, text = "Welcome to GymGenie!", 
@@ -406,13 +447,9 @@ def choose_workout(root):
     for widget in root.winfo_children():
         widget.destroy()
 
-    # Create frame where you can choose the type of workut you want to log your exercise for.    
-    choose_workout_frame = tk.Frame(root, bg=blue, pady=20)
-    choose_workout_frame.pack(fill=tk.BOTH, expand=True)
-    choose_workout_frame.columnconfigure(0, weight=1)
-    number_workout_types = len(workout.Workout.__subclasses__())
-    for i in range(number_workout_types+1): # include all workout types + one label
-        choose_workout_frame.rowconfigure(i, weight=1)
+    # Create frame where you can choose the type of workut you want to log your exercise for. 
+    rows= len(workout.Workout.__subclasses__()) + 1 # include all workout types + one label
+    choose_workout_frame = create_frame(root=root, rows=rows)   
 
     # Add label that asks for the type of workout.
     label = create_label(frame=choose_workout_frame, text = "What type of workout did you do?",
@@ -446,24 +483,15 @@ def log_workout(workout_type):
     for widget in root.winfo_children():
         widget.destroy()
 
-    # Create frame where you can choose log in all the dta from your workout.    
-    log_workout_frame = tk.Frame(root, bg=blue, pady=10)
-    log_workout_frame.pack(fill=tk.BOTH, expand=True)
-
-    # Configure 5 columns
-    log_workout_frame.columnconfigure(0, weight=1)
-    log_workout_frame.columnconfigure(1, weight=1)
-    log_workout_frame.columnconfigure(2, weight=1)
-    log_workout_frame.columnconfigure(3, weight=1)
-    log_workout_frame.columnconfigure(4, weight=1)
-
     # Configure rows according to the number of datatypes that should be logged for the specific workout type
     if workout_type == "Climbing" or workout_type == "Strength":
         workout_datatypes = ["Calories", "Date ", "Duration", "Rating"]
     else:
         workout_datatypes = ["Calories", "Date", "Distance", "Duration", "Rating"]
-    for i in range(len(workout_datatypes)+2): # include all datatypes + title and save-button
-        log_workout_frame.rowconfigure(i, weight=1)
+    rows=len(workout_datatypes)+2 # include all datatypes + title and save-button
+
+    # Create frame where you can choose log in all the dta from your workout.    
+    log_workout_frame = create_frame(root=root, pady=10, columns=5, rows=rows)
 
     # Add top-label for the log workout-page
     log_workout_label = create_label(frame=log_workout_frame, text="Log your workout:",
