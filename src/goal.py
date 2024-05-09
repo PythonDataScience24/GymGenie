@@ -26,7 +26,7 @@ class Goal:
         """
         Returns a string representation for printing the Goal.
         """
-        return f"Goal: {self.value} {self.unit} per {self.time_scale} days in exercise {self.exercise} \n Set on {self.start_date}, to reach until {self.end_date}"
+        return f"Goal: {self.value} {self.unit} per {self.time_scale} days in exercise {self.exercise} \n Set on {self.start_date.print()}, to reach until {self.end_date.print()}"
 
     def get_start_date(self):
         return self.start_date
@@ -71,8 +71,8 @@ class DurationGoal(Goal):
 
 if __name__ == "__main__":
     my_calories = calories.Calories(1000, "kcal")
-    my_start_date = date.Date(2024, 5, 3, 0, 0)
-    my_end_date = date.Date(2024, 10, 31, 0 ,0)
+    my_start_date = date.Date(2024, 5, 3)
+    my_end_date = date.Date(2024, 10, 31)
     my_distance = distance.Distance(20, "km")
     my_duration = duration.Duration(hours = 5)
     #think of a better way to get the type
