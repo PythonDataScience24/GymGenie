@@ -49,11 +49,7 @@ class GoalSummary:
         """
         This function shows the plot of the progress through the goal
         Args:
-        time_frame: number of days over which you want to achieve your goal (e.g. 7 to set a goal of )
-        start_time (Date): date at which the goals was set
-        end_time (Date): date at which the goals should be reached
-        exercise: type of workout in which you want to achieve the goal. Default is None, to include all types of exercises
-        type: used to differentiate between showing a spefic evercise (ie. Cycling,Running,ect) or the general workouts (np.NaN)
+        index_goal: user selection of the goal to plot.
         """
        
         # plot General goal for week/month/year
