@@ -122,7 +122,7 @@ class GoalSummary:
         plt.tight_layout()
         plt.show()
 
-    def plot_progression(self, dataframe:pd.DataFrame, unit_value:str, value_goal:int):
+    def plot_progression(self, dataframe:pd.DataFrame, unit_value:str, value_goal:float):
         """
         This function shows the total progression made towards these goal
         Args:
@@ -195,7 +195,7 @@ class GoalSummary:
         plt.show()
     
 
-    def plot_percentage(self, dataframe:pd.DataFrame, unit_value:str, value_goal:int):
+    def plot_percentage(self, dataframe:pd.DataFrame, unit_value:str, value_goal:float):
         """
         This function plot the a pie chart with the marked workout done towards the goal.
         If the goal has been reached, the pie chart will be color full otherwise only the part

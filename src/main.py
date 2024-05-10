@@ -1,6 +1,7 @@
 import pandas as pd
 import sys
-import workoutlog, goal_summary, date
+from workoutlog import WorkoutLog 
+import goal_summary, date
 import os
 import dataframe
 import goal
@@ -72,7 +73,7 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
     confirm = ""
 
     while confirm != "y":
-        workout_respond, new_workout = workoutlog.Workoutlog(exercise_types=exercise_types, distance_exercises=distance_exercises).workout()
+        workout_respond, new_workout = WorkoutLog(exercise_types=exercise_types, distance_exercises=distance_exercises).collect_workout_info()
 
         if workout_respond == "y":
             confirm = "y"
@@ -95,6 +96,7 @@ def setGoal(goal_df, exercise_types):
     """
     
     #ask for all the relevant user input
+    # TODO - verify that the input of the user is in the right format
     goal_type = input("Do you want to set a goal for duration (a), distance (b) or calories (c)?\n").strip().lower()
     value = float(input("Which value do you want to reach with your goal? Please enter it in km, min or kcal.\n"))
     time_scale = int(input("Per which timescale do you want to set your goal? Please enter the days.\n"))
@@ -122,7 +124,8 @@ def setGoal(goal_df, exercise_types):
 
 
 def seeGoals(workout_df: dataframe.WorkoutDataframe, goals_df: dataframe.GoalDataframe):
-
+    # TODO
+    # Adjust logic, may not work properly
     summary = goal_summary.GoalSummary(workout_df,goals_df)
 
     #print all the goals and ask the user to select the one they want to see the plots for
