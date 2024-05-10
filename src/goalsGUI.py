@@ -2,7 +2,8 @@ import tkinter as tk
 from PIL import ImageTk, Image #You need to install Pillow
 import tkcalendar #Installing is needed
 from tkinter import messagebox
-from goal import * #It is bad practice but idk why in the other way it doesnt work
+from goal import DistanceGoal,CalorieGoal,DurationGoal #either you import goal and call goal.DistanceGoal or import the childclass not the
+# parent class
 import datetime
 import workout
 import random
@@ -241,15 +242,15 @@ def display_distance():
     
     #Give format to dates to be able to add to the dataframe
     start_date_tmp = start_date.get().split('-')
-    start_date = Date(int(start_date_tmp[0]), int(start_date_tmp[1]), int(start_date_tmp[2]))
+    start_date_value = Date(int(start_date_tmp[0]), int(start_date_tmp[1]), int(start_date_tmp[2]))
 
     end_date_tmp = end_date.get().split('-')
-    end_date = Date(int(end_date_tmp[0]), int(end_date_tmp[1]), int(start_date_tmp[2]))
+    end_date_value = Date(int(end_date_tmp[0]), int(end_date_tmp[1]), int(start_date_tmp[2]))
 
     #Create goal object
     global my_goal
-    my_goal = DistanceGoal(value=e_distance.get(), unit=selected_unit_distance.get(),
-                   time_scale=selected_timescale, start_date=start_date, end_date=end_date, exercise=selected_workout.get())
+    my_goal = DistanceGoal(value=e_distance.get(),time_scale=selected_timescale, 
+                           start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
     display_save_button(main_frame)
 
     
