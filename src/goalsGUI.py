@@ -186,7 +186,6 @@ def display_duration():
 
 
 
-
 def display_distance():
     """
     Displays a new page with the parameters to set the distance goal.
@@ -428,9 +427,8 @@ def popup_smarttips():
 def display_timescale(main_frame):
     """
     Displays time-scale and option menu to set a goal as weekly, monthly or yearly.
-    
-    """
 
+    """
 
     #create timescale label
     timescale_label = tk.Label(main_frame, text="Time-scale:",
