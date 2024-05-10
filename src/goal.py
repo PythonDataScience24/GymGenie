@@ -15,6 +15,8 @@ class Goal:
         exercise (Workout): type of workout in which you want to achieve the goal. Default is None, to include all types of exercises.
     """
     def __init__(self, value: float, unit: str, time_scale: int, start_date: date.Date, end_date: date.Date, exercise = np.NaN):
+        if start_date.print() >= end_date.print():
+            raise ValueError("The start_date must be before the end_date.")
         self.value = value
         self.unit = unit
         self.time_scale = time_scale
@@ -26,7 +28,7 @@ class Goal:
         """
         Returns a string representation for printing the Goal.
         """
-        return f"Goal: {self.value} {self.unit} per {self.time_scale} days in exercise {self.exercise} \n Set on {self.start_date}, to reach until {self.end_date}"
+        return f"Goal: {self.value} {self.unit} per {self.time_scale} days in exercise {self.exercise} \n Set on {self.start_date.print()}, to reach until {self.end_date.print()}"
 
     def get_start_date(self):
         return self.start_date
@@ -71,8 +73,8 @@ class DurationGoal(Goal):
 
 if __name__ == "__main__":
     my_calories = calories.Calories(1000, "kcal")
-    my_start_date = date.Date(2024, 5, 3, 0, 0)
-    my_end_date = date.Date(2024, 10, 31, 0 ,0)
+    my_start_date = date.Date(2024, 5, 3)
+    my_end_date = date.Date(2024, 10, 31)
     my_distance = distance.Distance(20, "km")
     my_duration = duration.Duration(hours = 5)
     #think of a better way to get the type
@@ -85,3 +87,6 @@ if __name__ == "__main__":
 
     print(my_duration_goal)
     print(my_duration_goal.subclass_name())
+
+    #check the input validation for start and end date works
+    my_error_goal = DurationGoal(value = my_duration, time_scale = 14, start_date = my_end_date, end_date = my_start_date, exercise = my_workout.subclass_name())

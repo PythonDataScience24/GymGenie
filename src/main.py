@@ -19,25 +19,23 @@ def main():
         choice = input("Welcome to GymGenie!\n Press 'w' to log a workout\n Press 'g' to set a new goal\n Press 'o' to get an overview over your goals\n Press 's' to see some summary visualisations\n Press 'q' to quit\n User: ")
         
         # Think how to improve this part
-        #start a dataframe to store the workouts in (later load this from a file)
+        #load the workouts from a csv file, or start a dataframe to store them in if no file was found
         current_directory = os.getcwd().replace(os.sep,'/')
         workout_file = current_directory + "/logWorkouts.csv"
+
+        workouts_df = dataframe.WorkoutDataframe()
         try:
-            workouts_df_data = pd.read_csv(workout_file)
-            #make it a WorkoutDataframe object
-            workouts_df = dataframe.WorkoutDataframe()
-            workouts_df.data = workouts_df_data
+            workouts_df.read_from_csv(workout_file)
         except FileNotFoundError:
-            workouts_df = dataframe.WorkoutDataframe()
-        # start a dataframe to store the goals
+            pass
+
+        # start a dataframe to store the goals and load them from a file
         goal_file = current_directory + "/GoalData.csv"
+        goals_df = dataframe.GoalDataframe()
         try:
-            goals_df_data = pd.read_csv(goal_file)
-            #make it a GoalDataframe object
-            goals_df = dataframe.GoalDataframeDataframe()
-            goals_df.data = goals_df_data
+            goals_df.read_from_csv(goal_file)
         except FileNotFoundError:
-            goals_df = dataframe.GoalDataframe()
+            pass
         
         match choice.lower().strip():
             case "w":
@@ -45,9 +43,9 @@ def main():
             case "g":
                 setGoal(goals_df, exercise_types)
             case "o":
-                seeGoals(workouts_df,goals_df,exercise_types)
+                seeGoals(workouts_df,goals_df)
             case "s":
-                summaryVisualisations()
+                summaryVisualisations(workouts_df)
             case "q":
                 #save the workouts and goal dataframe when quitting
                 workouts_df.save_dataframe(path = workout_file)
@@ -107,57 +105,42 @@ def setGoal(goal_df, exercise_types):
         
     #create a Goal object from the input
     if goal_type == "a":
-        new_goal = goal.DurationGoal(value = duration.Duration(minutes = value), time_scale = time_scale, start_date = date.Date(year = int(start_date[2]), month = int(start_date[1]), day = int(start_date[0])), end_date = date.Date(year = int(end_date[2]), month = int(end_date[1]), day = int(end_date[0])), exercise = exercise_type)
+        new_goal = goal.DurationGoal(value = value, time_scale = time_scale, start_date = date.Date(year = int(start_date[2]), month = int(start_date[1]), day = int(start_date[0])), end_date = date.Date(year = int(end_date[2]), month = int(end_date[1]), day = int(end_date[0])), exercise = exercise_type)
     
     elif goal_type == "b":
-        new_goal = goal.DistanceGoal(value = distance.Distance(distance = value, unit = "km"), time_scale = time_scale, start_date = date.Date(year = int(start_date[2]), month = int(start_date[1]), day = int(start_date[0])), end_date = date.Date(year = int(end_date[2]), month = int(end_date[1]), day = int(end_date[0])), exercise = exercise_type)
+        new_goal = goal.DistanceGoal(value = value, time_scale = time_scale, start_date = date.Date(year = int(start_date[2]), month = int(start_date[1]), day = int(start_date[0])), end_date = date.Date(year = int(end_date[2]), month = int(end_date[1]), day = int(end_date[0])), exercise = exercise_type)
     
     elif goal_type == "c":
-        new_goal = goal.CalorieGoal(value = calories.Calories(calories = value, unit = "kcal"), time_scale = time_scale, start_date = date.Date(year = int(start_date[2]), month = int(start_date[1]), day = int(start_date[0])), end_date = date.Date(year = int(end_date[2]), month = int(end_date[1]), day = int(end_date[0])), exercise = exercise_type)
+        new_goal = goal.CalorieGoal(value = value, time_scale = time_scale, start_date = date.Date(year = int(start_date[2]), month = int(start_date[1]), day = int(start_date[0])), end_date = date.Date(year = int(end_date[2]), month = int(end_date[1]), day = int(end_date[0])), exercise = exercise_type)
 
     print(new_goal)
     confirm = input("This is your entry, do you want to save it? [y/n]\n").strip().lower()
 
     if confirm == "y":
         goal_df.add_goal(new_goal)
+        goal_df.save_dataframe("GoalData.csv")
 
 
-def seeGoals(workout_df,goals_df, exercise_types):
+def seeGoals(workout_df: dataframe.WorkoutDataframe, goals_df: dataframe.GoalDataframe):
 
     summary = goal_summary.GoalSummary(workout_df,goals_df)
 
-    # ask for: 
-    # time frame
-    try:
-        timeframe = input(int("How long was your goal in days? "))
-    except ValueError:
-        print("You need to insert a numer between 7/30/365!")
-        timeframe =  None
-    # start Date
-    try:
-        startDate = input("When did your goal started? [dd/mm/yyyy] ").split("/")
-    except ValueError:
-        print("Please enter your date in the format dd/mm/yyyy.")
-        startDate = date.Date(1,1,1)
-    # end Date
-    try:
-        endDate = input("When did your goal end? [dd/mm/yyyy] ").split("/")
-    except ValueError:
-        print("Please enter your date in the format dd/mm/yyyy.")
-        endDate = date.Date(1,1,1)
-    # which sport between the list
-    print(exercise_types)
-    activity = input("Enter the type of exercise you did. Choose from the list above. ").lower()
-    while activity not in exercise_types:
-            print(exercise_types)
-            activity = input("Enter the type of exercise you did. Choose from the list above. ").lower()
+    #print all the goals and ask the user to select the one they want to see the plots for
+    goals_df.print_dataframe()
+    row_index = int(input("For which goal would you like to see the progress plots? Enter the row index.\n"))
 
     # visualize the progress in the goal
-    print(summary.plot_goal(timeframe,startDate,endDate,activity))
+    summary.plot_goal(row_index)
 
 
-def summaryVisualisations():
-    pass
+def summaryVisualisations(workout_df):
+    timescale = int(input("Over how many of the past days would you like to see the summary?\n"))
+    quantity = input("Would you like to see the summary for duration, distance or calories?\n").lower().strip()
+    #exercises = ###how to get this input?
+    workout_summary = goal_summary.WorkoutSummary(workout_df)
+    workout_summary.plot_summary(timescale, quantity)
+    #workout_summary.compare_exercises(timescale,quantity, )
+    workout_summary.plot_rating_by_exercises()
 
 if __name__== "__main__":
     main()

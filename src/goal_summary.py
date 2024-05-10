@@ -2,13 +2,17 @@ import pandas as pd
 import numpy as np
 import distance,date,duration
 import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import date as _date
+import dataframe
+
 class GoalSummary:
     """
     This class retrives the goal for each esercise and plot the current situation, showing what is left
 
     Attributes:
-    TODO
-
+    log_workout_dataframe: The dataframe of the workouts of the user
+    goal_data_frame: The dataframe of the goals of the user
     """
 
     def __init__(self, log_workout_dataframe:pd.DataFrame, goal_data_frame:pd.DataFrame):
@@ -22,6 +26,11 @@ class GoalSummary:
     def find_goal(self, time_frame:int, start_time:date.Date, end_time:date.Date, exercise:str):
         """
         This function find the unique goal in the dataframe
+        Args:
+        time_frame: number of days over which you want to achieve your goal (e.g. 7 to set a goal of )
+        start_time (Date): date at which the goals was set
+        end_time (Date): date at which the goals should be reached
+        exercise: type of workout in which you want to achieve the goal. Default is None, to include all types of exercises
         """
         index_list = self.goal_data_frame.index[(self.goal_data_frame['time_scale'] == time_frame) & 
                                          (self.goal_data_frame['start_date'] == start_time) & 
@@ -36,21 +45,22 @@ class GoalSummary:
             return None
 
     # plot goal using barplot
-    def plot_goal(self,time_frame:int, start_time:date.Date, end_time:date.Date,exercise:str,type:str):
+    def plot_goal(self, index_goal):
         """
         This function shows the plot of the progress through the goal
-
+        Args:
+        index_goal: user selection of the goal to plot.
         """
+       
         # plot General goal for week/month/year
         # plot Specific Exercise for week/month/year
-        # retrieve the index goal
-        index_goal = self.find_goal(time_frame,start_time,end_time,exercise)
-        if index_goal == None:
-            return "Goal not found!"
-        print(index_goal)
+        
         # find the value of the goal
-        value_goal = self.goal_data_frame.iloc[[index_goal]]['value'].item()
-        unit_value = self.goal_data_frame.iloc[[index_goal]]['unit'].item()
+        value_goal = float(self.goal_data_frame.data.iloc[[index_goal]]['value'].item())
+        unit_value = self.goal_data_frame.data.iloc[[index_goal]]['unit'].item()
+        exercise = self.goal_data_frame.data.iloc[[index_goal]]['exercise'].item()
+        start_time = self.goal_data_frame.data.iloc[[index_goal]]['start_date'].item()
+        end_time = self.goal_data_frame.data.iloc[[index_goal]]['end_date'].item()
         print(value_goal)
         print(unit_value)
         # DO NOT DELETE YET
@@ -79,8 +89,12 @@ class GoalSummary:
         """
         This function plot for every specific workout activity the progress
         made towards the specific goal
-        Attributes:
-        TODO
+        Args:
+        workout_datafram: dataframe of the workouts of the user
+        exercise:type of workout in which you want to achieve the goal. Default is None, to include all types of exercises
+        start_time (Date): date at which the goals was set
+        end_time (Date): date at which the goals should be reached
+        unit_value: specific properties that the user wants to see (kcal,km or min)
         """
         # filter the logWorkout dataframe, containing only all the activities with the same exercise
         # and according to the timeframe
@@ -111,8 +125,10 @@ class GoalSummary:
     def plot_progression(self, dataframe:pd.DataFrame, unit_value:str, value_goal:int):
         """
         This function shows the total progression made towards these goal
-        Attribute:
-        TODO
+        Args:
+        dataframe: the dataframe of the workouts of the user
+        unit_value: specific properties that the user wants to see (kcal,km or min)
+        value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
         match unit_value:
@@ -124,7 +140,7 @@ class GoalSummary:
                 unit = 'duration'
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
-        progression = dataframe.groupby('date')[unit].sum().reset_index()
+        progression = dataframe.data.groupby('date')[unit].sum().reset_index()
         print(progression)
         # create a new column called progress and use the function cumsum
         # that will do partial sum of the row before
@@ -134,7 +150,7 @@ class GoalSummary:
         # add the label of the partial sum on the top of the bar
         plt.bar_label(plt.bar(progression['date'], progression['progression'], color='red'),progression['progression'])
         # Adjust the ylim to have a 'space' after the goal line : Check that is valid for all the cases
-        plt.ylim(0,value_goal + 50)
+        plt.ylim(0, value_goal + 50)
         # Draw the horizontal line showing the goal
         plt.axhline(value_goal, linestyle='--', lw=1.2,color='black', label="Goal", zorder=-1.5)
         plt.ylabel(unit.capitalize(), fontsize=12)
@@ -146,8 +162,9 @@ class GoalSummary:
     def plot_general_workout(self, dataframe:pd.DataFrame, unit_value:str):
         """
         This function shows the different types of exercise did every day with different color
-        Arguments
-        TODO
+        Args:
+        dataframe: the dataframe of the workouts of the user
+        unit_value: specific properties that the user wants to see (kcal,km or min)
         """
         # Depending on the unit choosen in the goal dataframe select different column
         match unit_value:
@@ -158,7 +175,7 @@ class GoalSummary:
             case "min":
                 unit = 'duration'
         # group each day every sport
-        grouped_dataframe = dataframe.groupby(['activity', 'date']).sum().reset_index()
+        grouped_dataframe = dataframe.data.groupby(['activity', 'date']).sum().reset_index()
         # create a pivot table
         pivot_df = grouped_dataframe.pivot(index='date', columns='activity', values=unit)
         print(pivot_df)
@@ -183,8 +200,10 @@ class GoalSummary:
         This function plot the a pie chart with the marked workout done towards the goal.
         If the goal has been reached, the pie chart will be color full otherwise only the part
         that has been completed with the percentage
-        Attribute
-        TODO
+        Args:
+        dataframe: the dataframe of the workouts of the user
+        unit_value: specific properties that the user wants to see (kcal,km or min)
+        value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
         match unit_value:
@@ -196,7 +215,7 @@ class GoalSummary:
                 unit = 'duration'
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
-        progression = dataframe.groupby('date')[unit].sum().reset_index()
+        progression = dataframe.data.groupby('date')[unit].sum().reset_index()
         # plot using progress pie chart to shows what is left
         # find th total workout
         total_sum = progression[unit].sum()
@@ -219,18 +238,126 @@ class GoalSummary:
         plt.title(f"Total Progress {unit.capitalize()}")
         plt.show()
 
+class WorkoutSummary():
+    """
+    Class to plot different summaries on workout data.
+    
+    Attributes:
+        data: The dataframe of workouts to use as data for the plots.
+    """
 
+    def __init__(self, workout_df: dataframe.WorkoutDataframe):
+        self.data = workout_df.data
+    
+    def plot_summary(self, timescale: int, quantity: str):
+        """
+        Plot the duration, distance or calories over time as a stacked bar plot.
 
+        Args:
+            timescale: Number of days over which to plot (starting from the date of the most recent workout back).
+            quantity: Has to be duration, distance or calories and will be the measure for which the plot is created.
+        """
+
+        #first, define the cutoff date from which on you want to do the plot
+        latest_date = self.data['date'].max()
+        cutoff_date = _date(latest_date) - pd.Timedelta(days = timescale)
+
+        #select the relevant data from the total of logged workouts
+        current_data = self.data.loc[self.data['date'] >= cutoff_date, ['date', quantity, 'activity']]
+        current_data = current_data.pivot(index = 'date', columns = 'activity', values = quantity)
+
+        #plot
+        current_data.plot(kind = 'bar', stacked = True)
+        plt.xlabel('')
+        plt.ylabel(quantity)
+        plt.xticks(rotation=25)
+        plt.legend(title='Activity', frameon=False)
+        plt.title(label = f'Summary of {quantity} over the last {timescale} days')
+        plt.tight_layout()
+        #plt.savefig("summary.png") save the plot, maybe that will make it easier to work with the GUI
+        #plt.close(fig)
+        plt.show()
+
+    def compare_exercises(self, timescale: int, quantity: str, exercises: list):
+        """
+        Plot the duration, distance or calories compared between two exercises over a specified timescale.
+
+        Args:
+            timescale: Number of days over which to plot (starting from the date of the most recent workout back).
+            quantity: Has to be duration, distance or calories and will be the measure for which the plot is created.
+            exercises: List of exercise types that should be compared.
+        """
+
+        #first, define the cutoff date from which on you want to do the plot
+        latest_date = self.data['date'].max()
+        cutoff_date = _date(latest_date) - pd.Timedelta(days = timescale)
+
+        #select the relevant data from the total of logged workouts
+        current_data = self.data.loc[self.data['date'] >= cutoff_date, ['date', 'activity', quantity]]
+        #select only the rows with the activities to compare
+        current_data = self.data[self.data['activity'].isin(exercises)]
+
+        #to get all combinations of date and activity in the dataframe, create a date range and all possible combinations with activities
+        dates = pd.date_range(current_data['date'].min(), current_data['date'].max(), freq='1D')
+
+        #make sure both dataframes have the same format of dates for the concatenation
+        current_data['date'] = pd.to_datetime(current_data['date'])
+
+        date_activity_combinations = pd.MultiIndex.from_product([dates, exercises], names=['date', 'activity'])
+        all_combinations_df = pd.DataFrame(index=date_activity_combinations).reset_index()
+
+        #merge and set the value to 0, if there is no entry for an exercise at any given day
+        complete_df = pd.merge(all_combinations_df, current_data, how='left', on=['date', 'activity'])
+        complete_df = complete_df.fillna(0)
+        
+        #plot
+        sns.lineplot(data = complete_df, x = 'date', y = quantity, hue = 'activity')
+        plt.title(f'Comparison by {quantity} over the last {timescale} days')
+        plt.xlabel('')
+        plt.ylabel(quantity)
+        plt.xticks(rotation=25)
+        plt.legend(title = 'Activity', frameon=False)
+        plt.tight_layout()
+        plt.show()
+
+    def plot_rating_by_exercises(self, timescale: int = None):
+        """
+        Plot the ratings that were given to the workouts by the type of exercise as Violin plots.
+        
+        Args:
+            timescale: optional argument to select the number of days over which the plot should be created (back from the date of the most recent workout)."""
+        
+        #select the relevant data, if a timescale argument is given
+        if timescale is not None:
+            latest_date = self.data['date'].max()
+            cutoff_date = _date(latest_date) - pd.Timedelta(days = timescale)
+            current_data = self.data.loc[self.data['date'] >= cutoff_date, ['activity', 'rating']]
+        else:
+            current_data = self.data.loc[:, ['activity', 'rating']]
+
+        #plot
+        sns.violinplot(data = current_data, x = "activity", y = "rating", inner = "point")
+        plt.title(f'Distribution of Ratings given to workouts of different exercises')
+        plt.xlabel('')
+        plt.ylabel('Rating')
+        plt.xticks(rotation=25)
+        plt.tight_layout()
+        plt.show()
 
 if __name__=="__main__":
 
-    logWork = pd.DataFrame({'activity': ['Running','Cycling','Cycling','Running','Swimming','Running'], 'date': [date.Date(2024,4,20).get_date(), date.Date(2024,4,20).get_date(),date.Date(2024,4,21).get_date(),date.Date(2024,4,22).get_date(),date.Date(2024,4,23).get_date(),date.Date(2024,4,24).get_date()] , 'duration' : [40,80,120,30,20,20],
+    logWork = pd.DataFrame({'activity': ['Running','Cycling','Cycling','Running','Swimming','Running'], 'date': [date.Date(2024,4,20).print(), date.Date(2024,4,20).print(),date.Date(2024,4,21).print(),date.Date(2024,4,22).print(),date.Date(2024,4,23).print(),date.Date(2024,4,24).print()] , 'duration' : [40,80,120,30,20,20],
                                     'distance' : [9,50,40,6,2,8], 'calories' : [200,300,500,250,400,300], 'rating' : [8,7,9,4,5,6]})
 
-    goalFrame = pd.DataFrame({"value":[300,100], "unit":['min','km'], "time_scale":[7,7], "start_date":[date.Date(2024,4,20).get_date(),date.Date(2024,5,20).get_date()], 
-                                "end_date":[date.Date(2024,4,24).get_date(), date.Date(2024,5,24).get_date()], "exercise":['Running','Cycling']})
+    goalFrame = pd.DataFrame({"value":[300,100], "unit":['min','km'], "time_scale":[7,7], "start_date":[date.Date(2024,4,20).print(),date.Date(2024,5,20).print()], 
+                                "end_date":[date.Date(2024,4,24).print(), date.Date(2024,5,24).print()], "exercise":['Running','Cycling']})
 
     summary = GoalSummary(logWork,goalFrame)
 
-    print(summary.plot_goal(7,date.Date(2024,4,20).get_date(), date.Date(2024,4,24).get_date(), 'Running', np.NaN))
-    
+    print(summary.plot_goal(7,date.Date(2024,4,20).print(), date.Date(2024,4,24).print(), 'Running', 'Running'))
+
+    #check the general plotting functions
+    workout_summary = WorkoutSummary(logWork)
+    workout_summary.plot_summary(2, 'duration')
+    workout_summary.compare_exercises(10, 'distance', ['Running', 'Swimming', 'Cycling'])
+    workout_summary.plot_rating_by_exercises()
