@@ -2,6 +2,7 @@ import tkinter as tk
 from PIL import ImageTk, Image #You need to install Pillow
 import tkcalendar #Installing is needed
 from tkinter import messagebox
+from goal import * #It is bad practice but idk why in the other way it doesnt work
 import datetime
 import workout
 import random
@@ -10,6 +11,9 @@ from date import Date
 from distance import Distance
 from duration import Duration
 from date import Date
+import dataframe
+import os
+import pandas as pd
 
 
 #color palette
@@ -127,9 +131,7 @@ def display_set_goal():
             relief="solid") #Add relief style 
 
         btn.grid(column=0, row=1+i) 
-
-
-
+    
 
 
 def display_duration():
@@ -168,8 +170,10 @@ def display_duration():
     duration_label.grid(column=0, row=0)
 
     #create hours and minutes entry
+    global e_hours
     e_hours = tk.Entry(main_frame)
     e_hours.insert(tk.END, "h")
+    global e_min
     e_min = tk.Entry(main_frame)
     e_min.insert(tk.END, "min")
     e_hours.grid(column=1, row=0)
@@ -180,10 +184,7 @@ def display_duration():
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
-
-    #Create objects for each datatype the user enters.
-
-
+    display_save_button(main_frame)
 
 
 def display_distance():
@@ -222,10 +223,12 @@ def display_distance():
     distance_label.grid(column=0, row=0)
 
     #create entry
+    global e_distance
     e_distance= tk.Entry(main_frame)
     e_distance.grid(column=1, row=0)
     #create option menu
     distance_units = ["km", "m","miles"]
+    global selected_unit_distance
     selected_unit_distance = tk.StringVar(main_frame)
     selected_unit_distance.set(distance_units[0])
     distance_units_options = tk.OptionMenu(main_frame, selected_unit_distance, *distance_units) 
@@ -235,6 +238,21 @@ def display_distance():
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
+    
+    #Give format to dates to be able to add to the dataframe
+    start_date_tmp = start_date.get().split('-')
+    start_date = Date(int(start_date_tmp[0]), int(start_date_tmp[1]), int(start_date_tmp[2]))
+
+    end_date_tmp = end_date.get().split('-')
+    end_date = Date(int(end_date_tmp[0]), int(end_date_tmp[1]), int(start_date_tmp[2]))
+
+    #Create goal object
+    global my_goal
+    my_goal = DistanceGoal(value=e_distance.get(), unit=selected_unit_distance.get(),
+                   time_scale=selected_timescale, start_date=start_date, end_date=end_date, exercise=selected_workout.get())
+    display_save_button(main_frame)
+
+    
 
 
 def display_calories():
@@ -273,10 +291,12 @@ def display_calories():
     calories_label.grid(column=0, row=0)
 
     #create entry
+    global e_calories
     e_calories = tk.Entry(main_frame)
     e_calories.grid(column=1, row=0)
     #create option menu
     calories_units = ["kcal", "kJ"]
+    global selected_unit_calories
     selected_unit_calories = tk.StringVar(main_frame)
     selected_unit_calories.set(calories_units[0])
     calories_units_options = tk.OptionMenu(main_frame, selected_unit_calories, *calories_units) 
@@ -286,6 +306,7 @@ def display_calories():
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
+    display_save_button(main_frame)
 
 
 
@@ -324,6 +345,7 @@ def display_timeframe(main_frame, col , row):
                 command=lambda: open_calendar(root, end_date))
 
     #Create start date 
+    global start_date
     start_date = tk.StringVar()
     start_date.set(datetime.date.today()) # Set the date initial date to todays date.
     start_date_label = tk.Label(main_frame,
@@ -335,6 +357,7 @@ def display_timeframe(main_frame, col , row):
                 textvariable=start_date)
     
     #Create end date 
+    global end_date
     end_date = tk.StringVar()
     end_date.set(datetime.date.today()) # Set the date initial date to todays date.
     end_date_label = tk.Label(main_frame,
@@ -352,6 +375,9 @@ def display_timeframe(main_frame, col , row):
     end_button.grid(column=col+3, row=row)
     end_date_label.grid(column=col+4, row=row)
 
+
+
+
 def display_exercise_type(main_frame):
     #Create label
     exercise_label = tk.Label(main_frame, 
@@ -368,13 +394,14 @@ def display_exercise_type(main_frame):
 
     # Variable to keep track of the option 
     # selected in OptionMenu 
-    value_inside = tk.StringVar(main_frame) 
+    global selected_workout
+    selected_workout = tk.StringVar(main_frame) 
 
     # Set the default value of the variable 
-    value_inside.set("Select") 
+    selected_workout.set("Select") 
 
-    # Create the optionmenu widget and passing the workout_types and value_inside to it. 
-    question_menu = tk.OptionMenu(main_frame, value_inside, *workout_types, ) 
+    # Create the optionmenu widget and passing the workout_types and the selected_wotkout to it. 
+    question_menu = tk.OptionMenu(main_frame, selected_workout, *workout_types, ) 
     question_menu.grid(column = 1, row = 4) 
 
 
@@ -439,19 +466,74 @@ def display_timescale(main_frame):
             height = 1)
     timescale_label.grid(column=0, row=3)
 
+    #create days label
+    timescale_label = tk.Label(main_frame, text="days",
+                        font =("Arial", 16, "bold"),
+            background=blue,
+            foreground=white,
+            width=20,
+            height = 1)
+    timescale_label.grid(column=2, row=3)
+
+
     #create option menu
-    options = ["weekly", "monthly","yearly"]
-    selected_option = tk.StringVar(main_frame)
+    options = [7, 30,365]
+    global selected_timescale
+    selected_timescale = tk.StringVar(main_frame)
     #Set default variable
-    selected_option.set(options[0])
-    scale_options = tk.OptionMenu(main_frame, selected_option, *options) 
+    selected_timescale.set(options[0])
+    scale_options = tk.OptionMenu(main_frame, selected_timescale, *options) 
     scale_options.grid(column=1, row=3)
-    
+
+
+def display_save_button(main_frame):
+    #Add save button
+    save_btn = tk.Button(main_frame, 
+        command= lambda: save_goal(main_frame, my_goal) ,
+        text = "save", 
+        font =("Arial", 12, "bold"),
+        background=white,
+        foreground=dark_blue,
+        activebackground=light_blue,
+        activeforeground=white,
+        width=10,
+        height=1, 
+        border=0,
+        cursor="hand2",
+        borderwidth=1, #Add border width
+        relief="solid") #Add relief style
+    save_btn.grid(column=2, row=4)
 
 
 
-#run it
+
+def save_goal(main_frame, my_goal):  
+
+    # Check if a workout dataframe already exists. If not, create one.
+    current_directory = os.getcwd().replace(os.sep,'/')
+    goals_file = current_directory + "/goals.csv"
+    try:
+        goals_df_data = pd.read_csv(goals_file)
+        goals_df = dataframe.GoalDataframe()
+        goals_df.data = goals_df_data
+    except FileNotFoundError:
+        goals_df = dataframe.GoalDataframe()
+
+    # Add the workout object to the dataframe and save as csv file
+    goals_df.add_goal(my_goal)
+
+    # Save dataframe in a file csv
+    goals_df.save_dataframe("goals.csv")
+
+    # Close root window and display start page again. 
+    root.destroy()
+
+
 display_set_goal()
+
+
+
+
 
 
 
