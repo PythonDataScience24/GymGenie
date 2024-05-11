@@ -1,5 +1,5 @@
 import tkinter as tk
-from PIL import ImageTk, Image #You need to install Pillow
+#from PIL import ImageTk, Image #You need to install Pillow
 import tkcalendar #Installing is needed
 from tkinter import messagebox
 import goal
@@ -29,8 +29,8 @@ blue = "#357F93"
 light_blue = "#5d99a9"
 
 
-root = tk.Tk()
-root.geometry("500x400")
+#root = tk.Tk()
+#root.geometry("500x400")
 
 ### Global variables
 #Create boolean values to keep the workflow
@@ -88,7 +88,7 @@ def open_calendar(root, date):
 
 
 
-def display_set_goal():
+def display_set_goal(root):
     """
     Displays the start page of setting the goal. 
     The user can choose between 3 types of objectives that appears as buttons:
@@ -98,19 +98,23 @@ def display_set_goal():
     After clicking each button a new page is displayed.
     
     """
-    #Create the main frame
-    main_frame = tk.Frame(root, bg=blue, pady=40)
-    main_frame.pack(fill=tk.BOTH, expand=True)
-    main_frame.columnconfigure(0, weight=1)
-    main_frame.rowconfigure(0, weight=1)
-    main_frame.rowconfigure(1, weight=1)
-    main_frame.rowconfigure(2, weight=1)
-    main_frame.rowconfigure(3, weight=1)
-    main_frame.rowconfigure(4, weight=1)
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+        
+    #Create the frame
+    goals_frame = tk.Frame(root, bg=blue, pady=40)
+    goals_frame.pack(fill=tk.BOTH, expand=True)
+    goals_frame.columnconfigure(0, weight=1)
+    goals_frame.rowconfigure(0, weight=1)
+    goals_frame.rowconfigure(1, weight=1)
+    goals_frame.rowconfigure(2, weight=1)
+    goals_frame.rowconfigure(3, weight=1)
+    goals_frame.rowconfigure(4, weight=1)
 
 
     #Create goal label
-    goal_label = tk.Label(main_frame, text="Set your goal based on:",
+    goal_label = tk.Label(goals_frame, text="Set your goal based on:",
                         font =("Arial", 16, "bold"),
             background=blue,
             foreground=white,
@@ -121,9 +125,9 @@ def display_set_goal():
 
     #Create goal buttons based on the type of objective
     GOALS_TYPES = ['Distance', 'Duration', 'Calories burned']
-    commands = [display_distance, display_duration, display_calories]
+    commands = [lambda: display_distance(root), lambda: display_duration(root), lambda: display_calories(root)]
     for i, goal_type in enumerate(GOALS_TYPES):
-        btn = tk.Button( main_frame, 
+        btn = tk.Button(goals_frame, 
             command= commands[i],
             text = goal_type, 
             font =("Arial", 12, "bold"),
@@ -142,7 +146,7 @@ def display_set_goal():
     
 
 
-def display_duration():
+def display_duration(root):
     """
     Displays a new page with the parameters to set the duration goal.
 
@@ -214,12 +218,12 @@ def display_duration():
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
-    display_save_button(main_frame)
+    display_save_button(main_frame, root)
 
 
 
 
-def display_distance():
+def display_distance(root):
     """
     Displays a new page with the parameters to set the distance goal.
     
@@ -275,13 +279,10 @@ def display_distance():
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
-    display_save_button(main_frame)
+    display_save_button(main_frame, root)
 
 
-    
-
-
-def display_calories():
+def display_calories(root):
     """
     Displays a new page with the parameters to set the calories goal.
     
@@ -337,7 +338,7 @@ def display_calories():
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
-    display_save_button(main_frame)
+    display_save_button(main_frame, root)
 
 
 
@@ -517,10 +518,10 @@ def display_timescale(main_frame):
     scale_options.grid(column=1, row=3)
 
 
-def display_save_button(main_frame):
+def display_save_button(main_frame, root):
     #Add save button
     save_btn = tk.Button(main_frame, 
-        command= lambda: save_goal(main_frame) ,
+        command= lambda: save_goal(main_frame, root) ,
         text = "save", 
         font =("Arial", 12, "bold"),
         background=white,
@@ -538,7 +539,7 @@ def display_save_button(main_frame):
 
 
 
-def save_goal(main_frame):  
+def save_goal(main_frame, root):  
 
     #Give format to dates to be able to add to the dataframe
     start_date_tmp = start_date.get().split('-')
@@ -588,7 +589,7 @@ def save_goal(main_frame):
 
 
 #run it
-display_set_goal()
+#display_set_goal()
 
 
 
@@ -596,10 +597,8 @@ display_set_goal()
 
 
 
-#FIX: Exit button for all the pages
-button_quit = tk.Button(root, text = "Exit", command=root.quit)
-button_quit.pack()
-root.mainloop()
+
+#root.mainloop()
 
 
 
@@ -607,8 +606,6 @@ root.mainloop()
 
 
 #NOTES FOR ME
-# Create and display exit button
-
 
 #Commands for img
 # my_img = ImageTk.PhotoImage(Image.open(""))
