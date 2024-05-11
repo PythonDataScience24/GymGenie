@@ -47,7 +47,7 @@ def main():
                 workouts_df.save_dataframe(path = workout_file)
                 goals_df.save_dataframe(path = goal_file)
                 # exit the program
-                sys.exit("GymGenie has been terminated.")
+                sys.exit("GymGenie has been terminated. See you next time!")
             case _:
                 print("Please type a valid option (w,g,o,s,q).")
 
@@ -56,8 +56,7 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
     """
     Allows the user to enter a workout and add it to the dataframe of workouts.
 
-    Parameters
-    ----------
+    Args:
     workouts_df : pandas.DataFrame
         Dataframe containing entries of previously logged workouts.
     exercise_types : list
@@ -68,7 +67,8 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
     confirm = ""
 
     while confirm != "y":
-        workout_respond, new_workout = WorkoutLog(exercise_types=exercise_types, distance_exercises=distance_exercises).collect_workout_info()
+        workout_respond, new_workout = WorkoutLog(exercise_types=exercise_types, 
+                        distance_exercises=distance_exercises).collect_workout_info()
 
         if workout_respond == "y":
             confirm = "y"
@@ -77,13 +77,27 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
 
             # save dataframe in a file csv
             workouts_df.save_dataframe("logWorkouts.csv")
+        elif workout_respond == 'n':
+            # modify dataframe
+            new_entry = ""
+            while new_entry != 'y':
+                row_index,column_name,new_value = WorkoutLog(exercise_types, 
+                                            distance_exercises).modify_workout_dataframe()
+                workouts_df.edit_dataframe(column_name,row_index,new_value)
+                print(workouts_df.print_dataframe())
+                response = input(
+                "This is your new entry, do you want to save it? [y/n]: ").lower().strip()
+                if response == 'y':
+                    new_entry = 'y'
+            confirm = 'y'
+        else:
+            print('Please select a valid confirmation answer!')
 
 def setGoal(goal_df, exercise_types):
     """
     Allows the user to enter a workout and add it to the dataframe of workouts.
 
-    Parameters
-    ----------
+    Args:
     goal_df : pandas.DataFrame
         Dataframe containing entries of previously set goals.
     exercise_types : list
@@ -115,22 +129,45 @@ def setGoal(goal_df, exercise_types):
 
 
 def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe):
+    """
+    Allow the user to see the progress made towards the goal
+
+    Args:
+    workout_df:pandas.DataFrame
+        Dataframe containing entries of previously logged workouts.
+    goals_df:pandas.DataFrame
+        Dataframe containing entries of previously set goals.
+    """
     summary = GoalSummary(workout_df,goals_df)
 
     #print all the goals and ask the user to select the one they want to see the plots for
     goals_df.print_dataframe()
-    row_index = int(input("For which goal would you like to see the progress plots? Enter the row index: "))
-    # visualize the progress in the goal
-    summary.plot_goal(row_index)
+    while True:
+        row_index = int(input("For which goal would you like to see the progress plots? Enter the row index: "))
+        if row_index in goals_df.index:
+            # visualize the progress in the goal
+            summary.plot_goal(row_index)
+        else:
+            print("Please insert a valid index.")
+    
 
 
 def summaryVisualisations(workout_df):
-    timescale = int(input("Over how many of the past days would you like to see the summary? Select 7/30/365"))
-    quantity = input("Would you like to see the summary for duration, distance or calories? ").lower().strip()
+    """
+    Allow the user to see a summary of the workouts made
+
+    Args:
+    workout_df: pandas.DataFrame
+        Dataframe containing entries of previously logged workouts.
+    """
     #exercises = ###how to get this input?
     workout_summary = WorkoutSummary(workout_df)
+    # retrieve timescale and quantity
+    timescale = workout_summary.get_timescale()
+    quantity = workout_summary.get_quantity()
+    # plot the summary of the workouts of the user
     workout_summary.plot_summary(timescale, quantity)
-    #workout_summary.compare_exercises(timescale,quantity, )
+    # plot the distribution of rating pro exercise
     workout_summary.plot_rating_by_exercises()
 
 if __name__== "__main__":

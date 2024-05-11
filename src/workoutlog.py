@@ -167,6 +167,64 @@ class WorkoutLog:
 
         return exercise_name
     
+    def modify_workout_dataframe(self):
+        """
+        Collect information about the workout to modify
+        """
+        row_index = self.get_row_index()
+
+        column_name = self.get_column()
+
+        new_value = self.get_new_value(column_name)
+        
+        return row_index,column_name,new_value
+
+    def get_row_index(self):
+        """
+        Prompt the user which row wants to select in the workout dataframe
+        """
+        while True:
+                print(self.goal_df.print_dataframe())
+                try:
+                    row_index = int(input("Which value would you like to modify? Enter the row index: "))
+                    return row_index
+                except ValueError as e:
+                    print(f"Error {e}")
+    
+    def get_column(self):
+        """
+        Prompt the user which column wants to modify in the workout dataframe
+        """
+        while True:
+            column_name = input("Please enter the column name that you want to modify: ")
+
+            if column_name in ["activity", "date", "duration", "distance", "calories", "rating"]:
+                return column_name
+            else:
+                print('Please select a valid column name!')
+
+    def get_new_value(self, name):
+        """
+        Ask the user which new value wants to insert in the dataframe
+        """
+
+        match name:
+            case 'activity':
+                value = self.get_exercise_type()
+            case 'date':
+                value = self.get_exercise_date()
+            case 'duration':
+                value = self.get_exercise_duration()
+            case 'distance':
+                value = self.get_distance_value(self.workout_data['activity'])
+            case 'calories':
+                value = self.get_calories_used()
+            case 'rating':
+                value = self.get_impression()
+
+        return value
+
+    
 
 class SetGoal:
 
