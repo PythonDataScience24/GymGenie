@@ -2,8 +2,7 @@ import tkinter as tk
 from PIL import ImageTk, Image #You need to install Pillow
 import tkcalendar #Installing is needed
 from tkinter import messagebox
-from goal import DistanceGoal,CalorieGoal,DurationGoal #either you import goal and call goal.DistanceGoal or import the childclass not the
-# parent class
+import goal
 import datetime
 import workout
 import random
@@ -249,7 +248,7 @@ def display_distance():
 
     #Create goal object
     global my_goal
-    my_goal = DistanceGoal(value=e_distance.get(),time_scale=selected_timescale, 
+    my_goal = goal.Goal(value=e_distance.get(), unit = selected_unit_distance.get() ,time_scale=selected_timescale, 
                            start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
     display_save_button(main_frame)
 
@@ -292,12 +291,12 @@ def display_calories():
     calories_label.grid(column=0, row=0)
 
     #create entry
-    global e_calories
+    #global e_calories
     e_calories = tk.Entry(main_frame)
     e_calories.grid(column=1, row=0)
     #create option menu
     calories_units = ["kcal", "kJ"]
-    global selected_unit_calories
+    #global selected_unit_calories
     selected_unit_calories = tk.StringVar(main_frame)
     selected_unit_calories.set(calories_units[0])
     calories_units_options = tk.OptionMenu(main_frame, selected_unit_calories, *calories_units) 
@@ -307,6 +306,7 @@ def display_calories():
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
+
     display_save_button(main_frame)
 
 
@@ -360,7 +360,7 @@ def display_timeframe(main_frame, col , row):
     #Create end date 
     global end_date
     end_date = tk.StringVar()
-    end_date.set(datetime.date.today()) # Set the date initial date to todays date.
+    end_date.set(datetime.date.today() + datetime.timedelta(days=1)) # Set the date initial date to todays date.
     end_date_label = tk.Label(main_frame,
                 font =("Arial", 12, "bold"),
                 background=blue,
