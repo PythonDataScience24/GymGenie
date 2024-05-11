@@ -214,7 +214,7 @@ def display_duration(root):
     set_duration = True
 
     #Display other common parameters: timeframe, type of exercise and smart tips.
-    display_timeframe(main_frame , col = 0 , row = 1 )
+    display_timeframe(main_frame , col = 0 , row = 1, root=root )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
@@ -275,7 +275,7 @@ def display_distance(root):
     global set_distance
     set_distance = True
 
-    display_timeframe(main_frame , col = 0 , row = 1 )
+    display_timeframe(main_frame , col = 0 , row = 1, root=root)
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
@@ -334,7 +334,7 @@ def display_calories(root):
     global set_calories
     set_calories = True
 
-    display_timeframe(main_frame , col = 0 , row = 1 )
+    display_timeframe(main_frame , col = 0 , row = 1, root=root)
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
@@ -342,7 +342,7 @@ def display_calories(root):
 
 
 
-def display_timeframe(main_frame, col , row):
+def display_timeframe(main_frame, col , row, root):
     """
     Displays the timeframe label and its entries to set the start and end dates.
 
