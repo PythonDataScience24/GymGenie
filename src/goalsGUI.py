@@ -32,6 +32,14 @@ light_blue = "#5d99a9"
 root = tk.Tk()
 root.geometry("500x400")
 
+### Global variables
+#Create boolean values to keep the workflow
+global set_distance
+set_distance = False
+global set_duration
+set_duration = False
+global set_calories
+set_calories = False
 
 #####
 #Other functions (need to be on top)
@@ -169,15 +177,37 @@ def display_duration():
             height = 1)
     duration_label.grid(column=0, row=0)
 
+    #create h label
+    h_label = tk.Label(main_frame, text="h",
+                        font =("Arial", 16, "bold"),
+            background=blue,
+            foreground=white,
+            width=20,
+            height = 1)
+    h_label.grid(column=2, row=0)
+    
+    #create min label
+    min_label = tk.Label(main_frame, text="min",
+                        font =("Arial", 16, "bold"),
+            background=blue,
+            foreground=white,
+            width=20,
+            height = 1)
+    min_label.grid(column=4, row=0) 
+
     #create hours and minutes entry
     global e_hours
     e_hours = tk.Entry(main_frame)
-    e_hours.insert(tk.END, "h")
+    e_hours.insert(tk.END, 0)
     global e_min
     e_min = tk.Entry(main_frame)
-    e_min.insert(tk.END, "min")
+    e_min.insert(tk.END, 0)
     e_hours.grid(column=1, row=0)
-    e_min.grid(column=2, row=0)
+    e_min.grid(column=3, row=0)
+
+    #Change boolean values to keep the workflow
+    global set_duration
+    set_duration = True
 
     #Display other common parameters: timeframe, type of exercise and smart tips.
     display_timeframe(main_frame , col = 0 , row = 1 )
@@ -185,6 +215,8 @@ def display_duration():
     display_smarttips(main_frame)
     display_timescale(main_frame)
     display_save_button(main_frame)
+
+
 
 
 def display_distance():
@@ -225,6 +257,7 @@ def display_distance():
     #create entry
     global e_distance
     e_distance= tk.Entry(main_frame)
+    e_distance.insert(tk.END, 0)
     e_distance.grid(column=1, row=0)
     #create option menu
     distance_units = ["km", "m","miles"]
@@ -234,23 +267,16 @@ def display_distance():
     distance_units_options = tk.OptionMenu(main_frame, selected_unit_distance, *distance_units) 
     distance_units_options.grid(column=2, row=0)
 
+    #Change boolean values to keep the workflow
+    global set_distance
+    set_distance = True
+
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
-    
-    #Give format to dates to be able to add to the dataframe
-    start_date_tmp = start_date.get().split('-')
-    start_date_value = Date(int(start_date_tmp[0]), int(start_date_tmp[1]), int(start_date_tmp[2]))
-
-    end_date_tmp = end_date.get().split('-')
-    end_date_value = Date(int(end_date_tmp[0]), int(end_date_tmp[1]), int(start_date_tmp[2]))
-
-    #Create goal object
-    global my_goal
-    my_goal = goal.Goal(value=e_distance.get(), unit = selected_unit_distance.get() ,time_scale=selected_timescale, 
-                           start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
     display_save_button(main_frame)
+
 
     
 
@@ -291,22 +317,26 @@ def display_calories():
     calories_label.grid(column=0, row=0)
 
     #create entry
-    #global e_calories
+    global e_calories
     e_calories = tk.Entry(main_frame)
+    e_calories.insert(tk.END, 0)
     e_calories.grid(column=1, row=0)
     #create option menu
     calories_units = ["kcal", "kJ"]
-    #global selected_unit_calories
+    global selected_unit_calories
     selected_unit_calories = tk.StringVar(main_frame)
     selected_unit_calories.set(calories_units[0])
     calories_units_options = tk.OptionMenu(main_frame, selected_unit_calories, *calories_units) 
     calories_units_options.grid(column=2, row=0)
 
+    #Change boolean values to keep the workflow
+    global set_calories
+    set_calories = True
+
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
-
     display_save_button(main_frame)
 
 
@@ -490,7 +520,7 @@ def display_timescale(main_frame):
 def display_save_button(main_frame):
     #Add save button
     save_btn = tk.Button(main_frame, 
-        command= lambda: save_goal(main_frame, my_goal) ,
+        command= lambda: save_goal(main_frame) ,
         text = "save", 
         font =("Arial", 12, "bold"),
         background=white,
@@ -508,7 +538,33 @@ def display_save_button(main_frame):
 
 
 
-def save_goal(main_frame, my_goal):  
+def save_goal(main_frame):  
+
+    #Give format to dates to be able to add to the dataframe
+    start_date_tmp = start_date.get().split('-')
+    start_date_value = Date(int(start_date_tmp[0]), int(start_date_tmp[1]), int(start_date_tmp[2]))
+
+    end_date_tmp = end_date.get().split('-')
+    end_date_value = Date(int(end_date_tmp[0]), int(end_date_tmp[1]), int(end_date_tmp[2]))
+
+
+
+    #Create goal object
+    if set_distance:
+        current_goal = goal.Goal(value=int(e_distance.get()), unit = selected_unit_distance.get() ,time_scale=selected_timescale.get(), 
+                           start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
+    
+    elif set_duration: 
+        #create duration object
+        current_duration = Duration(int(e_hours.get()), int(e_min.get()))
+        current_goal = goal.DurationGoal(value=current_duration.minutes ,time_scale=selected_timescale.get(), 
+                           start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
+
+    elif set_calories:
+        current_goal = goal.Goal(value=int(e_calories.get()), unit = selected_unit_calories.get() ,time_scale=selected_timescale.get(), 
+                           start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
+    print(current_goal)
+
 
     # Check if a workout dataframe already exists. If not, create one.
     current_directory = os.getcwd().replace(os.sep,'/')
@@ -521,7 +577,7 @@ def save_goal(main_frame, my_goal):
         goals_df = dataframe.GoalDataframe()
 
     # Add the workout object to the dataframe and save as csv file
-    goals_df.add_goal(my_goal)
+    goals_df.add_goal(current_goal)
 
     # Save dataframe in a file csv
     goals_df.save_dataframe("goals.csv")
@@ -530,6 +586,8 @@ def save_goal(main_frame, my_goal):
     root.destroy()
 
 
+
+#run it
 display_set_goal()
 
 
@@ -550,18 +608,6 @@ root.mainloop()
 
 #NOTES FOR ME
 # Create and display exit button
-
-
-
-
-# Add save-button(save all the logged data put in by the user) at the bottom of the page.
-# save_button = create_button(frame=log_workout_frame, text="Save", width=15,
-#                             command=lambda: save_data(frame=log_workout_frame, 
-#                                                         workout_type=workout_type))
-# save_button.grid(columns=5, row=len(workout_datatypes)+1)
-
-
-
 
 
 #Commands for img
