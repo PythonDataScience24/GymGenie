@@ -18,7 +18,8 @@ class Dataframe(ABC):
         data: the Dataframe containing the entries as rows.
     """
 
-    def __init__(self, column_names: list):
+    def __init__(self, column_names: list, *args, **kwargs):
+        pd.DataFrame.__init__(self,*args,**kwargs)
         self.data = pd.DataFrame(columns=column_names)
 
     def save_dataframe(self, path: str):

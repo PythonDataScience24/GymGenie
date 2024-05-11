@@ -1,13 +1,8 @@
-import pandas as pd
 import sys
 from workoutlog import WorkoutLog, SetGoal
 from goal_summary import GoalSummary, WorkoutSummary
 import os
 from dataframe import WorkoutDataframe, GoalDataframe
-import goal
-import duration
-import distance
-import calories
 
 def main():
     #define list of possible workouts
@@ -120,21 +115,18 @@ def setGoal(goal_df, exercise_types):
 
 
 def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe):
-    # TODO
-    # Adjust logic, may not work properly
     summary = GoalSummary(workout_df,goals_df)
 
     #print all the goals and ask the user to select the one they want to see the plots for
     goals_df.print_dataframe()
     row_index = int(input("For which goal would you like to see the progress plots? Enter the row index: "))
-    print(row_index)
     # visualize the progress in the goal
     summary.plot_goal(row_index)
 
 
 def summaryVisualisations(workout_df):
-    timescale = int(input("Over how many of the past days would you like to see the summary?\n"))
-    quantity = input("Would you like to see the summary for duration, distance or calories?\n").lower().strip()
+    timescale = int(input("Over how many of the past days would you like to see the summary? Select 7/30/365"))
+    quantity = input("Would you like to see the summary for duration, distance or calories? ").lower().strip()
     #exercises = ###how to get this input?
     workout_summary = WorkoutSummary(workout_df)
     workout_summary.plot_summary(timescale, quantity)

@@ -336,19 +336,17 @@ class SetGoal:
                 return column_name
             else:
                 print('Please select a valid column name!')
-    def get_unit(self):
+    def get_unit(self, choice):
         """
         Allow the user to choose the new goal value
         """
-        match choise:
+        match choice:
             case 'a':
                 return 'min'
             case 'b':
                 return 'km'
             case 'c':
                 return 'kcal'
-        
-        return new_goal
 
     def get_new_value(self, name):
         """
@@ -359,7 +357,7 @@ class SetGoal:
             case 'value':
                 value = self.get_value()
             case 'unit':
-                value = self.get_unit()
+                value = self.get_unit(self.get_goal_type())
             case 'time_scale':
                 value = self.get_time_scale()
             case 'start_date':
