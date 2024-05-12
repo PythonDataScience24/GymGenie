@@ -259,7 +259,7 @@ class WorkoutSummary:
         Promps the timescale the user wants to see in the plot
         """
         while True:
-            timescale = int(input("Over how many of the past days would you like to see the summary? Select 7/30/365" ))
+            timescale = int(input("Over how many of the past days would you like to see the summary? Select 7/30/365: "))
             if timescale in [7,30,365]:
                 return timescale
             else:
@@ -286,11 +286,11 @@ class WorkoutSummary:
         """
 
         # first, define the cutoff date from which on you want to do the plot
-        latest_date = self.data['date'].max()
+        latest_date = self.data.data['date'].max()
         cutoff_date = latest_date - pd.Timedelta(days=timescale)
 
         # select the relevant data from the total of logged workouts
-        current_data = self.data.loc[self.data['date']
+        current_data = self.data.data.loc[self.data.data['date']
                                      >= cutoff_date, ['date', quantity, 'activity']]
         current_data = current_data.pivot(
             index='date', columns='activity', values=quantity)
@@ -318,14 +318,14 @@ class WorkoutSummary:
         """
 
         # first, define the cutoff date from which on you want to do the plot
-        latest_date = self.data['date'].max()
+        latest_date = self.data.data['date'].max()
         cutoff_date = latest_date - pd.Timedelta(days=timescale)
 
         # select the relevant data from the total of logged workouts
-        current_data = self.data.loc[self.data['date']
+        current_data = self.data.data.loc[self.data.data['date']
                                      >= cutoff_date, ['date', 'activity', quantity]]
         # select only the rows with the activities to compare
-        current_data = self.data[self.data['activity'].isin(exercises)]
+        current_data = self.data.data[self.data.data['activity'].isin(exercises)]
 
         # to get all combinations of date and activity in the dataframe, create a date range and all possible combinations with activities
         dates = pd.date_range(current_data['date'].min(
@@ -364,12 +364,12 @@ class WorkoutSummary:
 
         # select the relevant data, if a timescale argument is given
         if timescale is not None:
-            latest_date = self.data['date'].max()
+            latest_date = self.data.data['date'].max()
             cutoff_date = latest_date - pd.Timedelta(days=timescale)
-            current_data = self.data.loc[self.data['date']
+            current_data = self.data.data.loc[self.data.data['date']
                                          >= cutoff_date, ['activity', 'rating']]
         else:
-            current_data = self.data.loc[:, ['activity', 'rating']]
+            current_data = self.data.data.loc[:, ['activity', 'rating']]
 
         # plot
         sns.violinplot(data=current_data, x="activity",

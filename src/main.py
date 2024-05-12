@@ -133,7 +133,7 @@ def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe):
     
 
 
-def summaryVisualisations(workout_df):
+def summaryVisualisations(workout_df: WorkoutDataframe):
     """
     Allow the user to see a summary of the workouts made
 
@@ -141,6 +141,7 @@ def summaryVisualisations(workout_df):
     workout_df: pandas.DataFrame
         Dataframe containing entries of previously logged workouts.
     """
+    workout_df.plot_dataframe()
     #exercises = ###how to get this input?
     workout_summary = WorkoutSummary(workout_df)
     # retrieve timescale and quantity
