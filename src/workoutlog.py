@@ -145,7 +145,7 @@ class WorkoutLog:
                                         duration=exercise_duration.print(), rating=impression.print())
             case "cycling":
                 exercise_name = Cycling(calories_used.print(), exercise_date.print(
-                ), distance_value.print(), exercise_duration.print, impression.print())
+                ), distance_value.print(), exercise_duration.print(), impression.print())
             case "strength":
                 exercise_name = Strength(calories_used.print(
                 ), exercise_date.print(), exercise_duration.print(), impression.print())
@@ -246,7 +246,7 @@ class SetGoal:
             goal_end_date = self.get_end_goal()
             goal_exercise = self.get_exercise_type()
 
-            goal = self.create_goal_object(goal_type, goal_value,goal_timeframe, goal_start_date, goal_end_date, goal_exercise)
+            goal = self.create_goal_object(goal_type, goal_value,goal_timeframe, goal_start_date, goal_end_date, goal_exercise.capitalize())
 
             self.goal_df.add_goal(goal)
             print(self.goal_df.print_dataframe())
@@ -277,7 +277,7 @@ class SetGoal:
         """
         while True:
             try:
-                value = float(input("Which value do you want to reach with your goal? Please enter it in km, min or kcal.\n"))
+                value = float(input("Which value do you want to reach with your goal? Please enter it in km, min or kcal: "))
                 return value
             except ValueError:
                 print("Please enter a valid entry!")
@@ -289,7 +289,7 @@ class SetGoal:
         """
         while True:
             try:
-                time_scale = int(input("Per which timescale do you want to set your goal? (7/30/365).\n"))
+                time_scale = int(input("Per which timescale do you want to set your goal? (7/30/365): "))
                 if time_scale in [7,30,365]:
                     return time_scale
             except ValueError:
@@ -301,7 +301,7 @@ class SetGoal:
         """
         while True:
             try:
-                start_date = input("At what date do you start working on that goal? (dd/mm/yyyy)\n").split("/")
+                start_date = input("At what date do you start working on that goal? (dd/mm/yyyy): ").split("/")
                 start = Date(year=int(start_date[2]), month=int(start_date[1]), day=int(start_date[0]))
                 return start
             except ValueError:
@@ -314,7 +314,7 @@ class SetGoal:
         """
         while True:
             try:
-                end_date = input("Until which date do you want to reach the goal? (dd/mm/yyyy)\n").split("/")
+                end_date = input("Until which date do you want to reach the goal? (dd/mm/yyyy): ").split("/")
                 end = Date(year=int(end_date[2]), month=int(end_date[1]), day=int(end_date[0]))
                 return end
             except ValueError:
@@ -330,6 +330,8 @@ class SetGoal:
             exercise_type = input(
                 "In which exercise do you want to achieve the goal? Choose from the list above or type 'all' to include all types of exercises.\n").lower()
             if exercise_type in self.exercise_types:
+                return exercise_type
+            elif exercise_type == 'all':
                 return exercise_type
             else:
                 print("Invalid exercise type. Choose from the list above.")

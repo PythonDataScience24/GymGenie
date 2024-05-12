@@ -9,7 +9,6 @@ from duration import Duration
 from workout import Workout,Climbing
 from calories import Calories
 
-
 class Dataframe(ABC):
     """
     Abstract base class for a dataframe.
@@ -62,6 +61,15 @@ class Dataframe(ABC):
         self.data = input_data
 
 
+    def extract_date(self,date:str):
+        """
+        Transform the date string in a Date object
+        """
+        info =  date.split('-')
+
+        return Date(int(info[0]), int(info[1]), int(info[2])).print()
+
+
 class WorkoutDataframe(Dataframe):
     """
     Dataframe  that contains the information about the workouts the user entered.
@@ -80,12 +88,54 @@ class WorkoutDataframe(Dataframe):
                                                         "duration": [new_entry.duration],
                                                         "distance": [new_entry.distance],
                                                         "calories": [new_entry.calories],
-                                                        "rating": [new_entry.rating]})])
+                                                        "rating": [new_entry.rating]})], ignore_index=True)
         # make sure duplicated entries are not possible
         if sum(self.data.duplicated()) > 0:
             print(
                 "This workout is already present in the table, the second entry will be dropped.")
             self.data.drop_duplicates(inplace=True)
+
+    def plot_dataframe(self):
+        """
+        Transform the data of the dataframe to use it for plotting
+        """
+        #print(self.data)
+        self.data['date'] = self.data['date'].apply(self.extract_date)
+        self.data['duration'] = self.data['duration'].apply(self.extarct_duration)
+        self.data['distance'] = self.data['distance'].apply(self.extract_distance)
+        self.data['calories'] = self.data['calories'].apply(self.extract_calories)
+        self.data['rating'] = self.data['rating'].apply(self.extract_rating)
+
+
+    def extarct_duration(self,duration:str):
+        """
+        Transofmr the duration string in an float for plotting
+        """
+        info = duration.split('h')
+        
+        return float(int(info[0]) * 60 +  int(info[1]))
+    
+    def extract_distance(self,distance:str):
+        """
+        Transform the distance string in a float for plotting
+        """
+        info = distance.split(" ")
+
+        return float(info[0])
+    
+    def extract_calories(self,calories:str):
+        """
+        Transform the calories string in a float for plotting
+        """
+        info = calories.split(" ")
+
+        return float(info[0])
+    
+    def extract_rating(self,ratings:str):
+        """
+        Transform the rating string in a interger for plotting
+        """
+        return int(ratings)
 
 
 class GoalDataframe(Dataframe):
@@ -106,12 +156,34 @@ class GoalDataframe(Dataframe):
                                                         "time_scale": [new_entry.time_scale],
                                                         "start_date": [new_entry.start_date.print()],
                                                         "end_date": [new_entry.end_date.print()],
-                                                        "exercise": [new_entry.exercise]})])
+                                                        "exercise": [new_entry.exercise]})], ignore_index=True)
         # make sure duplicated entries are not possible
         if sum(self.data.duplicated()) > 0:
             print(
                 "This goal is already present in the table, the second entry will be dropped.")
             self.data.drop_duplicates(inplace=True)
+
+
+    def plot_goals(self):
+        """
+        Transform the data of the goal dataframe to use it for plotting
+        """
+        self.data['start_date'] = self.data['start_date'].apply(self.extract_date)
+        self.data['end_date'] = self.data['end_date'].apply(self.extract_date)
+        self.data['value'] = self.data['value'].apply(self.exctract_float)
+        self.data['time_scale'] = self.data['time_scale'].apply(self.exctract_integer)
+
+    def exctract_integer(self,value:str):
+        """
+        Transform the time_scale string in a int for plotting the goals
+        """
+        return int(value)
+    
+    def exctract_float(self,value:str):
+        """
+        Transform the value string in a flora for plotting the goals
+        """
+        return float(value)
 
 
 if __name__ == "__main__":

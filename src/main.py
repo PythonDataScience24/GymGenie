@@ -138,17 +138,20 @@ def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe):
     goals_df:pandas.DataFrame
         Dataframe containing entries of previously set goals.
     """
+    # transform the dataframe of workout and goals for plotting
+    workout_df.plot_dataframe()
+    goals_df.plot_goals()
+
     summary = GoalSummary(workout_df,goals_df)
 
     #print all the goals and ask the user to select the one they want to see the plots for
     goals_df.print_dataframe()
-    while True:
-        row_index = int(input("For which goal would you like to see the progress plots? Enter the row index: "))
-        if row_index in goals_df.index:
-            # visualize the progress in the goal
-            summary.plot_goal(row_index)
-        else:
-            print("Please insert a valid index.")
+    row_index = int(input("For which goal would you like to see the progress plots? Enter the row index: "))
+    if row_index in goals_df.data.index:
+        # visualize the progress in the goal
+        summary.plot_goal(row_index)
+    else:
+        print("Please insert a valid index.")
     
 
 
