@@ -7,7 +7,7 @@ from dataframe import WorkoutDataframe, GoalDataframe
 def main():
     #define list of possible workouts
     exercise_types = ["running", "cycling", "strength", "swimming", "walking", "skiing", "climbing", "others"]
-    distance_exercises = ["running", "cycling", "swimming", "walking"]
+    distance_exercises = ["running", "cycling", "swimming", "walking", "skiing", "others"]
 
     choice = ""
 
@@ -73,25 +73,12 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
         if workout_respond == "y":
             confirm = "y"
             workouts_df.add_workout(new_workout)
-            print(workouts_df.print_dataframe())
+            workouts_df.print_dataframe()
 
             # save dataframe in a file csv
             workouts_df.save_dataframe("logWorkouts.csv")
-        elif workout_respond == 'n':
-            # modify dataframe
-            new_entry = ""
-            while new_entry != 'y':
-                row_index,column_name,new_value = WorkoutLog(exercise_types, 
-                                            distance_exercises).modify_workout_dataframe()
-                workouts_df.edit_dataframe(column_name,row_index,new_value)
-                print(workouts_df.print_dataframe())
-                response = input(
-                "This is your new entry, do you want to save it? [y/n]: ").lower().strip()
-                if response == 'y':
-                    new_entry = 'y'
-            confirm = 'y'
         else:
-            print('Please select a valid confirmation answer!')
+            print('Please select a valid confirmation answer or modify the workout')
 
 def setGoal(goal_df, exercise_types):
     """
@@ -111,20 +98,8 @@ def setGoal(goal_df, exercise_types):
             confirm = 'y'
             goal_df.add_goal(new_goal)
             goal_df.save_dataframe("GoalData.csv")
-        elif goal_respond == 'n':
-            # modify dataframe
-            new_entry = ""
-            while new_entry != 'y':
-                row_index,column_name,new_value = SetGoal(exercise_types).modify_entry_dataframe()
-                goal_df.edit_dataframe(column_name,row_index,new_value)
-                print(goal_df.print_dataframe())
-                response = input(
-                "This is your new entry, do you want to save it? [y/n]: ").lower().strip()
-                if response == 'y':
-                    new_entry = 'y'
-            confirm = 'y'
         else:
-            print('Please select a valid confirmation answer!')
+            print('Please select a valid confirmation answer or modify the goal')
 
 
 
@@ -146,11 +121,14 @@ def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe):
 
     #print all the goals and ask the user to select the one they want to see the plots for
     goals_df.print_dataframe()
-    row_index = int(input("For which goal would you like to see the progress plots? Enter the row index: "))
-    if row_index in goals_df.data.index:
-        # visualize the progress in the goal
-        summary.plot_goal(row_index)
-    else:
+    try:   
+        row_index = int(input("For which goal would you like to see the progress plots? Enter the row index: "))
+        if row_index in goals_df.data.index:
+            # visualize the progress in the goal
+            summary.plot_goal(row_index)
+        else:
+            print("Please insert a valid index.")
+    except ValueError:
         print("Please insert a valid index.")
     
 
