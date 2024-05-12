@@ -34,8 +34,7 @@ class Distance:
         if unit.lower() in valid_units:
             self.unit = unit.lower()
         else:
-            raise ValueError(f"Invalid unit. Choose from {
-                             ', '.join(valid_units)}.")
+            raise ValueError(f'Invalid unit. Choose from {", ".join(valid_units)}.')
 
     def distance_convert(self, a, b):
         """
