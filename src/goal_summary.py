@@ -268,10 +268,10 @@ class WorkoutSummary:
         Promps the timescale the user wants to see in the plot
         """
         while True:
-            timescale = int(input("Over how many of the past days would you like to see the summary? Select 7/30/365: "))
-            if timescale in [7,30,365]:
+            try:
+                timescale = int(input("Over how many of the past days would you like to see the summary? "))
                 return timescale
-            else:
+            except ValueError:
                 print('Please insert a valid timescale.')
 
     def get_quantity(self):
