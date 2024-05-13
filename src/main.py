@@ -2,7 +2,6 @@ import sys
 from workoutlog import WorkoutLog, SetGoal
 from goal_summary import GoalSummary, WorkoutSummary
 import os
-import dill as pickle
 from dataframe import WorkoutDataframe, GoalDataframe
 
 def main():
@@ -18,20 +17,19 @@ def main():
         # Think how to improve this part
         #load the workouts from a pickle file, or start a dataframe to store them in if no file was found
         current_directory = os.getcwd().replace(os.sep,'/')
-        workout_file = current_directory + "/logWorkouts"
+        workout_file = current_directory + "/logWorkouts.csv"
+        workouts_df = WorkoutDataframe()
         try:
-            with open(f"{workout_file}.pkl", "rb") as file:
-                workouts_df = pickle.load(file)
+            workouts_df.read_from_csv(workout_file)
         except FileNotFoundError:
-            workouts_df = WorkoutDataframe()
-
+            pass
         # start a dataframe to store the goals and load them from a file
-        goal_file = current_directory + "/GoalData"
+        goal_file = current_directory + "/GoalData.csv"
+        goals_df = GoalDataframe()
         try:
-            with open(f"{goal_file}.pkl", "rb") as file:
-                goals_df = pickle.load(file)
+           goals_df.read_from_csv(goal_file) 
         except FileNotFoundError:
-            goals_df = GoalDataframe()
+            pass
 
         match choice.lower().strip():
             case "w":
@@ -39,18 +37,13 @@ def main():
             case "g":
                 setGoal(goals_df, exercise_types)
             case "o":
-                seeGoals(workouts_df.data, goals_df.data)
+                seeGoals(workouts_df, goals_df)
             case "s":
-                summaryVisualisations(workouts_df.data)
+                summaryVisualisations(workouts_df)
             case "q":
                 #save the workouts and goal dataframe when quitting to a csv
-                workouts_df.save_to_csv(workout_file)
-                goals_df.save_to_csv(goal_file)
-                #also save them to a pickle file, from where we can reload the object structure
-                with open(f"{workout_file}.pkl", "wb") as file:
-                    pickle.dump(workouts_df, file)
-                with open(f"{goal_file}.pkl", "wb") as file:
-                    pickle.dump(goals_df, file)
+                workouts_df.save_dataframe(workout_file)
+                goals_df.save_dataframe(goal_file)
                 # exit the program
                 sys.exit("GymGenie has been terminated. See you next time!")
             case _:

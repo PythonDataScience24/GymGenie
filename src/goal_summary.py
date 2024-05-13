@@ -23,12 +23,6 @@ class GoalSummary:
         """
         Initialize a GoalSummary object
         """
-        #make the entries for duration, distance, calories and rating numeric
-        log_workout_dataframe['duration'] = pd.Series([entry.minutes for entry in log_workout_dataframe['duration']])
-        log_workout_dataframe['distance'] = pd.Series([entry.distance_value for entry in log_workout_dataframe['distance']])
-        log_workout_dataframe['calories'] = pd.Series([entry.calories_value for entry in log_workout_dataframe['calories']])
-        log_workout_dataframe['rating'] = pd.Series([entry.rating_value for entry in log_workout_dataframe['rating']])
-
         self.log_workout_dataframe = log_workout_dataframe
         self.goal_data_frame = goal_data_frame
 
@@ -44,20 +38,20 @@ class GoalSummary:
         # plot Specific Exercise for week/month/year
 
         # Checks dataframe objects
-        if self.log_workout_dataframe.empty or self.goal_data_frame.empty:
+        if self.log_workout_dataframe.data.empty or self.goal_data_frame.data.empty:
             print(
                 'It seems that one of the dataframe has no data. Please add entry before seeing any plot!')
         else:
             # find the value of the goal
-            value_goal = float(self.goal_data_frame.iloc[[
+            value_goal = float(self.goal_data_frame.data.iloc[[
                                index_goal]]['value'].item())
-            unit_value = self.goal_data_frame.iloc[[
+            unit_value = self.goal_data_frame.data.iloc[[
                 index_goal]]['unit'].item()
-            exercise = self.goal_data_frame.iloc[[
+            exercise = self.goal_data_frame.data.iloc[[
                 index_goal]]['exercise'].item()
-            start_time = self.goal_data_frame.iloc[[
+            start_time = self.goal_data_frame.data.iloc[[
                 index_goal]]['start_date'].item()
-            end_time = self.goal_data_frame.iloc[[
+            end_time = self.goal_data_frame.data.iloc[[
                 index_goal]]['end_date'].item()
             print(value_goal)
             print(unit_value)
@@ -147,7 +141,7 @@ class GoalSummary:
                 unit = 'duration'
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
-        progression = dataframe.groupby('date')[unit].sum().reset_index()
+        progression = dataframe.data.groupby('date')[unit].sum().reset_index()
         print(progression)
         # create a new column called progress and use the function cumsum
         # that will do partial sum of the row before
@@ -185,7 +179,7 @@ class GoalSummary:
             case "min":
                 unit = 'duration'
         # group each day every sport
-        grouped_dataframe = dataframe.groupby(
+        grouped_dataframe = dataframe.data.groupby(
             ['activity', 'date']).sum().reset_index()
         # create a pivot table
         pivot_df = grouped_dataframe.pivot(
@@ -227,7 +221,7 @@ class GoalSummary:
                 unit = 'duration'
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
-        progression = dataframe.groupby('date')[unit].sum().reset_index()
+        progression = dataframe.data.groupby('date')[unit].sum().reset_index()
         # plot using progress pie chart to shows what is left
         # find th total workout
         total_sum = progression[unit].sum()
