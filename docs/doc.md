@@ -16,7 +16,11 @@ When you have activated you environment, goes in the folder of the repository an
 
 After that all the necessary packages will be installed in your environment.
 
-### Start the Programm
+### Interface of GymGenie
+
+GymGenie provides two options for the interface: CLI (Command Line Interface) and GUI (Graphical User Interface). You can choose which of the interfaces you prefer to use. How to start and use the two interfaces are described below.
+
+## Start the Programm
 Go in the folder of the repository and type the following command:
 <pre> python .\src\main.py </pre>
 If you are using MacOS or Linux the path of the file has to be adjusted.
