@@ -16,6 +16,7 @@ import os
 import pandas as pd
 
 
+
 #color palette
 black = "BLACK"
 white = "WHITE"
@@ -588,8 +589,6 @@ def save_goal(main_frame, root):
 
 
 
-#run it
-#display_set_goal()
 
 
 
@@ -598,15 +597,3 @@ def save_goal(main_frame, root):
 
 
 
-#root.mainloop()
-
-
-
-
-
-
-#NOTES FOR ME
-
-#Commands for img
-# my_img = ImageTk.PhotoImage(Image.open(""))
-# my_img.pack()
