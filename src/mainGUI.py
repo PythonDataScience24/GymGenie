@@ -282,7 +282,7 @@ def save_data(frame, workout_type):
     workouts_df.add_workout(my_workout)
 
     # Save dataframe in a file csv
-    workouts_df.save_dataframe("logWorkouts.csv")
+    workouts_df.save_to_csv("logWorkouts.csv")
 
     # Close root window and display start page again. 
     root.destroy()
