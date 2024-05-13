@@ -38,7 +38,7 @@ def display_start_page():
     root.title("GymGenie")
 
     # Create frame for the main page
-    main_frame = gui.create_frame(root=root, rows=5)
+    main_frame = gui.create_frame(root=root, rows=6)
 
     # Add welcome label
     welcome_label = gui.create_label(frame=main_frame, text = "Welcome to GymGenie!", 
@@ -50,7 +50,8 @@ def display_start_page():
     start_page_buttons = [("Log a workout", lambda: choose_workout(root)), 
                           ("Set a new goal", lambda: set_goal(root)),
                           ("View goals", lambda: view_goals(root)), 
-                          ("View progress and trends", lambda: view_progress_and_trends(root))]
+                          ("View progress and trends", lambda: view_progress_and_trends(root)),
+                          ("Quit", lambda: quit(root))]
 
     # Create and place the buttons on the main frame.
     for i, button in enumerate(start_page_buttons):
@@ -75,7 +76,7 @@ def choose_workout(root):
         widget.destroy()
 
     # Create frame where you can choose the type of workut you want to log your exercise for. 
-    rows= len(workout.Workout.__subclasses__()) + 1 # include all workout types + one label
+    rows= len(workout.Workout.__subclasses__()) + 2 # include all workout types + label and exit-button
     choose_workout_frame = gui.create_frame(root=root, rows=rows)   
 
     # Add label that asks for the type of workout.
@@ -97,6 +98,11 @@ def choose_workout(root):
                                                   command=lambda workout_type=workout_type: log_workout(workout_type),
                                                   text=workout_type)
         choose_workout_button.grid(column=0, row=i+1)
+
+    # Add exit button
+    exit_button = gui.create_button(frame=choose_workout_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5)
+    exit_button.grid(column=0, row=rows)
 
 def log_workout(workout_type):
     """
@@ -120,7 +126,7 @@ def log_workout(workout_type):
         workout_datatypes = ["Calories", "Date ", "Duration", "Rating"]
     else:
         workout_datatypes = ["Calories", "Date", "Distance", "Duration", "Rating"]
-    rows=len(workout_datatypes)+2 # include all datatypes + title and save-button
+    rows=len(workout_datatypes)+3 # include all datatypes + title, save-button and exit-button
 
     # Create frame where you can choose log in all the dta from your workout.    
     log_workout_frame = gui.create_frame(root=root, pady=10, columns=5, rows=rows)
@@ -200,11 +206,16 @@ def log_workout(workout_type):
                                                 text="Select a date", font=("Arial", 10, "bold"), width=12)
             calendar_button.grid(column=2, row=i+1)
     
-    # Add save-button(save all the logged data put in by the user) at the bottom of the page.
-    save_button = gui.create_button(frame=log_workout_frame, text="Save", width=15,
+    # Add save-button(save all the logged data put in by the user)
+    save_button = gui.create_button(frame=log_workout_frame, text="Save", width=10,
                                 command=lambda: save_data(frame=log_workout_frame, 
                                                           workout_type=workout_type))
     save_button.grid(columns=5, row=len(workout_datatypes)+1)
+
+    #Add exit button
+    exit_button = gui.create_button(frame=log_workout_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5, font=("Arial", 10, "bold"))
+    exit_button.grid(column=4, row=len(workout_datatypes)+2)
 
 def save_data(frame, workout_type):
     """
@@ -288,6 +299,31 @@ def view_progress_and_trends(root):
     # Create frame for the page where the user can view progress and trends of their workout.
     progress_trend_frame = tk.Frame(root, bg=blue, pady=40)
     progress_trend_frame.pack(fill=tk.BOTH, expand=True)
+
+def quit(root):
+    """
+    Closes the window of the application.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    """
+    root.destroy()
+
+
+def exit(root):
+    """
+    Closes the current frame and open the start page.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    """
+    root.destroy()
+
+    display_start_page()
 
 if __name__ == "__main__":
     display_start_page()
