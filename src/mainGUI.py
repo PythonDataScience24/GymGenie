@@ -559,16 +559,6 @@ def log_workout(workout_type):
     save_button.grid(columns=5, row=len(workout_datatypes)+1)
          
     
-
-def view_goals(root):
-    # Remove all widgets from the root window
-    for widget in root.winfo_children():
-        widget.destroy()
-
-    # Create frame for the page where the user can view the goals
-    view_goal_frame = tk.Frame(root, bg=blue, pady=40) # same here for renaming
-    view_goal_frame.pack(fill=tk.BOTH, expand=True)
-
 def view_progress_and_trends(root):
     # Remove all widgets from the root window
     for widget in root.winfo_children():
@@ -586,6 +576,11 @@ def display_set_goal(root):
         Duration
         Calories burned
     After clicking each button a new page is displayed.
+
+    Parameters
+    ----------
+        root : tkinter.Window
+        The root window of the GUI for GymGenie.
     
     """
     # Remove all widgets from the root window
@@ -635,10 +630,14 @@ def display_set_goal(root):
         btn.grid(column=0, row=1+i) 
     
 
-
 def display_duration(root):
     """
     Displays a new page with the parameters to set the duration goal.
+
+    Parameters
+    ----------
+        root : tkinter.Window
+        The root window of the GUI for GymGenie.
 
     """
     # Remove all widgets from the root window
@@ -716,6 +715,11 @@ def display_duration(root):
 def display_distance(root):
     """
     Displays a new page with the parameters to set the distance goal.
+
+     Parameters
+    ----------
+        root : tkinter.Window
+        The root window of the GUI for GymGenie.
     
     """
     # Remove all widgets from the root window
@@ -775,6 +779,11 @@ def display_distance(root):
 def display_calories(root):
     """
     Displays a new page with the parameters to set the calories goal.
+
+    Parameters
+    ----------
+        root : tkinter.Window
+        The root window of the GUI for GymGenie.
     
     """
     # Remove all widgets from the root window
@@ -898,9 +907,14 @@ def display_timeframe(main_frame, col , row):
     end_date_label.grid(column=col+4, row=row)
 
 
-
-
 def display_exercise_type(main_frame):
+    """
+    Displays the label and option menu to select the type of workout related to the goal.
+
+    Args:
+        main_frame : frame where to be displayed.
+    
+    """
     #Create label
     exercise_label = tk.Label(main_frame, 
                         text="Workout:",
@@ -976,6 +990,9 @@ def popup_smarttips():
 def display_timescale(main_frame):
     """
     Displays time-scale and option menu to set a goal as weekly, monthly or yearly.
+  
+    Args:
+        main_frame : frame where to be displayed.
 
     """
 
@@ -1009,6 +1026,15 @@ def display_timescale(main_frame):
 
 
 def display_save_button(main_frame, root):
+    """
+    Displays save button to store the input user data on goals.
+
+    Args:
+        main_frame : frame where to be displayed.
+        root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    """
+
     #Add save button
     save_btn = tk.Button(main_frame, 
         command= lambda: save_goal(main_frame, root) ,
@@ -1028,6 +1054,15 @@ def display_save_button(main_frame, root):
 
 
 def save_goal(main_frame, root):  
+    """
+    Stores the user input data on goals.csv file after clicking save button.
+    
+    Args:
+        main_frame : frame where to be displayed.
+        root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    
+    """
 
     #Give format to dates to be able to add to the dataframe
     start_date_tmp = start_date.get().split('-')
@@ -1035,8 +1070,6 @@ def save_goal(main_frame, root):
 
     end_date_tmp = end_date.get().split('-')
     end_date_value = Date(int(end_date_tmp[0]), int(end_date_tmp[1]), int(end_date_tmp[2]))
-
-
 
     #Create goal object
     if set_distance:
@@ -1054,8 +1087,7 @@ def save_goal(main_frame, root):
                            start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
     print(current_goal)
 
-
-    # Check if a workout dataframe already exists. If not, create one.
+    # Check if a goals dataframe already exists. If not, create one.
     current_directory = os.getcwd().replace(os.sep,'/')
     goals_file = current_directory + "/goals.csv"
     try:
@@ -1065,7 +1097,7 @@ def save_goal(main_frame, root):
     except FileNotFoundError:
         goals_df = dataframe.GoalDataframe()
 
-    # Add the workout object to the dataframe and save as csv file
+    # Add the goal object to the dataframe and save as csv file
     goals_df.add_goal(current_goal)
 
     # Save dataframe in a file csv
