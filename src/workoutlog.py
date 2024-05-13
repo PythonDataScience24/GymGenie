@@ -58,7 +58,8 @@ class WorkoutLog:
                 exercise_date = Date(year=int(date_str[2]), month=int(
                     date_str[1]), day=int(date_str[0]))
                 return exercise_date
-            except ValueError:
+            except (ValueError, IndexError) as err:
+                print(err)
                 print("Please enter the date in the format dd/mm/yyyy.")
                 return Date(1, 1, 1)
 
@@ -92,7 +93,7 @@ class WorkoutLog:
         """
         Prompts the user to enter the distance if the exercise type requires it.
         """
-        if exercise_type in self.distance_exercises:
+        if exercise_type in self.distance_exercises or exercise_type.lower() in self.distance_exercises:
             while True:
                 try:
                     distance = float(
@@ -145,7 +146,7 @@ class WorkoutLog:
                                         duration=exercise_duration.print(), rating=impression.print())
             case "cycling":
                 exercise_name = Cycling(calories_used.print(), exercise_date.print(
-                ), distance_value.print(), exercise_duration.print, impression.print())
+                ), distance_value.print(), exercise_duration.print(), impression.print())
             case "strength":
                 exercise_name = Strength(calories_used.print(
                 ), exercise_date.print(), exercise_duration.print(), impression.print())
@@ -177,14 +178,15 @@ class WorkoutLog:
 
         new_value = self.get_new_value(column_name)
         
-        return row_index,column_name,new_value
+        return row_index,column_name,new_value.print()
 
     def get_row_index(self):
         """
         Prompt the user which row wants to select in the workout dataframe
         """
         while True:
-                print(self.goal_df.print_dataframe())
+                
+                self.workout_data.print_dataframe()
                 try:
                     row_index = int(input("Which value would you like to modify? Enter the row index: "))
                     return row_index
@@ -195,6 +197,8 @@ class WorkoutLog:
         """
         Prompt the user which column wants to modify in the workout dataframe
         """
+        #
+        self.workout_data.print_dataframe()
         while True:
             column_name = input("Please enter the column name that you want to modify: ")
 
@@ -207,7 +211,7 @@ class WorkoutLog:
         """
         Ask the user which new value wants to insert in the dataframe
         """
-
+        self.workout_data.print_dataframe()
         match name:
             case 'activity':
                 value = self.get_exercise_type()
@@ -216,7 +220,7 @@ class WorkoutLog:
             case 'duration':
                 value = self.get_exercise_duration()
             case 'distance':
-                value = self.get_distance_value(self.workout_data['activity'])
+                value = self.get_distance_value(self.workout_data.data['activity'].item())
             case 'calories':
                 value = self.get_calories_used()
             case 'rating':
@@ -246,7 +250,7 @@ class SetGoal:
             goal_end_date = self.get_end_goal()
             goal_exercise = self.get_exercise_type()
 
-            goal = self.create_goal_object(goal_type, goal_value,goal_timeframe, goal_start_date, goal_end_date, goal_exercise)
+            goal = self.create_goal_object(goal_type, goal_value,goal_timeframe, goal_start_date, goal_end_date, goal_exercise.capitalize())
 
             self.goal_df.add_goal(goal)
             print(self.goal_df.print_dataframe())
@@ -277,7 +281,7 @@ class SetGoal:
         """
         while True:
             try:
-                value = float(input("Which value do you want to reach with your goal? Please enter it in km, min or kcal.\n"))
+                value = float(input("Which value do you want to reach with your goal? Please enter it in km, min or kcal: "))
                 return value
             except ValueError:
                 print("Please enter a valid entry!")
@@ -289,7 +293,7 @@ class SetGoal:
         """
         while True:
             try:
-                time_scale = int(input("Per which timescale do you want to set your goal? (7/30/365).\n"))
+                time_scale = int(input("Per which timescale do you want to set your goal? (7/30/365): "))
                 if time_scale in [7,30,365]:
                     return time_scale
             except ValueError:
@@ -301,10 +305,11 @@ class SetGoal:
         """
         while True:
             try:
-                start_date = input("At what date do you start working on that goal? (dd/mm/yyyy)\n").split("/")
+                start_date = input("At what date do you start working on that goal? (dd/mm/yyyy): ").split("/")
                 start = Date(year=int(start_date[2]), month=int(start_date[1]), day=int(start_date[0]))
                 return start
-            except ValueError:
+            except (ValueError,IndexError) as err:
+                print(err)
                 print("Please enter the date in the format dd/mm/yyyy.")
                 return Date(1,1,1)
 
@@ -314,10 +319,11 @@ class SetGoal:
         """
         while True:
             try:
-                end_date = input("Until which date do you want to reach the goal? (dd/mm/yyyy)\n").split("/")
+                end_date = input("Until which date do you want to reach the goal? (dd/mm/yyyy): ").split("/")
                 end = Date(year=int(end_date[2]), month=int(end_date[1]), day=int(end_date[0]))
                 return end
-            except ValueError:
+            except (ValueError,IndexError) as err:
+                print(err)
                 print("Please enter the date in the format dd/mm/yyyy.")
                 return Date(1,1,2)
 
@@ -330,6 +336,8 @@ class SetGoal:
             exercise_type = input(
                 "In which exercise do you want to achieve the goal? Choose from the list above or type 'all' to include all types of exercises.\n").lower()
             if exercise_type in self.exercise_types:
+                return exercise_type
+            elif exercise_type == 'all':
                 return exercise_type
             else:
                 print("Invalid exercise type. Choose from the list above.")

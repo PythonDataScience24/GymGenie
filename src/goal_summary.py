@@ -59,6 +59,11 @@ class GoalSummary:
                 index_goal]]['start_date'].item()
             end_time = self.goal_data_frame.iloc[[
                 index_goal]]['end_date'].item()
+            print(value_goal)
+            print(unit_value)
+            print(exercise)
+            print(start_time)
+            print(end_time)
             # DO NOT DELETE YET
             # convert value in standard km, maybe we set up only goals in km
             # if unit_value == "miles":
@@ -67,7 +72,7 @@ class GoalSummary:
             #    value_goal = converted_distance.print_distance()
 
             # Case 1: Specific Exercise
-            if type in ["Running", "Cycling", "Strength", "Swimming", 
+            if exercise in ["Running", "Cycling", "Strength", "Swimming", 
                         "Walking", "Skiing", "Climbing", "Others"]:
 
                 self.plot_specific_exercise(
@@ -96,9 +101,10 @@ class GoalSummary:
         """
         # filter the logWorkout dataframe, containing only all the activities with the same exercise
         # and according to the timeframe
-        filtered_workout_dataframe = workout_datafram[(workout_datafram['activity'] == exercise) &
-                                                      (workout_datafram['date'] >= start_time) &
-                                                      (workout_datafram['date'] <= end_time)]
+        workout_df = workout_datafram.data
+        filtered_workout_dataframe = workout_df[(workout_df['activity'] == exercise) &
+                                                      (workout_df['date'] >= start_time) &
+                                                      (workout_df['date'] <= end_time)]
         print(filtered_workout_dataframe)
         # convert all distance in standard km? not necessary for the moment TODO
 
@@ -262,7 +268,7 @@ class WorkoutSummary:
         Promps the timescale the user wants to see in the plot
         """
         while True:
-            timescale = int(input("Over how many of the past days would you like to see the summary? Select 7/30/365"))
+            timescale = int(input("Over how many of the past days would you like to see the summary? Select 7/30/365: "))
             if timescale in [7,30,365]:
                 return timescale
             else:
@@ -289,11 +295,11 @@ class WorkoutSummary:
         """
 
         # first, define the cutoff date from which on you want to do the plot
-        latest_date = self.data['date'].max()
+        latest_date = self.data.data['date'].max()
         cutoff_date = latest_date - pd.Timedelta(days=timescale)
 
         # select the relevant data from the total of logged workouts
-        current_data = self.data.loc[self.data['date']
+        current_data = self.data.data.loc[self.data.data['date']
                                      >= cutoff_date, ['date', quantity, 'activity']]
         current_data = current_data.pivot(
             index='date', columns='activity', values=quantity)
@@ -321,14 +327,14 @@ class WorkoutSummary:
         """
 
         # first, define the cutoff date from which on you want to do the plot
-        latest_date = self.data['date'].max()
+        latest_date = self.data.data['date'].max()
         cutoff_date = latest_date - pd.Timedelta(days=timescale)
 
         # select the relevant data from the total of logged workouts
-        current_data = self.data.loc[self.data['date']
+        current_data = self.data.data.loc[self.data.data['date']
                                      >= cutoff_date, ['date', 'activity', quantity]]
         # select only the rows with the activities to compare
-        current_data = self.data[self.data['activity'].isin(exercises)]
+        current_data = self.data.data[self.data.data['activity'].isin(exercises)]
 
         # to get all combinations of date and activity in the dataframe, create a date range and all possible combinations with activities
         dates = pd.date_range(current_data['date'].min(
@@ -367,12 +373,12 @@ class WorkoutSummary:
 
         # select the relevant data, if a timescale argument is given
         if timescale is not None:
-            latest_date = self.data['date'].max()
+            latest_date = self.data.data['date'].max()
             cutoff_date = latest_date - pd.Timedelta(days=timescale)
-            current_data = self.data.loc[self.data['date']
+            current_data = self.data.data.loc[self.data.data['date']
                                          >= cutoff_date, ['activity', 'rating']]
         else:
-            current_data = self.data.loc[:, ['activity', 'rating']]
+            current_data = self.data.data.loc[:, ['activity', 'rating']]
 
         # plot
         sns.violinplot(data=current_data, x="activity",
