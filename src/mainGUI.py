@@ -1027,8 +1027,6 @@ def display_save_button(main_frame, root):
     save_btn.grid(column=3, row=4)
 
 
-
-
 def save_goal(main_frame, root):  
 
     #Give format to dates to be able to add to the dataframe
@@ -1078,14 +1076,5 @@ def save_goal(main_frame, root):
     display_start_page()
 
 
-
-
-
-
-
-
-
-
-
-
+#run it
 display_start_page()
