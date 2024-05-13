@@ -5,7 +5,7 @@ class Rating:
     Attributes:
         rating (int) : Rating of the workout (from 1 to 10)
     """
-    def __init__(self, rating):
+    def __init__(self, rating:int):
         self.rating = rating
     
     def print(self):

@@ -1,0 +1,7 @@
+activity,date,duration (min),distance (km),calories (kcal),rating,duration
+Running,2024-03-12 - 12:00:00,0h45,7 km,200 kcal,3,
+Cycling,2024-03-13 - 14:00:00,2h0,40 km,400 kcal,8,
+Swimming,2024-04-20 - 15:00:00,4h0,20 km,500 kcal,8,
+Walking,2024-05-20 - 18:00:00,1h0,10 km,300 kcal,4,
+Running,2024-02-12 - 13:00:00,0h30,3 km,150 kcal,3,
+Running,0001-01-01 - 00:00:00,,89 km,8 kcal,2,1h29
