@@ -42,8 +42,8 @@ def main():
                 summaryVisualisations(workouts_df)
             case "q":
                 #save the workouts and goal dataframe when quitting to a csv
-                workouts_df.save_dataframe(workout_file)
-                goals_df.save_dataframe(goal_file)
+                workouts_df.save_to_csv(workout_file)
+                goals_df.save_to_csv(goal_file)
                 # exit the program
                 sys.exit("GymGenie has been terminated. See you next time!")
             case _:
@@ -74,7 +74,7 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
             workouts_df.print_dataframe()
 
             # save dataframe in a file csv
-            workouts_df.save_dataframe("logWorkouts.csv")
+            workouts_df.save_to_csv("logWorkouts.csv")
         else:
             print('Please select a valid confirmation answer or modify the workout')
 
@@ -95,7 +95,7 @@ def setGoal(goal_df, exercise_types):
         if goal_respond == "y":
             confirm = 'y'
             goal_df.add_goal(new_goal)
-            goal_df.save_dataframe("GoalData.csv")
+            goal_df.save_to_csv("GoalData.csv")
         else:
             print('Please select a valid confirmation answer or modify the goal')
 
