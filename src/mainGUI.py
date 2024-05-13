@@ -16,7 +16,7 @@ from duration import Duration
 from date import Date
 from rating import Rating
 import dataframe
-from dataframe import WorkoutDataframe 
+from dataframe import WorkoutDataframe
 
 
 ### Global variables
@@ -60,9 +60,10 @@ def display_start_page():
                                      font =("Arial", 16, "bold"), width=20)
     welcome_label.grid(column=0, row=0)
 
-    logo = tk.PhotoImage(file="gymgenie_logo.png")
-    label = tk.Label(root, image=logo)
-    label.grid(column=0, row=1, padx=10, pady=10)
+    # Add logo - currently not working
+    #logo = tk.PhotoImage(file="gymgenie_logo.png")
+    #label = tk.Label(root, image=logo)
+    #label.grid(col=0, row=1)
 
     # Initialize list of buttons containing the button-text and which command should be executed 
     # when the button is clicked.
