@@ -115,7 +115,7 @@ If you want to exit the program you can type *q* in the terminal or click exit o
 
 ## GUI
 
-### Start the Programm
+### Start the Program
 Go in the folder of the repository and type the following command:
 <pre> python .\src\main_gui.py </pre>
 If you are using MacOS or Linux the path of the file has to be adjusted.
