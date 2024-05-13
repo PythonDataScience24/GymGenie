@@ -667,7 +667,7 @@ def display_duration(root):
                         font =("Arial", 16, "bold"),
             background=blue,
             foreground=white,
-            width=20,
+            width=10,
             height = 1)
     duration_label.grid(column=0, row=0)
 
@@ -850,7 +850,7 @@ def display_timeframe(main_frame, col , row):
             width=20,
             height = 1)
     
-    start_button = tk.Button(main_frame, text="Start date",
+    start_button = tk.Button(main_frame, text="Start",
                     font =("Arial", 12, "bold"),
                     background=white,
                     foreground=black,
@@ -858,7 +858,7 @@ def display_timeframe(main_frame, col , row):
                     height = 1,
                     command=lambda: open_calendar(root, start_date))
     
-    end_button = tk.Button(main_frame, text="End date",
+    end_button = tk.Button(main_frame, text="End",
                 font =("Arial", 12, "bold"),
                 background=white,
                 foreground=black,
@@ -903,8 +903,8 @@ def display_timeframe(main_frame, col , row):
 def display_exercise_type(main_frame):
     #Create label
     exercise_label = tk.Label(main_frame, 
-                        text="Type of workout:",
-                        font =("Arial", 16, "bold"),
+                        text="Workout:",
+                        font =("Arial", 14, "bold"),
                         background=blue,
                         foreground=white,
                         width=20,
@@ -924,7 +924,7 @@ def display_exercise_type(main_frame):
 
     # Create the optionmenu widget and passing the workout_types and the selected_wotkout to it. 
     question_menu = tk.OptionMenu(main_frame, selected_workout, *workout_types, ) 
-    question_menu.grid(column = 1, row = 4) 
+    question_menu.grid(column = 2, row = 4) 
 
 
 def display_smarttips(main_frame, col = 3, row = 3):
@@ -954,7 +954,7 @@ def display_smarttips(main_frame, col = 3, row = 3):
                             highlightthickness=2,
                             justify="center",
                             overrelief="raised")
-    tip_button.grid(column=col, row=row)
+    tip_button.grid(column=col, row=row, columnspan=2)
 
 
 
@@ -1024,7 +1024,7 @@ def display_save_button(main_frame, root):
         cursor="hand2",
         borderwidth=1, #Add border width
         relief="solid") #Add relief style
-    save_btn.grid(column=2, row=4)
+    save_btn.grid(column=3, row=4)
 
 
 
