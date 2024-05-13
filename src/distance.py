@@ -34,8 +34,7 @@ class Distance:
         if unit.lower() in valid_units:
             self.unit = unit.lower()
         else:
-            raise ValueError(f"Invalid unit. Choose from {
-                             ', '.join(valid_units)}.")
+            raise ValueError(f"Invalid unit. Choose from {', '.join(valid_units)}.")
 
     def distance_convert(self, a, b):
         """
@@ -86,7 +85,7 @@ if __name__ == '__main__':
     print(f"Initial distance: {my_distance.distance_value} {my_distance.unit}")
 
     # Change the unit to miles
-    my_distance.distance_setting('m')
+    my_distance.distance_unit_setting('m')
     print(f"Updated distance unit: {my_distance.unit}")
 
     # Convert from miles to meters

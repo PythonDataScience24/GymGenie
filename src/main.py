@@ -2,6 +2,7 @@ import sys
 from workoutlog import WorkoutLog, SetGoal
 from goal_summary import GoalSummary, WorkoutSummary
 import os
+import dill as pickle
 from dataframe import WorkoutDataframe, GoalDataframe
 
 def main():
@@ -15,37 +16,41 @@ def main():
         choice = input("Welcome to GymGenie!\n Press 'w' to log a workout\n Press 'g' to set a new goal\n Press 'o' to get an overview over your goals\n Press 's' to see some summary visualisations\n Press 'q' to quit\n User: ")
         
         # Think how to improve this part
-        #load the workouts from a csv file, or start a dataframe to store them in if no file was found
+        #load the workouts from a pickle file, or start a dataframe to store them in if no file was found
         current_directory = os.getcwd().replace(os.sep,'/')
-        workout_file = current_directory + "/logWorkouts.csv"
-
-        workouts_df = WorkoutDataframe()
+        workout_file = current_directory + "/logWorkouts"
         try:
-            workouts_df.read_from_csv(workout_file)
+            with open(f"{workout_file}.pkl", "rb") as file:
+                workouts_df = pickle.load(file)
         except FileNotFoundError:
-            pass
+            workouts_df = WorkoutDataframe()
 
         # start a dataframe to store the goals and load them from a file
-        goal_file = current_directory + "/GoalData.csv"
-        goals_df = GoalDataframe()
+        goal_file = current_directory + "/GoalData"
         try:
-            goals_df.read_from_csv(goal_file)
+            with open(f"{goal_file}.pkl", "rb") as file:
+                goals_df = pickle.load(file)
         except FileNotFoundError:
-            pass
-        
+            goals_df = GoalDataframe()
+
         match choice.lower().strip():
             case "w":
                 logWorkout(workouts_df, exercise_types, distance_exercises)
             case "g":
                 setGoal(goals_df, exercise_types)
             case "o":
-                seeGoals(workouts_df,goals_df)
+                seeGoals(workouts_df.data, goals_df.data)
             case "s":
-                summaryVisualisations(workouts_df)
+                summaryVisualisations(workouts_df.data)
             case "q":
-                #save the workouts and goal dataframe when quitting
-                workouts_df.save_dataframe(path = workout_file)
-                goals_df.save_dataframe(path = goal_file)
+                #save the workouts and goal dataframe when quitting to a csv
+                workouts_df.save_to_csv(workout_file)
+                goals_df.save_to_csv(goal_file)
+                #also save them to a pickle file, from where we can reload the object structure
+                with open(f"{workout_file}.pkl", "wb") as file:
+                    pickle.dump(workouts_df, file)
+                with open(f"{goal_file}.pkl", "wb") as file:
+                    pickle.dump(goals_df, file)
                 # exit the program
                 sys.exit("GymGenie has been terminated. See you next time!")
             case _:
