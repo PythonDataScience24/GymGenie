@@ -1,7 +1,7 @@
-## Documentation
+# Documentation
 
 
-### Python Environment
+## Python Environment
 To start our program you need to have installed python. We suggested to use *Anaconda*, an open-source package and environment management system that runs on Windows, macOS, and Linux. For more information click [here](https://docs.anaconda.com/free/anaconda/install/index.html).
 
 After you installed *Anaconda* you can create a environment. In the terminal type the following command:
@@ -16,11 +16,13 @@ When you have activated you environment, goes in the folder of the repository an
 
 After that all the necessary packages will be installed in your environment.
 
-### Interface of GymGenie
+## Interface of GymGenie
 
 GymGenie provides two options for the interface: CLI (Command Line Interface) and GUI (Graphical User Interface). You can choose which of the interfaces you prefer to use. How to start and use the two interfaces are described below.
 
-## Start the Programm
+## CLI
+
+### Start the Programm
 Go in the folder of the repository and type the following command:
 <pre> python .\src\main.py </pre>
 If you are using MacOS or Linux the path of the file has to be adjusted.
@@ -110,3 +112,5 @@ We are currently working on it!! Stay tuned!!
 #### Exit
 
 If you want to exit the program you can type *q* in the terminal or click exit on the GUI. All your data will be saved and next time you will enter the program you will be able to access all your current data.
+
+## GUI
