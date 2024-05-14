@@ -392,8 +392,6 @@ def display_set_goal(root):
 
         btn.grid(column=0, row=1+i) 
     
-
-
 def display_duration(root):
     """
     Displays a new page with the parameters to set the duration goal.
@@ -472,9 +470,6 @@ def display_duration(root):
     display_smarttips(main_frame)
     display_timescale(main_frame)
     display_save_button(main_frame, root)
-
-
-
 
 def display_distance(root):
     """

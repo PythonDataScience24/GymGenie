@@ -336,3 +336,5 @@ def select_date(date, calendar, date_window):
     selected_date = calendar.selection_get()
     date.set(selected_date)
     date_window.destroy()
+
+
