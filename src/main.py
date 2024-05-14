@@ -8,7 +8,7 @@ def main():
     #define list of possible workouts
     exercise_types = ["running", "cycling", "strength", "swimming", "walking", "skiing", "climbing", "others"]
     distance_exercises = ["running", "cycling", "swimming", "walking", "skiing", "others"]
-    messages = ["You're on the right track, keep going!", "You can either suffer the pain of discipline or the pain of regret", "You may not be there yet, but you are closer than you were yesterday", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
+    messages = ["You're on the right track, keep going!", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
 
     choice = ""
 
