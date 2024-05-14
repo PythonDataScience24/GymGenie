@@ -340,7 +340,11 @@ def display_set_goal(root):
         Duration
         Calories burned
     After clicking each button a new page is displayed.
-    
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
     """
     # Remove all widgets from the root window
     for widget in root.winfo_children():
@@ -393,6 +397,11 @@ def display_set_goal(root):
 def display_duration(root):
     """
     Displays a new page with the parameters to set the duration goal.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
 
     """
     # Remove all widgets from the root window
@@ -457,7 +466,7 @@ def display_duration(root):
     global set_duration
     set_duration = True
 
-    #Display other common parameters: timeframe, type of exercise and smart tips.
+    #Display other common parameters: timeframe, timescale, type of exercise, save button and smart tips.
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
@@ -470,6 +479,11 @@ def display_duration(root):
 def display_distance(root):
     """
     Displays a new page with the parameters to set the distance goal.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
     
     """
     # Remove all widgets from the root window
@@ -519,6 +533,7 @@ def display_distance(root):
     global set_distance
     set_distance = True
 
+    #Display other common parameters: timeframe, timescale, type of exercise, save button and smart tips.
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
@@ -529,6 +544,11 @@ def display_distance(root):
 def display_calories(root):
     """
     Displays a new page with the parameters to set the calories goal.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
     
     """
     # Remove all widgets from the root window
@@ -578,6 +598,7 @@ def display_calories(root):
     global set_calories
     set_calories = True
 
+    #Display other common parameters: timeframe, timescale, type of exercise, save button and smart tips.
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
@@ -655,6 +676,14 @@ def display_timeframe(main_frame, col , row):
 
 
 def display_exercise_type(main_frame):
+    """
+    Displays the workout label and an option menu to choose which type of exercise the goal is related to.
+
+    Parameters
+    ----------
+    main_frame : tkinter.frame where to be placed.
+        
+    """
     #Create label
     exercise_label = tk.Label(main_frame, 
                         text="Workout:",
@@ -731,8 +760,11 @@ def display_timescale(main_frame):
     """
     Displays time-scale and option menu to set a goal as weekly, monthly or yearly.
 
-    """
+    Parameters
+    ----------
+    main_frame : tkinter.frame where to be placed.
 
+    """
     #create timescale label
     timescale_label = tk.Label(main_frame, text="Time-scale:",
                         font =("Arial", 16, "bold"),
@@ -751,7 +783,6 @@ def display_timescale(main_frame):
             height = 1)
     timescale_label.grid(column=2, row=3)
 
-
     #create option menu
     options = [7, 30,365]
     global selected_timescale
@@ -763,6 +794,17 @@ def display_timescale(main_frame):
 
 
 def display_save_button(main_frame, root):
+    """
+    Displays a save button. When the user clicks on it the goals are saved on a dataframe and exported as csv file.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+
+    main_frame : tkinter.frame where to be placed.
+    
+    """
     #Add save button
     save_btn = tk.Button(main_frame, 
         command= lambda: save_goal(main_frame, root) ,
@@ -782,6 +824,17 @@ def display_save_button(main_frame, root):
 
 
 def save_goal(main_frame, root):  
+    """
+    Saves the user input goal data.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+
+    main_frame : tkinter.frame where to be placed.
+    
+    """
 
     #Give format to dates to be able to add to the dataframe
     start_date_tmp = start_date.get().split('-')
@@ -789,8 +842,6 @@ def save_goal(main_frame, root):
 
     end_date_tmp = end_date.get().split('-')
     end_date_value = Date(int(end_date_tmp[0]), int(end_date_tmp[1]), int(end_date_tmp[2]))
-
-
 
     #Create goal object
     if set_distance:
@@ -809,7 +860,7 @@ def save_goal(main_frame, root):
     print(current_goal)
 
 
-    # Check if a workout dataframe already exists. If not, create one.
+    # Check if a goals dataframe already exists. If not, create one.
     current_directory = os.getcwd().replace(os.sep,'/')
     goals_file = current_directory + "/goals.csv"
     try:
@@ -819,7 +870,7 @@ def save_goal(main_frame, root):
     except FileNotFoundError:
         goals_df = dataframe.GoalDataframe()
 
-    # Add the workout object to the dataframe and save as csv file
+    # Add the goal object to the dataframe and save as csv file
     goals_df.add_goal(current_goal)
 
     # Save dataframe in a file csv
