@@ -8,6 +8,7 @@ def main():
     #define list of possible workouts
     exercise_types = ["running", "cycling", "strength", "swimming", "walking", "skiing", "climbing", "others"]
     distance_exercises = ["running", "cycling", "swimming", "walking", "skiing", "others"]
+    messages = ["You're on the right track, keep going!", "You can either suffer the pain of discipline or the pain of regret", "You may not be there yet, but you are closer than you were yesterday", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
 
     choice = ""
 
@@ -27,7 +28,7 @@ def main():
         goal_file = current_directory + "/GoalData.csv"
         goals_df = GoalDataframe()
         try:
-           goals_df.read_from_csv(goal_file) 
+           goals_df.read_from_csv(goal_file)
         except FileNotFoundError:
             pass
 
@@ -37,7 +38,7 @@ def main():
             case "g":
                 setGoal(goals_df, exercise_types)
             case "o":
-                seeGoals(workouts_df, goals_df)
+                seeGoals(workouts_df, goals_df, messages)
             case "s":
                 summaryVisualisations(workouts_df)
             case "q":
@@ -101,7 +102,7 @@ def setGoal(goal_df, exercise_types):
 
 
 
-def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe):
+def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe, messages: list):
     """
     Allow the user to see the progress made towards the goal
 
@@ -115,7 +116,7 @@ def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe):
     workout_df.plot_dataframe()
     goals_df.plot_goals()
 
-    summary = GoalSummary(workout_df,goals_df)
+    summary = GoalSummary(workout_df, goals_df, messages)
 
     #print all the goals and ask the user to select the one they want to see the plots for
     goals_df.print_dataframe()
@@ -140,13 +141,15 @@ def summaryVisualisations(workout_df: WorkoutDataframe):
         Dataframe containing entries of previously logged workouts.
     """
     workout_df.plot_dataframe()
-    #exercises = ###how to get this input?
     workout_summary = WorkoutSummary(workout_df)
     # retrieve timescale and quantity
     timescale = workout_summary.get_timescale()
     quantity = workout_summary.get_quantity()
     # plot the summary of the workouts of the user
     workout_summary.plot_summary(timescale, quantity)
+    #plot the comparison of the workouts of the user
+    exercises = workout_summary.get_exercises()
+    workout_summary.compare_exercises(timescale, quantity, exercises)
     # plot the distribution of rating pro exercise
     workout_summary.plot_rating_by_exercises()
 
