@@ -21,6 +21,20 @@ import goal_summary
 root = tk.Tk()
 root.geometry("500x400")
 
+# Color palette for the GymGenie GUI.
+black = "BLACK"
+white = "WHITE"
+dark_red = "#9B2226"
+red = "#AE2012"
+brown = "#BB3E03"
+orange = "#CA6702"
+yellow = "#EE9B00"
+dark_blue = "#005F73"
+blue = "#357F93"
+light_blue = "#5d99a9"
+
+
+
 def view_goals(root):
     # Remove all widgets from the root window
     for widget in root.winfo_children():
@@ -31,10 +45,20 @@ def view_goals(root):
     view_goal_frame.pack(fill=tk.BOTH, expand=True)
 
     #read workout.csv and goals.csv
+    # current_directory = os.getcwd().replace(os.sep,'/')
+    # goals_file = current_directory + "/goals.csv"
+    # workout_file = current_directory + "/logWorkouts.csv"
     goals_df = pd.read_csv("goals.csv")
     workout_df = pd.read_csv("logWorkouts.csv")
 
     #create GoalSummary object
     current_goalsummary = goal_summary.GoalSummary(workout_df, goals_df)
 
-    #
+    #Create text widget
+    goals_table = tk.Text(root)
+    goals_table.insert(tk.INSERT, goals_df.to_string())
+    goals_table.pack()
+
+    root.mainloop()
+
+view_goals(root)
