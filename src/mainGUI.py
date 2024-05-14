@@ -143,7 +143,7 @@ def log_workout(workout_type):
 
     # Configure rows according to the number of datatypes that should be logged for the specific workout type
     if workout_type == "Climbing" or workout_type == "Strength":
-        workout_datatypes = ["Calories", "Date ", "Duration", "Rating"]
+        workout_datatypes = ["Calories", "Date", "Duration", "Rating"]
     else:
         workout_datatypes = ["Calories", "Date", "Distance", "Duration", "Rating"]
     rows=len(workout_datatypes)+3 # include all datatypes + title, save-button and exit-button
