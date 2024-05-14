@@ -714,6 +714,7 @@ def display_exercise_type(main_frame):
 
     # Create list containing the names of all the workout types of class Workout.
     workout_types = [subclass.__name__ for subclass in workout.Workout.__subclasses__()]
+    workout_types.append('All')
 
     # Variable to keep track of the option 
     # selected in OptionMenu 
