@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import random
 from date import Date
 from distance import Distance
 from duration import Duration
@@ -19,12 +20,13 @@ class GoalSummary:
     goal_data_frame: The dataframe of the goals of the user
     """
 
-    def __init__(self, log_workout_dataframe: pd.DataFrame, goal_data_frame: pd.DataFrame):
+    def __init__(self, log_workout_dataframe: pd.DataFrame, goal_data_frame: pd.DataFrame, messages: list):
         """
         Initialize a GoalSummary object
         """
         self.log_workout_dataframe = log_workout_dataframe
         self.goal_data_frame = goal_data_frame
+        self.messages = messages
 
     # plot goal using barplot
     def plot_goal(self, index_goal):
@@ -116,11 +118,14 @@ class GoalSummary:
                 plt.bar(
                     filtered_workout_dataframe['date'], filtered_workout_dataframe['duration'], edgecolor='gray')
                 ylabel = "Duration"
+        # add an encouraging message to the plot
+        message_index = random.randrange(len(self.messages))
+        plt.subplots_adjust(bottom = 0.2)
+        plt.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
         plt.ylabel(ylabel, fontsize=12)
         plt.xticks(rotation=-25, fontsize=8)
         plt.legend(frameon=False)
         plt.title(exercise)
-        plt.tight_layout()
         plt.show()
 
     def plot_progression(self, dataframe: pd.DataFrame, unit_value: str, value_goal: float):
@@ -157,9 +162,12 @@ class GoalSummary:
         # Draw the horizontal line showing the goal
         plt.axhline(value_goal, linestyle='--', lw=1.2,
                     color='black', label="Goal", zorder=-1.5)
+        # add an encouraging message to the plot
+        message_index = random.randrange(len(self.messages))
+        plt.subplots_adjust(bottom = 0.2)
+        plt.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
         plt.ylabel(unit.capitalize(), fontsize=12)
         plt.xticks(rotation=25, fontsize=8)
-        plt.tight_layout()
         plt.legend(frameon=False)
         plt.show()
 
@@ -194,11 +202,14 @@ class GoalSummary:
         #    print(container.pchanged())
         #    print(container.get_label())
         #    ax.bar_label(container, label_type='center')
+        # add an encouraging message to the plot
+        message_index = random.randrange(len(self.messages))
+        plt.subplots_adjust(bottom = 0.2)
+        plt.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
         plt.xlabel("")
         plt.ylabel(unit_value)
         plt.xticks(rotation=25)
         plt.legend(title='Activity', frameon=False)
-        plt.tight_layout()
         plt.show()
 
     def plot_percentage(self, dataframe: pd.DataFrame, unit_value: str, value_goal: float):
@@ -278,6 +289,25 @@ class WorkoutSummary:
                 return quantity
             else:
                 print("Please select a valid quantity to visualize.")
+    
+    def get_exercises(self):
+        """
+        Retrieves information from the user about which exercises they want to include in the summary.
+        """
+        entering = "t"
+        exercise_list = []
+        while entering == "t":
+            print(["running", "cycling", "strength", "swimming", "walking", "skiing", "climbing", "others"])
+            exercise = input("Select an exercise you want to include in the summary from the list above, or type q to stop.\n").strip().lower()
+            if exercise == "q":
+                return exercise_list
+            elif exercise in ["running", "cycling", "strength", "swimming", "walking", "skiing", "climbing", "others"]:
+                exercise_list.append(exercise)
+            else:
+                print("Please enter a valid exercise type.")
+
+
+
 
     def plot_summary(self, timescale: int, quantity: str):
         """
@@ -330,12 +360,11 @@ class WorkoutSummary:
         # select only the rows with the activities to compare
         current_data = self.data.data[self.data.data['activity'].isin(exercises)]
 
-        # to get all combinations of date and activity in the dataframe, create a date range and all possible combinations with activities
-        dates = pd.date_range(current_data['date'].min(
-        ), current_data['date'].max(), freq='1D')
-
         # make sure both dataframes have the same format of dates for the concatenation
         current_data['date'] = pd.to_datetime(current_data['date'])
+
+        # to get all combinations of date and activity in the dataframe, create a date range and all possible combinations with activities
+        dates = pd.date_range(current_data['date'].min(), current_data['date'].max(), freq='1D')
 
         date_activity_combinations = pd.MultiIndex.from_product(
             [dates, exercises], names=['date', 'activity'])

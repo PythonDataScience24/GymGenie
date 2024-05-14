@@ -22,19 +22,12 @@ class Dataframe(ABC):
         pd.DataFrame.__init__(self,*args,**kwargs)
         self.data = pd.DataFrame(columns=column_names)
 
-    def save_to_csv(self, filename: str):
+    def save_to_csv(self, path: str):
         """
         Save the dataframe to a specified path.
         """
-        self.data.to_csv(f"{filename}.csv", encoding='utf-8', index=False)
+        self.data.to_csv(path, encoding='utf-8', index=False)
     
-    def save_to_picklefile(self, filename: str):
-        """
-        Save the dataframe to a specified path in a pickle file to maintain the structure of Objects.
-        """
-        with open(f"{filename}.pkl", 'wb') as file:
-            pickle.dump(self.data, file)
-
     def print_dataframe(self):
         """
         Print the dataframe contained in the data attribute of the object.
@@ -60,20 +53,12 @@ class Dataframe(ABC):
         row_idx (int): Index of the row that should be removed.
         """
         self.data.drop(row_idx)
-
-    def read_from_picklefile(self, filename: str):
-        """
-        Read the data from a .pkl file and store it as a dataframe in the data attribute.
-        """
-        with open(f"{filename}.pkl", 'rb') as file:
-            data_loaded = pickle.load(file)
-            self.data = data_loaded
         
-    def read_from_csv(self, filename: str):
+    def read_from_csv(self, path: str):
         """
         Read data from a csv file and store it as a dataframe in the data attribute.
         """
-        input_data = pd.read_csv(f"{filename}.csv")
+        input_data = pd.read_csv(path)
         self.data = input_data
 
 
