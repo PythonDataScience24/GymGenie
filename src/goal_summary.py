@@ -297,17 +297,14 @@ class WorkoutSummary:
         entering = "t"
         exercise_list = []
         while entering == "t":
-            print(["running", "cycling", "strength", "swimming", "walking", "skiing", "climbing", "others"])
-            exercise = input("Select an exercise you want to include in the summary from the list above, or type q to stop.\n").strip().lower()
+            print(["Running", "Cycling", "Strength", "Swimming", "Walking", "Skiing", "Climbing", "Others"])
+            exercise = input("Select an exercise you want to include in the summary from the list above, or type q to stop.\n").strip()
             if exercise == "q":
                 return exercise_list
-            elif exercise in ["running", "cycling", "strength", "swimming", "walking", "skiing", "climbing", "others"]:
+            elif exercise in ["Running", "Cycling", "Strength", "Swimming", "Walking", "Skiing", "Climbing", "Others"]:
                 exercise_list.append(exercise)
             else:
                 print("Please enter a valid exercise type.")
-
-
-
 
     def plot_summary(self, timescale: int, quantity: str):
         """
@@ -356,15 +353,19 @@ class WorkoutSummary:
 
         # select the relevant data from the total of logged workouts
         current_data = self.data.data.loc[self.data.data['date']
-                                     >= cutoff_date, ['date', 'activity', quantity]]
+                                     >= cutoff_date, ['date', quantity, 'activity']]
+        print(current_data)
         # select only the rows with the activities to compare
         current_data = self.data.data[self.data.data['activity'].isin(exercises)]
-
+        print(current_data)
+        print(current_data['date'])
         # make sure both dataframes have the same format of dates for the concatenation
         current_data['date'] = pd.to_datetime(current_data['date'])
 
         # to get all combinations of date and activity in the dataframe, create a date range and all possible combinations with activities
         dates = pd.date_range(current_data['date'].min(), current_data['date'].max(), freq='1D')
+        print(dates)
+        print(current_data['date'])
 
         date_activity_combinations = pd.MultiIndex.from_product(
             [dates, exercises], names=['date', 'activity'])
