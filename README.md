@@ -8,7 +8,7 @@ GymGenie is an application for tracking your workouts. It lets you log your work
 We are four Bioinformatics students: [Lea](https://github.com/leaf185), [Laura](https://github.com/lfercer), [Dario](https://github.com/ddd42-star) and [Kristin](https://github.com/kristinwo). This project is part of the course "Advanced Python" at Universität Bern lead by Assistant Professor Athina Tzovara.
 
 ## How to get started?
-1. Download the application and test it - either as a version with a graphical user interface (GUI) or from the command line.
+1. Have a look at the [documentation](https://github.com/ddd42-star/fitnessTracker/tree/main/docs) on how to download the application and test it - either as a version with a graphical user interface (GUI) or from the command line. 
 2. Suggest new visualization features that will improve user experience.
 3. Proofread the code to familiarize yourself with the projects structure and functionality.
 4. Or help us write the [documentation](https://github.com/ddd42-star/fitnessTracker/tree/main/docs) to the project.
