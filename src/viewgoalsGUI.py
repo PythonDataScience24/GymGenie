@@ -16,7 +16,17 @@ from rating import Rating
 from dataframe import WorkoutDataframe 
 import goal_summary
 
-
+# Color palette for the GymGenie GUI.
+black = "BLACK"
+white = "WHITE"
+dark_red = "#9B2226"
+red = "#AE2012"
+brown = "#BB3E03"
+orange = "#CA6702"
+yellow = "#EE9B00"
+dark_blue = "#005F73"
+blue = "#357F93"
+light_blue = "#5d99a9"
 
 root = tk.Tk()
 root.geometry("500x400")
@@ -31,10 +41,12 @@ def view_goals(root):
     view_goal_frame.pack(fill=tk.BOTH, expand=True)
 
     #read workout.csv and goals.csv
-    goals_df = pd.read_csv("goals.csv")
-    workout_df = pd.read_csv("logWorkouts.csv")
+    goals_df = pd.read_csv("../goals.csv", header=None)
+    workout_df = pd.read_csv("../logWorkouts.csv", header=None)
 
     #create GoalSummary object
     current_goalsummary = goal_summary.GoalSummary(workout_df, goals_df)
 
     #
+
+view_goals(root)
