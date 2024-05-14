@@ -714,6 +714,7 @@ def display_exercise_type(main_frame):
 
     # Create list containing the names of all the workout types of class Workout.
     workout_types = [subclass.__name__ for subclass in workout.Workout.__subclasses__()]
+    workout_types.append('All')
 
     # Variable to keep track of the option 
     # selected in OptionMenu 
@@ -880,7 +881,7 @@ def save_goal(main_frame, root):
 
     # Check if a goals dataframe already exists. If not, create one.
     current_directory = os.getcwd().replace(os.sep,'/')
-    goals_file = current_directory + "/goals.csv"
+    goals_file = current_directory + "/GoalData.csv"
     try:
         goals_df_data = pd.read_csv(goals_file)
         goals_df = dataframe.GoalDataframe()
