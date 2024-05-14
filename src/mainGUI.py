@@ -360,7 +360,6 @@ def display_set_goal(root):
     goals_frame.rowconfigure(3, weight=1)
     goals_frame.rowconfigure(4, weight=1)
 
-
     #Create goal label
     goal_label = tk.Label(goals_frame, text="Set your goal based on:",
                         font =("Arial", 16, "bold"),
@@ -391,6 +390,12 @@ def display_set_goal(root):
             relief="solid") #Add relief style 
 
         btn.grid(column=0, row=1+i) 
+
+    # Add exit button
+    exit_button = gui.create_button(frame=goals_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5)
+    exit_button.grid(column=0, row=4)
+
     
 def display_duration(root):
     """
@@ -471,6 +476,14 @@ def display_duration(root):
     display_timescale(main_frame)
     display_save_button(main_frame, root)
 
+    # Add exit button
+    exit_button = gui.create_button(frame=main_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5)
+    exit_button.grid(column=4, row=4)
+
+
+
+
 def display_distance(root):
     """
     Displays a new page with the parameters to set the distance goal.
@@ -534,6 +547,11 @@ def display_distance(root):
     display_smarttips(main_frame)
     display_timescale(main_frame)
     display_save_button(main_frame, root)
+
+    # Add exit button
+    exit_button = gui.create_button(frame=main_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5)
+    exit_button.grid(column=4, row=4)
 
 
 def display_calories(root):
@@ -599,6 +617,11 @@ def display_calories(root):
     display_smarttips(main_frame)
     display_timescale(main_frame)
     display_save_button(main_frame, root)
+
+    # Add exit button
+    exit_button = gui.create_button(frame=main_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5)
+    exit_button.grid(column=4, row=4)
 
 
 
