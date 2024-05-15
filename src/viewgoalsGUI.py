@@ -90,7 +90,7 @@ def new_plot(root,figure2,figure3, index):
     view_goal_frame = tk.Frame(root, bg=blue) 
     view_goal_frame.pack(fill=tk.BOTH, expand=True)
 
-     #create list of motivational messages TODO
+    #create list of motivational messages TODO
     messages = ["You're on the right track, keep going!", "You can either suffer the pain of discipline or the pain of regret", "You may not be there yet, but you are closer than you were yesterday", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
     # transform the dataframe of workout and goals for plotting
 
@@ -115,8 +115,6 @@ def new_plot(root,figure2,figure3, index):
      # Add arrow to change plot before
     before_button = tk.Button(root, text='Before', command=lambda:plot_button(root,index,summary))
     before_button.pack(side='left')
-
-
 
 
 def plot_button(root,index,summary):
@@ -150,9 +148,10 @@ def plot_button(root,index,summary):
     quit_button = tk.Button(root, text="Quit", command=lambda:view_goals(root))
     quit_button.pack(side=tk.BOTTOM)
 
-    # Add arrow to change plot after
-    next_button = tk.Button(root, text='Next', command=lambda:new_plot(root,fig2,fig3, index))
-    next_button.pack(side='right')
+    if fig2 and fig3:
+        # Add arrow to change plot after
+        next_button = tk.Button(root, text='Next', command=lambda:new_plot(root,fig2,fig3, index))
+        next_button.pack(side='right')
 
 
 def view_goals(root):
@@ -215,7 +214,6 @@ def view_goals(root):
     goal_row_entry = create_entry(view_goal_frame, width= 5)
     choose_label.grid(column=0, row=0, columnspan=2)
     goal_row_entry.grid(column=2, row=0)
-
 
 
     # transform the dataframe of workout and goals for plotting

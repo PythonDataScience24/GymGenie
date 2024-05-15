@@ -129,7 +129,7 @@ class GoalSummary:
         ax.set_title(exercise)
         #plt.show()
 
-        return fig
+        return fig, None, None
 
     def plot_progression(self, dataframe: pd.DataFrame, unit_value: str, value_goal: float):
         """
