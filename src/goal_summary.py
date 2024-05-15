@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 import seaborn as sns
 import random
 from date import Date
@@ -71,18 +72,15 @@ class GoalSummary:
             if exercise in ["Running", "Cycling", "Strength", "Swimming", 
                         "Walking", "Skiing", "Climbing", "Others"]:
 
-                self.plot_specific_exercise(
+                return self.plot_specific_exercise(
                     self.log_workout_dataframe, exercise, start_time, end_time, unit_value)
             else:
                 # plot progression
-                self.plot_progression(
-                    self.log_workout_dataframe, unit_value, value_goal)
+                return self.plot_progression(self.log_workout_dataframe, unit_value, value_goal),self.plot_general_workout(self.log_workout_dataframe, unit_value),self.plot_percentage(self.log_workout_dataframe, unit_value, value_goal)
                 # plot general workout
-                self.plot_general_workout(
-                    self.log_workout_dataframe, unit_value)
+                
                 # plot total workout left to reach the goal
-                self.plot_percentage(
-                    self.log_workout_dataframe, unit_value, value_goal)
+                
 
     def plot_specific_exercise(self, workout_datafram: pd.DataFrame, exercise: str, start_time: Date, end_time: Date, unit_value: str):
         """
@@ -103,30 +101,35 @@ class GoalSummary:
                                                       (workout_df['date'] <= end_time)]
         print(filtered_workout_dataframe)
         # convert all distance in standard km? not necessary for the moment TODO
-
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax = fig.add_subplot(111)
         # create a bar plot according to which type of goal we wants to visualize
         match unit_value:
             case "kcal":
-                plt.bar(
+                ax.bar(
                     filtered_workout_dataframe['date'], filtered_workout_dataframe['calories'], edgecolor='gray')
                 ylabel = "Calories"
             case "km":
-                plt.bar(
+                ax.bar(
                     filtered_workout_dataframe['date'], filtered_workout_dataframe['distance'], edgecolor='gray')
                 ylabel = "Distance"
             case "min":
-                plt.bar(
+                ax.bar(
                     filtered_workout_dataframe['date'], filtered_workout_dataframe['duration'], edgecolor='gray')
                 ylabel = "Duration"
-        # add an encouraging message to the plot
+        # add an encouraging message to the plot TODO
         message_index = random.randrange(len(self.messages))
-        plt.subplots_adjust(bottom = 0.2)
-        plt.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
-        plt.ylabel(ylabel, fontsize=12)
-        plt.xticks(rotation=-25, fontsize=8)
-        plt.legend(frameon=False)
-        plt.title(exercise)
-        plt.show()
+        #ax.subplots_adjust(bottom = 0.2)
+        #ax.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
+        ax.set_ylabel(ylabel, fontsize=12)
+        #ax.set_xticks(rotation=-25, fontsize=8)
+        ax.tick_params(axis='x',labelrotation=45, labelsize=8)
+        ax.legend(frameon=False)
+        ax.set_title(exercise)
+        #plt.show()
+
+        return fig
 
     def plot_progression(self, dataframe: pd.DataFrame, unit_value: str, value_goal: float):
         """
@@ -152,24 +155,29 @@ class GoalSummary:
         # that will do partial sum of the row before
         progression['progression'] = progression[unit].cumsum().fillna(
             progression[unit][0])
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax = fig.add_subplot(111)
         # draw the bar plot with the progression
-        plt.bar(progression['date'], progression['progression'], color="red")
+        ax.bar(progression['date'], progression['progression'], color="red")
         # add the label of the partial sum on the top of the bar
-        plt.bar_label(plt.bar(
+        ax.bar_label(plt.bar(
             progression['date'], progression['progression'], color='red'), progression['progression'])
         # Adjust the ylim to have a 'space' after the goal line : Check that is valid for all the cases
-        plt.ylim(0, value_goal + 50)
+        ax.set_ylim(0, value_goal + 50)
         # Draw the horizontal line showing the goal
-        plt.axhline(value_goal, linestyle='--', lw=1.2,
+        ax.axhline(value_goal, linestyle='--', lw=1.2,
                     color='black', label="Goal", zorder=-1.5)
         # add an encouraging message to the plot
         message_index = random.randrange(len(self.messages))
-        plt.subplots_adjust(bottom = 0.2)
-        plt.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
-        plt.ylabel(unit.capitalize(), fontsize=12)
-        plt.xticks(rotation=25, fontsize=8)
-        plt.legend(frameon=False)
-        plt.show()
+        #plt.subplots_adjust(bottom = 0.2)
+        #plt.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
+        ax.set_ylabel(unit.capitalize(), fontsize=12)
+        ax.tick_params(axis='x',rotation=25, labelsize=8)
+        ax.legend(frameon=False)
+        #plt.show()
+
+        return fig
 
     def plot_general_workout(self, dataframe: pd.DataFrame, unit_value: str):
         """
@@ -195,7 +203,10 @@ class GoalSummary:
         print(pivot_df)
         # draw the pivot table
         print(pivot_df.dtypes)
-        pivot_df.plot(kind='bar', stacked=True)
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax = fig.add_subplot(111)
+        pivot_df.plot(kind='bar', ax=ax,stacked=True)
         # Adding labels on top of each bar
         # it adds also the 0, not good!
         # for container in ax.containers:
@@ -203,14 +214,16 @@ class GoalSummary:
         #    print(container.get_label())
         #    ax.bar_label(container, label_type='center')
         # add an encouraging message to the plot
-        message_index = random.randrange(len(self.messages))
-        plt.subplots_adjust(bottom = 0.2)
-        plt.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
-        plt.xlabel("")
-        plt.ylabel(unit_value)
-        plt.xticks(rotation=25)
-        plt.legend(title='Activity', frameon=False)
-        plt.show()
+        #message_index = random.randrange(len(self.messages))
+        #plt.subplots_adjust(bottom = 0.2)
+        #plt.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
+        ax.set_xlabel("")
+        ax.set_ylabel(unit_value)
+        ax.tick_params(axis='x',rotation=25, labelsize=8)
+        ax.legend(title='Activity', frameon=False)
+        #plt.show()
+
+        return fig
 
     def plot_percentage(self, dataframe: pd.DataFrame, unit_value: str, value_goal: float):
         """
@@ -245,16 +258,21 @@ class GoalSummary:
             percentage_left = round((total_sum/value_goal)*100)
             slices = [total_sum, round(value_goal-total_sum)]
 
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax = fig.add_subplot(111)
         # draw the pie chart
-        plt.pie(slices, colors=['green'], startangle=90, counterclock=False)
+        ax.pie(slices, colors=['green'], startangle=90, counterclock=False)
         # add a circle in the middle to draw a donut
         my_circle = plt.Circle((0, 0), 0.7, color='white')
         p = plt.gcf()
         p.gca().add_artist(my_circle)
-        plt.text(0, 0, f"{percentage_left} %", verticalalignment='center',
+        ax.text(0, 0, f"{percentage_left} %", verticalalignment='center',
                  horizontalalignment='center', fontsize=35, fontname="fantasy")
-        plt.title(f"Total Progress {unit.capitalize()}")
-        plt.show()
+        ax.set_title(f"Total Progress {unit.capitalize()}")
+        #plt.show()
+
+        return fig
 
 
 class WorkoutSummary:

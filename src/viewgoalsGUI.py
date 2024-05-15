@@ -17,6 +17,9 @@ from dataframe import WorkoutDataframe , GoalDataframe
 import goal_summary
 from tkinter import Canvas, Text
 from gui import create_button, create_entry, create_label
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
+import gui
 
 
 # Color palette for the GymGenie GUI.
@@ -47,6 +50,110 @@ blue = "#357F93"
 light_blue = "#5d99a9"
 
 
+def old_plot(root,figure1,figure2, index):
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Create frame for the page where the user can view the goals
+    view_goal_frame = tk.Frame(root, bg=blue) 
+    view_goal_frame.pack(fill=tk.BOTH, expand=True)
+
+     #create list of motivational messages TODO
+    messages = ["You're on the right track, keep going!", "You can either suffer the pain of discipline or the pain of regret", "You may not be there yet, but you are closer than you were yesterday", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
+    # transform the dataframe of workout and goals for plotting
+
+    #create GoalSummary object
+    #summary = goal_summary.GoalSummary(workouts_df, goals_df, messages)
+    #create Canvas
+    #canvas_df = Canvas(root,bg=blue)
+    canvas_df = FigureCanvasTkAgg(figure1, master=root)
+    canvas_df.draw()
+    #canvas_df.pack()
+    canvas_df.get_tk_widget().pack()
+
+    # Add a quit button
+    quit_button = tk.Button(root, text="Quit", command=lambda:view_goals(root))
+    quit_button.pack(side=tk.BOTTOM)
+
+    # Add arrow to change plot after
+    next_button = tk.Button(root, text='Before', command=lambda:new_plot(root,figure2,figure1, index))
+    next_button.pack(side='left')
+
+
+def new_plot(root,figure2,figure3, index):
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Create frame for the page where the user can view the goals
+    view_goal_frame = tk.Frame(root, bg=blue) 
+    view_goal_frame.pack(fill=tk.BOTH, expand=True)
+
+     #create list of motivational messages TODO
+    messages = ["You're on the right track, keep going!", "You can either suffer the pain of discipline or the pain of regret", "You may not be there yet, but you are closer than you were yesterday", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
+    # transform the dataframe of workout and goals for plotting
+
+    #create GoalSummary object
+    #summary = goal_summary.GoalSummary(workouts_df, goals_df, messages)
+    #create Canvas
+    #canvas_df = Canvas(root,bg=blue)
+    canvas_df = FigureCanvasTkAgg(figure2, master=root)
+    canvas_df.draw()
+    #canvas_df.pack()
+    canvas_df.get_tk_widget().pack()
+
+    # Add a quit button
+    quit_button = tk.Button(root, text="Quit", command=lambda:view_goals(root))
+    quit_button.pack(side=tk.BOTTOM)
+
+
+    # Add arrow to change plot before
+    before_button = tk.Button(root, text='Next', command=lambda: old_plot(root,figure3,figure2, index))
+    before_button.pack(side='right')
+
+     # Add arrow to change plot before
+    before_button = tk.Button(root, text='Before', command=lambda:plot_button(root,index,summary))
+    before_button.pack(side='left')
+
+
+
+
+def plot_button(root,index,summary):
+
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Create frame for the page where the user can view the goals
+    view_goal_frame = tk.Frame(root, bg=blue) 
+    view_goal_frame.pack(fill=tk.BOTH, expand=True)
+
+     #create list of motivational messages TODO
+    messages = ["You're on the right track, keep going!", "You can either suffer the pain of discipline or the pain of regret", "You may not be there yet, but you are closer than you were yesterday", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
+    # transform the dataframe of workout and goals for plotting
+
+    #create GoalSummary object
+    #summary = goal_summary.GoalSummary(workouts_df, goals_df, messages)
+    fig1,fig2,fig3 = summary.plot_goal(index)
+    print(fig1)
+    print(fig2)
+    print(fig3)
+    #create Canvas
+    #canvas_df = Canvas(root,bg=blue)
+    canvas_df = FigureCanvasTkAgg(fig1, master=root)
+    canvas_df.draw()
+    #canvas_df.pack()
+    canvas_df.get_tk_widget().pack()
+
+    # Add a quit button
+    quit_button = tk.Button(root, text="Quit", command=lambda:view_goals(root))
+    quit_button.pack(side=tk.BOTTOM)
+
+    # Add arrow to change plot after
+    next_button = tk.Button(root, text='Next', command=lambda:new_plot(root,fig2,fig3, index))
+    next_button.pack(side='right')
+
 
 def view_goals(root):
     # Remove all widgets from the root window
@@ -65,6 +172,11 @@ def view_goals(root):
 
     #read workout.csv and goals.csv
     #load the workouts from a pickle file, or start a dataframe to store them in if no file was found
+    global workouts_df
+    global goals_df
+    global summary
+    global messages
+    global goal_row_entry
     current_directory = os.getcwd().replace(os.sep,'/')
     workout_file = current_directory + "/logWorkouts.csv"
     workouts_df = WorkoutDataframe()
@@ -82,10 +194,13 @@ def view_goals(root):
 
     #create list of motivational messages
     messages = ["You're on the right track, keep going!", "You can either suffer the pain of discipline or the pain of regret", "You may not be there yet, but you are closer than you were yesterday", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
-
+    #fig = goal_summary.GoalSummary(workouts_df, goals_df, messages).plot_goal(1)
     #create Canvas
-    canvas_df = Canvas(root, bg=blue)
+    canvas_df = Canvas(root,bg=blue)
+    #canvas_df = FigureCanvasTkAgg(fig, master=root)
+    #canvas_df.draw()
     canvas_df.pack()
+    #canvas_df.get_tk_widget().pack()
 
     # Convert DataFrame to string representation
     goals_df_str = goals_df.data.to_string()
@@ -106,15 +221,21 @@ def view_goals(root):
     # transform the dataframe of workout and goals for plotting
     workouts_df.plot_dataframe()
     goals_df.plot_goals()
-
+    #goals_df.print_dataframe()
+    #workouts_df.print_dataframe()
     #create GoalSummary object
     summary = goal_summary.GoalSummary(workouts_df, goals_df, messages)
-    
+    print(summary)
     #Create plot button
-    plot_btn = create_button(view_goal_frame, command= lambda: summary.plot_goal(goal_row_entry.get()) , text = "Plot", width =5 )
+    plot_btn = create_button(view_goal_frame, command= lambda: plot_button(root,int(goal_row_entry.get()),summary) , text = "Plot", width =5 )
     plot_btn.grid(column=3, row=0)
+
+    # Add exit button
+    quit_button = tk.Button(root, text="Exit", command=lambda:exit(root))
+    quit_button.pack(side=tk.BOTTOM)
+
+
     root.mainloop()
 
 view_goals(root)
 
-#def plot_button(root, frame):
