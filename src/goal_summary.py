@@ -125,7 +125,7 @@ class GoalSummary:
         ax.set_ylabel(ylabel, fontsize=12)
         #ax.set_xticks(rotation=-25, fontsize=8)
         ax.tick_params(axis='x',labelrotation=45, labelsize=8)
-        ax.legend(frameon=False)
+        # ax.legend(frameon=False)
         ax.set_title(exercise)
         #plt.show()
 
