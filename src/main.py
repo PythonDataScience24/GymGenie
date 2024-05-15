@@ -142,13 +142,13 @@ def summaryVisualisations(workout_df: WorkoutDataframe):
     """
     workout_df.plot_dataframe()
     workout_summary = WorkoutSummary(workout_df)
-    # retrieve timescale and quantity
+    # retrieve timescale, quantity and exercises
     timescale = workout_summary.get_timescale()
     quantity = workout_summary.get_quantity()
+    exercises = workout_summary.get_exercises()
     # plot the summary of the workouts of the user
     workout_summary.plot_summary(timescale, quantity)
     #plot the comparison of the workouts of the user
-    exercises = workout_summary.get_exercises()
     workout_summary.compare_exercises(timescale, quantity, exercises)
     # plot the distribution of rating pro exercise
     workout_summary.plot_rating_by_exercises()

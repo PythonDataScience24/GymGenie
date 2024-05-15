@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import seaborn as sns
 import random
 from date import Date
@@ -267,6 +268,8 @@ class WorkoutSummary:
 
     def __init__(self, workout_df: WorkoutDataframe):
         self.data = workout_df
+        self.fig = plt.figure()
+        self.grid = gridspec.GridSpec(2, 2, height_ratios=[1, 1])
 
     def get_timescale(self):
         """
@@ -326,16 +329,18 @@ class WorkoutSummary:
             index='date', columns='activity', values=quantity)
 
         # plot
-        current_data.plot(kind='bar', stacked=True)
+        #choose which suplot to occupy
+        ax1 = self.fig.add_subplot(self.grid[0, :])
+        current_data.plot(kind='bar', stacked=True, ax = ax1)
         plt.xlabel('')
         plt.ylabel(quantity)
         plt.xticks(rotation=25)
-        plt.legend(title='Activity', frameon=False)
-        plt.title(label=f'Summary of {quantity} over the last {timescale} days')
+        plt.legend(title='Activity', frameon=False, fontsize = 8)
+        plt.title(label=f'Summary of {quantity} over the last {timescale} days', fontsize = 8)
         plt.tight_layout()
         # plt.savefig("summary.png") save the plot, maybe that will make it easier to work with the GUI
         # plt.close(fig)
-        plt.show()
+        # plt.show() don't show yet, to create the compound figure
 
     def compare_exercises(self, timescale: int, quantity: str, exercises: list):
         """
@@ -354,18 +359,13 @@ class WorkoutSummary:
         # select the relevant data from the total of logged workouts
         current_data = self.data.data.loc[self.data.data['date']
                                      >= cutoff_date, ['date', quantity, 'activity']]
-        print(current_data)
         # select only the rows with the activities to compare
         current_data = self.data.data[self.data.data['activity'].isin(exercises)]
-        print(current_data)
-        print(current_data['date'])
         # make sure both dataframes have the same format of dates for the concatenation
         current_data['date'] = pd.to_datetime(current_data['date'])
 
         # to get all combinations of date and activity in the dataframe, create a date range and all possible combinations with activities
         dates = pd.date_range(current_data['date'].min(), current_data['date'].max(), freq='1D')
-        print(dates)
-        print(current_data['date'])
 
         date_activity_combinations = pd.MultiIndex.from_product(
             [dates, exercises], names=['date', 'activity'])
@@ -378,14 +378,15 @@ class WorkoutSummary:
         complete_df = complete_df.fillna(0)
 
         # plot
-        sns.lineplot(data=complete_df, x='date', y=quantity, hue='activity')
-        plt.title(f'Comparison by {quantity} over the last {timescale} days')
+        ax2 = self.fig.add_subplot(self.grid[1, 0])
+        sns.lineplot(data=complete_df, x='date', y=quantity, hue='activity', ax= ax2)
+        plt.title(f'Comparison by {quantity} over the last {timescale} days', fontsize = 8)
         plt.xlabel('')
         plt.ylabel(quantity)
         plt.xticks(rotation=25)
-        plt.legend(title='Activity', frameon=False)
+        plt.legend(title='Activity', frameon=False, fontsize = 8)
         plt.tight_layout()
-        plt.show()
+        #plt.show()
 
     def plot_rating_by_exercises(self, timescale: int = None):
         """
@@ -405,10 +406,11 @@ class WorkoutSummary:
             current_data = self.data.data.loc[:, ['activity', 'rating']]
 
         # plot
+        ax3 = self.fig.add_subplot(self.grid[1, 1])
         sns.violinplot(data=current_data, x="activity",
-                       y="rating", inner="point")
+                       y="rating", inner="point", ax= ax3)
         plt.title(
-            'Distribution of Ratings given to workouts of different exercises')
+            'Distribution of Ratings given to workouts of different exercises', fontsize = 8)
         plt.xlabel('')
         plt.ylabel('Rating')
         plt.xticks(rotation=25)
