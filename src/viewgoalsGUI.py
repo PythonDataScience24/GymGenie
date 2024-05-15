@@ -16,7 +16,6 @@ from rating import Rating
 from dataframe import WorkoutDataframe , GoalDataframe
 import goal_summary
 from tkinter import Canvas, Text
-from gui import create_button, create_entry, create_label
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import gui
@@ -35,7 +34,7 @@ blue = "#357F93"
 light_blue = "#5d99a9"
 
 root = tk.Tk()
-root.geometry("700x600") #change in mainGUI
+root.geometry("700x600") 
 
 # Color palette for the GymGenie GUI.
 black = "BLACK"
@@ -55,7 +54,7 @@ def display_message(frame):
     messages = ["You're on the right track, keep going!", "You can either suffer the pain of discipline or the pain of regret", "You may not be there yet, but you are closer than you were yesterday", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
 
     #create a label with the message
-    message_label = create_label(frame, text = random.choice(messages), width = 90)
+    message_label = gui.create_label(frame, text = random.choice(messages), width = 90)
     message_label.grid(column=0, row=0)
 
 def old_plot(root,figure1,figure2, index):
@@ -203,8 +202,8 @@ def view_goals(root):
     text_widget.grid(column=0, row=0)
 
     # Create label to choose which goal to plot
-    choose_label = create_label(view_goal_frame, text = "Check the progress on goal number (insert index): ", width=40)
-    goal_row_entry = create_entry(view_goal_frame, width= 5)
+    choose_label = gui.create_label(view_goal_frame, text = "Check the progress on goal number (insert index): ", width=40)
+    goal_row_entry = gui.create_entry(view_goal_frame, width= 5)
     choose_label.grid(column=0, row=0, columnspan=2)
     goal_row_entry.grid(column=2, row=0)
 
@@ -214,9 +213,9 @@ def view_goals(root):
 
     #create GoalSummary object
     summary = goal_summary.GoalSummary(workouts_df, goals_df, messages)
-    print(summary)
+
     #Create plot button
-    plot_btn = create_button(view_goal_frame, command= lambda: plot_button(root,int(goal_row_entry.get()),summary) , text = "Plot", width =5 )
+    plot_btn = gui.create_button(view_goal_frame, command= lambda: plot_button(root,int(goal_row_entry.get()),summary) , text = "Plot", width =5 )
     plot_btn.grid(column=3, row=0)
 
     # Add exit button
