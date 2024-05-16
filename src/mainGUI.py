@@ -74,15 +74,13 @@ def display_start_page():
                           ("Set a new goal", lambda: display_set_goal(root)),
                           ("View goals", lambda: view_goals(root)), 
                           ("View progress and trends", lambda: view_progress_and_trends(root)),
-                          ("Quit", lambda: exit_new)]
+                          ("Quit", lambda: quit(root))]
 
     # Create and place the buttons on the main frame.
     for i, button in enumerate(start_page_buttons):
         start_page_button = gui.create_button(frame=main_frame, command=button[1],
                                               text=button[0], height=2)
         start_page_button.grid(column=0, row=i+2)
-
-    root.protocol("WM_DELETE_WINDOW", exit_new)
 
     tk.mainloop()
 
@@ -292,13 +290,7 @@ def save_data(frame, workout_type):
     # Close root window and display start page again. 
     root.destroy()
     display_start_page()
-         
-def exit_new():
-    """
-    Close the window.
-    """
-    root.quit()
-    root.destroy()
+
 
 def quit(root):
     """
@@ -322,7 +314,6 @@ def exit(root):
         The root window of the GUI for GymGenie.
     """
     root.destroy()
-
     display_start_page()
 
 def view_goals(root):
