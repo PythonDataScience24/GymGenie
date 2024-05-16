@@ -331,8 +331,13 @@ def view_progress_and_trends(root):
         widget.destroy()
 
     # Create frame for the page where the user can view progress and trends of their workout.
-    progress_trend_frame = tk.Frame(root, bg=blue, pady=40)
+    progress_trend_frame = gui.create_frame(root, rows=3)
     progress_trend_frame.pack(fill=tk.BOTH, expand=True)
+
+    # Add exit button
+    exit_button = gui.create_button(frame=progress_trend_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5)
+    exit_button.grid(column=0, row=1)
 
 def display_set_goal(root):
     """
