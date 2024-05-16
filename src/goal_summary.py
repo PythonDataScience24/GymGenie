@@ -10,6 +10,7 @@ from duration import Duration
 from dataframe import WorkoutDataframe
 from calories import Calories
 from rating import Rating
+import matplotlib.dates as mdates
 
 
 class GoalSummary:
@@ -98,15 +99,16 @@ class GoalSummary:
         # filter the logWorkout dataframe, containing only all the activities with the same exercise
         # and according to the timeframe
         workout_df = workout_datafram.data
+        workout_df['date'] = pd.to_datetime(workout_df['date'])
         filtered_workout_dataframe = workout_df[(workout_df['activity'] == exercise) &
-                                                      (workout_df['date'] >= start_time) &
-                                                      (workout_df['date'] <= end_time)]
-        print(filtered_workout_dataframe)
+                                                      (workout_df['date'] >= pd.to_datetime(start_time)) &
+                                                      (workout_df['date'] <= pd.to_datetime(end_time))]
         # convert all distance in standard km? not necessary for the moment
         # create the figure
         fig = Figure(figsize=(5,5), dpi=100)
         ax = fig.add_subplot(111)
         # create a bar plot according to which type of goal we wants to visualize
+        filtered_workout_dataframe['date'] = pd.to_datetime(filtered_workout_dataframe['date'])
         match unit_value:
             case "kcal":
                 ax.bar(
@@ -120,13 +122,16 @@ class GoalSummary:
                 ax.bar(
                     filtered_workout_dataframe['date'], filtered_workout_dataframe['duration'], edgecolor='gray')
                 ylabel = "Duration"
+        print(pd.to_datetime(filtered_workout_dataframe['date']))
         # add an encouraging message to the plot
-        message_index = random.randrange(len(self.messages))
+        #message_index = random.randrange(len(self.messages))
         #ax.subplots_adjust(bottom = 0.2)
         #ax.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
         ax.set_ylabel(ylabel, fontsize=12)
         #ax.set_xticks(rotation=-25, fontsize=8)
-        ax.tick_params(axis='x',labelrotation=45, labelsize=8)
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+        ax.tick_params(axis='x', labelrotation=-25, labelsize=6)
+        #ax.tick_params(axis='x',labelrotation=45, labelsize=8)
         # ax.legend(frameon=False)
         ax.set_title(exercise)
         #plt.show()
@@ -221,7 +226,7 @@ class GoalSummary:
         ax.bar_label(plt.bar(
             progression['date'], progression['progression'], color='red'), progression['progression'])
         # Adjust the ylim to have a 'space' after the goal line : Check that is valid for all the cases
-        ax.set_ylim(0, value_goal + 50)
+        #ax.set_ylim(0, value_goal + 50)
         # Draw the horizontal line showing the goal
         ax.axhline(value_goal, linestyle='--', lw=1.2,
                     color='black', label="Goal", zorder=-1.5)
@@ -308,18 +313,20 @@ class GoalSummary:
         total_sum = progression[unit].sum()
         if total_sum >= value_goal:
             # if goal has been reached the pie chart will be complete
-            percentage_left = round(total_sum)
+            percentage_left =  round((total_sum/value_goal)*100)
+            colors = ['green']
             slices = [percentage_left]
         else:
             # if the goal has NOT been reached the pie chart wont be completed
             percentage_left = round((total_sum/value_goal)*100)
-            slices = [total_sum, round(value_goal-total_sum)]
+            slices = [percentage_left, 100-percentage_left]
+            colors = ['green', 'white']
 
         # create the figure
         fig = Figure(figsize=(5,5), dpi=100)
         ax = fig.add_subplot(111)
         # draw the pie chart
-        ax.pie(slices, colors=['green'], startangle=90, counterclock=False)
+        ax.pie(slices, colors=colors, startangle=90, counterclock=False)
         # add a circle in the middle to draw a donut
         my_circle = plt.Circle((0, 0), 0.7, color='white')
         p = plt.gcf()
@@ -523,7 +530,7 @@ class GoalSummary:
         # Adjust the ylim to have a 'space' after the goal line : Check that is valid for all the cases
         #plt.ylim(0, value_goal + 100)
         # Draw the horizontal line showing the goal
-        ax.axhline(value_goal, linestyle='--', lw=1.2,
+        ax1.axhline(value_goal, linestyle='--', lw=1.2,
                     color='black', label="Goal", zorder=-1.5)
         # add an encouraging message to the plot
         message_index = random.randrange(len(self.messages))
@@ -572,7 +579,7 @@ class GoalSummary:
         #plt.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
         #plt.xlabel("")
         plt.ylabel(unit.capitalize())
-        plt.xticks(rotation=25, fontsize=8)
+        plt.xticks(rotation=25, fontsize=7)
         plt.legend(title='Activity', frameon=False,loc='upper left', fontsize=8)
         #plt.tight_layout()
         #plt.show()
