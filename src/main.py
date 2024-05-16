@@ -1,8 +1,9 @@
 import sys
-from workoutlog import WorkoutLog, SetGoal
-from goal_summary import GoalSummary, WorkoutSummary
+import utils as utl
+import workout as wk
+import goal_summary as gs
+import workoutlog as wkl
 import os
-from dataframe import WorkoutDataframe, GoalDataframe
 
 def main():
     #define list of possible workouts
@@ -19,14 +20,14 @@ def main():
         #load the workouts from a pickle file, or start a dataframe to store them in if no file was found
         current_directory = os.getcwd().replace(os.sep,'/')
         workout_file = current_directory + "/logWorkouts.csv"
-        workouts_df = WorkoutDataframe()
+        workouts_df = utl.WorkoutDataframe()
         try:
             workouts_df.read_from_csv(workout_file)
         except FileNotFoundError:
             pass
         # start a dataframe to store the goals and load them from a file
         goal_file = current_directory + "/GoalData.csv"
-        goals_df = GoalDataframe()
+        goals_df = utl.GoalDataframe()
         try:
            goals_df.read_from_csv(goal_file)
         except FileNotFoundError:
@@ -66,7 +67,7 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
     confirm = ""
 
     while confirm != "y":
-        workout_respond, new_workout = WorkoutLog(exercise_types=exercise_types, 
+        workout_respond, new_workout = wkl.WorkoutLog(exercise_types=exercise_types, 
                         distance_exercises=distance_exercises).collect_workout_info()
 
         if workout_respond == "y":
@@ -97,7 +98,7 @@ def setGoal(goal_df, exercise_types):
     confirm = ""
 
     while confirm != "y":
-        goal_respond, new_goal = SetGoal(exercise_types).collect_goal_infos()
+        goal_respond, new_goal = wkl.SetGoal(exercise_types).collect_goal_infos()
         if goal_respond == "y":
             confirm = "y"
             goal_df.add_goal(new_goal)
@@ -113,7 +114,7 @@ def setGoal(goal_df, exercise_types):
 
 
 
-def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe, messages: list):
+def seeGoals(workout_df: utl.WorkoutDataframe, goals_df: utl.GoalDataframe, messages: list):
     """
     Allow the user to see the progress made towards the goal
 
@@ -127,7 +128,7 @@ def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe, messages: li
     workout_df.plot_dataframe()
     goals_df.plot_goals()
 
-    summary = GoalSummary(workout_df, goals_df, messages)
+    summary = gs.GoalSummary(workout_df, goals_df, messages)
 
     #print all the goals and ask the user to select the one they want to see the plots for
     goals_df.print_dataframe()
@@ -143,7 +144,7 @@ def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe, messages: li
     
 
 
-def summaryVisualisations(workout_df: WorkoutDataframe):
+def summaryVisualisations(workout_df: utl.WorkoutDataframe):
     """
     Allow the user to see a summary of the workouts made
 
@@ -152,7 +153,7 @@ def summaryVisualisations(workout_df: WorkoutDataframe):
         Dataframe containing entries of previously logged workouts.
     """
     workout_df.plot_dataframe()
-    workout_summary = WorkoutSummary(workout_df)
+    workout_summary = gs.WorkoutSummary(workout_df)
     # retrieve timescale, quantity and exercises
     timescale = workout_summary.get_timescale()
     quantity = workout_summary.get_quantity()

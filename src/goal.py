@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 import calories
 import date
 import distance

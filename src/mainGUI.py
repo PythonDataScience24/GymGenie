@@ -1,26 +1,15 @@
 import tkinter as tk
-import numpy as np
 import os
 import pandas as pd
 import random
-import workout
-import tkcalendar
 import datetime
-import goal
 import gui
-from tkinter import messagebox
-from calories import Calories
-from date import Date
-from distance import Distance
-from duration import Duration
-from date import Date
-from rating import Rating
-import dataframe
-from dataframe import WorkoutDataframe, GoalDataframe
-import goal_summary
 from tkinter import Canvas, Text
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
+import utils as utl
+import workout as wk
+import workoutlog as wkl
+import goal_summary as gs
 
 ### Global variables
 #Create boolean values to keep the workflow
@@ -99,7 +88,7 @@ def choose_workout(root):
         widget.destroy()
 
     # Create frame where you can choose the type of workut you want to log your exercise for. 
-    rows= len(workout.Workout.__subclasses__()) + 2 # include all workout types + label and exit-button
+    rows= len(wk.Workout.__subclasses__()) + 2 # include all workout types + label and exit-button
     choose_workout_frame = gui.create_frame(root=root, rows=rows)   
 
     # Add label that asks for the type of workout.
@@ -108,7 +97,7 @@ def choose_workout(root):
     label.grid(column=0, row=0)
 
     # Create list containing the names of all the workout types of class Workout.
-    workout_types = [subclass.__name__ for subclass in workout.Workout.__subclasses__()]
+    workout_types = [subclass.__name__ for subclass in wk.Workout.__subclasses__()]
 
     # Create a button for each workout type with a command that let's the user log the workout.
     # Thanks to stackoverflow there is a solution.Before it always had as workout class Other(last in the list)
@@ -257,42 +246,42 @@ def save_data(frame, workout_type):
     try:
         # checks the calories unit
         if selected_unit_calories.get() == 'kJ':
-            calories = Calories(calories=float(calories_entry.get()), unit=selected_unit_calories.get())
+            calories = utl.Calories(calories=float(calories_entry.get()), unit=selected_unit_calories.get())
             calories.calories_convert('kJ','kcal')
         else:
-            calories = Calories(calories=float(calories_entry.get()), unit=selected_unit_calories.get())
+            calories = utl.Calories(calories=float(calories_entry.get()), unit=selected_unit_calories.get())
         
-        rating = Rating(rating=rating_slider.get())
-        duration = Duration(hours=int(hours_entry.get()), minutes=int(minutes_entry.get()))
+        rating = utl.Rating(rating=rating_slider.get())
+        duration = utl.Duration(hours=int(hours_entry.get()), minutes=int(minutes_entry.get()))
         date_tmp = selected_date.get().split('-')
-        date = Date(int(date_tmp[0]), int(date_tmp[1]), int(date_tmp[2]))
+        date = utl.Date(int(date_tmp[0]), int(date_tmp[1]), int(date_tmp[2]))
     except ValueError:
-        calories = Calories(0,'kcal')
-        rating = Rating(1)
-        duration = Duration(0,0)
-        date = Date(1, 1, 1)
+        calories = utl.Calories(0,'kcal')
+        rating = utl.Rating(1)
+        duration = utl.Duration(0,0)
+        date = utl.Date(1, 1, 1)
     # globals is a dictionary. If you want to verify if contains a value you need to extract all values of the keys using values()
     if distance_entry in globals().values():
         # checks distance unit
         try:
             if selected_unit_distance.get() == 'm':
                 distance = float(distance_entry.get())
-                distance_value = Distance(distance=distance, unit=selected_unit_distance.get())
+                distance_value = utl.Distance(distance=distance, unit=selected_unit_distance.get())
                 distance_value.distance_convert('m', 'km')
             elif selected_unit_distance.get() == 'miles':
                 distance = float(distance_entry.get())
-                distance_value = Distance(distance=distance, unit=selected_unit_distance.get())
+                distance_value = utl.Distance(distance=distance, unit=selected_unit_distance.get())
                 distance_value.distance_convert('miles','km')
             else:
                 distance = float(distance_entry.get())
-                distance_value = Distance(distance=distance, unit=selected_unit_distance.get())
+                distance_value = utl.Distance(distance=distance, unit=selected_unit_distance.get())
         except ValueError:
-            distance_value = Distance(0,'km')
+            distance_value = utl.Distance(0,'km')
     else:
-        distance_value = Distance(distance=0,unit='km')
+        distance_value = utl.Distance(distance=0,unit='km')
 
     # Create a workout object and store it in a dataframe format.
-    workout_type = getattr(workout, workout_type)
+    workout_type = getattr(wk, workout_type)
     my_workout = workout_type(calories=calories.print(), rating=rating.print(), duration=duration.print(), date=date.print(), distance=distance_value.print())
 
     # Check if a workout dataframe already exists. If not, create one.
@@ -300,10 +289,10 @@ def save_data(frame, workout_type):
     workout_file = current_directory + "/logWorkouts.csv"
     try:
         workouts_df_data = pd.read_csv(workout_file)
-        workouts_df = dataframe.WorkoutDataframe()
+        workouts_df = utl.WorkoutDataframe()
         workouts_df.data = workouts_df_data
     except FileNotFoundError:
-        workouts_df = dataframe.WorkoutDataframe()
+        workouts_df = utl.WorkoutDataframe()
 
     # Add the workout object to the dataframe and save as csv file
     workouts_df.add_workout(my_workout)
@@ -750,7 +739,7 @@ def display_exercise_type(main_frame):
     exercise_label.grid(column=0 , row = 4)
 
     # Create list containing the names of all the workout types of class Workout.
-    workout_types = [subclass.__name__ for subclass in workout.Workout.__subclasses__()]
+    workout_types = [subclass.__name__ for subclass in wk.Workout.__subclasses__()]
     workout_types.append('All')
 
     # Variable to keep track of the option 
@@ -899,48 +888,48 @@ def save_goal(main_frame, root):
     #Give format to dates to be able to add to the dataframe
     try:
         start_date_tmp = start_date.get().split('-')
-        start_date_value = Date(int(start_date_tmp[0]), int(start_date_tmp[1]), int(start_date_tmp[2]))
+        start_date_value = utl.Date(int(start_date_tmp[0]), int(start_date_tmp[1]), int(start_date_tmp[2]))
 
         end_date_tmp = end_date.get().split('-')
-        end_date_value = Date(int(end_date_tmp[0]), int(end_date_tmp[1]), int(end_date_tmp[2]))
+        end_date_value = utl.Date(int(end_date_tmp[0]), int(end_date_tmp[1]), int(end_date_tmp[2]))
     except ValueError:
-        start_date_value = Date(1,1,1)
-        end_date_value = Date(1,1,2)
+        start_date_value = utl.Date(1,1,1)
+        end_date_value = utl.Date(1,1,2)
     try:
         #Create goal object
         if set_distance:
             if selected_unit_distance.get() == 'm':
                 value_distance = float(e_distance.get())/1000
-                current_goal = goal.Goal(value=value_distance, unit = 'km' ,time_scale=selected_timescale.get(), 
+                current_goal = utl.Goal(value=value_distance, unit = 'km' ,time_scale=selected_timescale.get(), 
                             start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
             elif selected_unit_distance.get() == 'miles':
                 value_distance = float(e_distance.get())*1.60934
-                current_goal = goal.Goal(value=value_distance, unit = 'km' ,time_scale=selected_timescale.get(), 
+                current_goal = utl.Goal(value=value_distance, unit = 'km' ,time_scale=selected_timescale.get(), 
                             start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
             else:
-                current_goal = goal.Goal(value=int(e_distance.get()), unit = selected_unit_distance.get() ,time_scale=selected_timescale.get(), 
+                current_goal = utl.Goal(value=int(e_distance.get()), unit = selected_unit_distance.get() ,time_scale=selected_timescale.get(), 
                             start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
         elif set_duration: 
             #create duration object
-            current_duration = Duration(int(e_hours.get()), int(e_min.get()))
-            current_goal = goal.DurationGoal(value=current_duration.minutes ,time_scale=selected_timescale.get(), 
+            current_duration = utl.Duration(int(e_hours.get()), int(e_min.get()))
+            current_goal = utl.DurationGoal(value=current_duration.minutes ,time_scale=selected_timescale.get(), 
                             start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
 
         elif set_calories:
             if selected_unit_calories.get() == 'kJ':
                 value_calories = float(e_calories.get())/4.184 
-                current_goal = goal.Goal(value=value_calories, unit = 'kcal' ,time_scale=selected_timescale.get(), 
+                current_goal = utl.Goal(value=value_calories, unit = 'kcal' ,time_scale=selected_timescale.get(), 
                             start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
             else:
-                current_goal = goal.Goal(value=int(e_calories.get()), unit = selected_unit_calories.get() ,time_scale=selected_timescale.get(), 
+                current_goal = utl.Goal(value=int(e_calories.get()), unit = selected_unit_calories.get() ,time_scale=selected_timescale.get(), 
                             start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
     except ValueError:
         if set_distance:
-            current_goal = goal.Goal(value=0,unit='km',time_scale=7, start_date=Date(1,1,1), end_date=Date(1,1,2), exercise='Running')
+            current_goal = utl.Goal(value=0,unit='km',time_scale=7, start_date=Date(1,1,1), end_date=Date(1,1,2), exercise='Running')
         elif set_duration:
-            current_goal = goal.DurationGoal(value=0,unit='min',time_scale=7,start_date=Date(1,1,1),end_date=Date(1,1,2),exercise='Running')
+            current_goal = utl.DurationGoal(value=0,unit='min',time_scale=7,start_date=Date(1,1,1),end_date=Date(1,1,2),exercise='Running')
         elif set_calories:
-            current_goal = goal.Goal(value=0,unit='kcal',time_scale=7, start_date=Date(1,1,1), end_date=Date(1,1,2), exercise='Running')
+            current_goal = utl.Goal(value=0,unit='kcal',time_scale=7, start_date=Date(1,1,1), end_date=Date(1,1,2), exercise='Running')
     print(current_goal)
 
 
@@ -949,10 +938,10 @@ def save_goal(main_frame, root):
     goals_file = current_directory + "/GoalData.csv"
     try:
         goals_df_data = pd.read_csv(goals_file)
-        goals_df = dataframe.GoalDataframe()
+        goals_df = utl.GoalDataframe()
         goals_df.data = goals_df_data
     except FileNotFoundError:
-        goals_df = dataframe.GoalDataframe()
+        goals_df = utl.GoalDataframe()
 
     # Add the goal object to the dataframe and save as csv file
     goals_df.add_goal(current_goal)
@@ -1000,14 +989,14 @@ def view_goals(root):
     global goal_row_entry
     current_directory = os.getcwd().replace(os.sep,'/')
     workout_file = current_directory + "/logWorkouts.csv"
-    workouts_df = WorkoutDataframe()
+    workouts_df = utl.WorkoutDataframe()
     try:
         workouts_df.read_from_csv(workout_file)
     except FileNotFoundError:
         pass
     # start a dataframe to store the goals and load them from a file
     goal_file = current_directory + "/GoalData.csv"
-    goals_df = GoalDataframe()
+    goals_df = utl.GoalDataframe()
     try:
         goals_df.read_from_csv(goal_file)
     except FileNotFoundError:
@@ -1039,7 +1028,7 @@ def view_goals(root):
     goals_df.plot_goals()
 
     #create GoalSummary object
-    summary = goal_summary.GoalSummary(workouts_df, goals_df, messages)
+    summary = gs.GoalSummary(workouts_df, goals_df, messages)
 
     #Create plot button
     plot_btn = gui.create_button(view_goal_frame, command= lambda: plot_button(root,int(goal_row_entry.get()),summary) , text = "Plot", width =5 )
