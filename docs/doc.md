@@ -168,25 +168,25 @@ The option *View Goals* allows you to see how much progress you did towards your
 
 **Specific**:
 
- ![alt text](specific-ex.png)
+ ![alt text](view_goals_specific.png)
 
  From the plot you will see on the *y-axis* the **type** of goal and from the title which **sport**. When there is no data but you see a label of the day it means that you did another type of workout.
 
-**General**
+**General:**
 
 If you select *All** in exercises, you will see a general view of all your activity. The first plot that you will see is the following
-![alt text](general-progress.png)
+![alt text](view_goals_barplot_all.png)
 
 This plot will be useful for you to visualize see how much you need to do before reaching your goal. On the *y-axis* you will see the **type** of goal. The value of the goal is marked with a dotted line. After everyday, the partial sum of the total workout that you made from the start of the goal will appear on the top of the bar toghether with the dates.
 
-The second plot you will see instead is a panoramical view of all different workouts that you did so far.
-![alt text](general-total-activity.png)
+The second plot you will see if you choose *All** in exercises is a panoramical view of all different workouts that you did so far.
+![alt text](view_goals_barplot_activity.png)
 
 Depending on the differents workout you did, it will be coloured according to the type of sport. If you practice multpliple sport in one day, then you will see a bar with the total amount done and for each sport how much was. if you are training for a ironman you will be able to see in comparison how much from each sport you are training and which sport you are not training as well as the other.
 
-The final plot is called total progress.
+The final plot is called total progress and is shown both if you choose *All** or a specific type of exercise.
 
-![alt text](pie-chart-progress.png)
+![alt text](view_goals_pie_chart.png)
 
 This plot will show you in percentage the total sport that you have done and how much you still need to do. If you already reach the goal it will show you more then *100 %* and this means that you are doing more training as you expected. Instead if you still need to reach the goal it will shows you how much you done.
 
