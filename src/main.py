@@ -76,6 +76,8 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
 
             # save dataframe in a file csv
             workouts_df.save_to_csv("logWorkouts.csv")
+        elif workout_respond == "n":
+            return
         else:
             print('Please select a valid confirmation answer or modify the workout')
 

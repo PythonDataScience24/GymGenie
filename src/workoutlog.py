@@ -61,7 +61,6 @@ class WorkoutLog:
             except (ValueError, IndexError) as err:
                 print(err)
                 print("Please enter the date in the format dd/mm/yyyy.")
-                return Date(1, 1, 1)
 
     def get_exercise_type(self):
         """
@@ -87,7 +86,6 @@ class WorkoutLog:
                 return Duration(minutes=duration)
             except ValueError:
                 print("Please enter a valid number for duration.")
-                return Duration(0, 0)
 
     def get_distance_value(self, exercise_type):
         """
@@ -101,7 +99,6 @@ class WorkoutLog:
                     return Distance(distance=distance, unit='km')
                 except ValueError:
                     print("Please enter a valid number for distance.")
-                    return Distance(0, "km")
         else:
             return None
 
@@ -116,7 +113,6 @@ class WorkoutLog:
                 return Calories(calories=calories, unit='kcal')
             except ValueError:
                 print("Please enter a valid number for calories burned.")
-                return Calories(0, "kcal")
 
     def get_impression(self):
         """
