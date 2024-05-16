@@ -281,7 +281,6 @@ class SetGoal:
                 return value
             except ValueError:
                 print("Please enter a valid entry!")
-                return 0
 
     def get_time_scale(self):
         """
@@ -307,7 +306,6 @@ class SetGoal:
             except (ValueError,IndexError) as err:
                 print(err)
                 print("Please enter the date in the format dd/mm/yyyy.")
-                return Date(1,1,1)
 
     def get_end_goal(self):
         """
@@ -321,7 +319,6 @@ class SetGoal:
             except (ValueError,IndexError) as err:
                 print(err)
                 print("Please enter the date in the format dd/mm/yyyy.")
-                return Date(1,1,2)
 
     def get_exercise_type(self):
         """

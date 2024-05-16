@@ -77,7 +77,7 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
             # save dataframe in a file csv
             workouts_df.save_to_csv("logWorkouts.csv")
         elif workout_respond == "n":
-            return
+            confirm = "y"
         else:
             print('Please select a valid confirmation answer or modify the workout')
 
@@ -96,9 +96,11 @@ def setGoal(goal_df, exercise_types):
     while confirm != "y":
         goal_respond, new_goal = SetGoal(exercise_types).collect_goal_infos()
         if goal_respond == "y":
-            confirm = 'y'
+            confirm = "y"
             goal_df.add_goal(new_goal)
             goal_df.save_to_csv("GoalData.csv")
+        elif goal_respond == "n":
+            confirm = "y"
         else:
             print('Please select a valid confirmation answer or modify the goal')
 
