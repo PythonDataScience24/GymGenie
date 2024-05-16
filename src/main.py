@@ -124,7 +124,7 @@ def seeGoals(workout_df: WorkoutDataframe, goals_df: GoalDataframe, messages: li
         row_index = int(input("For which goal would you like to see the progress plots? Enter the row index: "))
         if row_index in goals_df.data.index:
             # visualize the progress in the goal
-            summary.plot_goal(row_index)
+            summary.plot_goal_terminale(row_index)
         else:
             print("Please insert a valid index.")
     except ValueError:
