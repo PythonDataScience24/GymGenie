@@ -3,3 +3,9 @@ numpy
 datetime
 os
 sys
+matplotlib
+seaborn
+random
+abc
+tkinter
+tkcalendar
