@@ -121,7 +121,7 @@ Go in the folder of the repository and type the following command:
 If you are using MacOS or Linux the path of the file has to be adjusted.
 
 After starting the program the start page of GymGenie will appear.
-![alt text](main_page.png)
+![alt text](main_page.png = 70x60)
 
 Have fun exploring our program.
 
@@ -137,7 +137,7 @@ Menu Option:
 
 #### Log a Workout
 
-The option *Log workouts* allows you to enter the data of the workout data you already performed. You will be able to choose between:
+The option *Log a workout* allows you to enter the data of the workout data you already performed. You will be able to choose between:
 - **Running**
 - **Cycling**
 - **Strength**
@@ -194,12 +194,8 @@ If you would like to see more type of plot, please contact us and we will add th
 
 #### View Progress and Trends
 
-We are currently working on it!! Stay tuned!!
+We are currently working on it. Stay tuned!
 
 #### Quit
 
 If you want to quit the program you can click quit on the GUI. All your data will be saved and next time you will enter the program you will be able to access all your current data.
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/task2And3
