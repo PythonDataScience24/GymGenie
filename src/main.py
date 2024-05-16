@@ -74,14 +74,13 @@ def logWorkout(workouts_df, exercise_types, distance_exercises):
             workouts_df.add_workout(new_workout)
             #workouts_df.print_dataframe()
             # test dataframe
+            # checks that it doesn't contains any unrealistic values
             workouts_df.test_values()
             workouts_df.print_dataframe()
-
             # save dataframe in a file csv
             workouts_df.save_to_csv("logWorkouts.csv")
-
-            # checks that it doesn't contains any unrealistic values
-
+        elif workout_respond == "n":
+            confirm = "y"
         else:
             print('Please select a valid confirmation answer or modify the workout')
 
@@ -100,13 +99,15 @@ def setGoal(goal_df, exercise_types):
     while confirm != "y":
         goal_respond, new_goal = SetGoal(exercise_types).collect_goal_infos()
         if goal_respond == "y":
-            confirm = 'y'
+            confirm = "y"
             goal_df.add_goal(new_goal)
             #goal_df.print_dataframe()
             # checks for unrealistic values
             goal_df.test_values()
             goal_df.print_dataframe()
             goal_df.save_to_csv("GoalData.csv")
+        elif goal_respond == "n":
+            confirm = "y"
         else:
             print('Please select a valid confirmation answer or modify the goal')
 
