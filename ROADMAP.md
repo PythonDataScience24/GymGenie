@@ -65,4 +65,9 @@ Provide users with visualizations of their exercise data, such as weekly/monthly
 - **Contributors**: Laura, Kristin
 
 ## Relevant timeframes:
-31.04.2024 - End subtasks and write documentation
+30.05.2024 - End subtasks and write documentation
+
+
+
+
+

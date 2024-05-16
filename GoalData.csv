@@ -1,0 +1,6 @@
+value,unit,time_scale,start_date,end_date,exercise
+500.0,kcal,30,2024-05-11,2024-05-17,Cycling
+300.0,min,7,2024-04-20,2024-04-25,Running
+100.0,km,30,2024-04-20,2024-05-20,Cycling
+300.0,min,7,2024-04-20,2024-04-30,All
+100.0,min,7,2024-01-01,2024-12-31,Running
