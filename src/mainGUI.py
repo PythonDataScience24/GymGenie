@@ -903,7 +903,7 @@ def save_goal(main_frame, root):
     goals_df.add_goal(current_goal)
 
     # Save dataframe in a file csv
-    goals_df.save_dataframe("goals.csv")
+    goals_df.save_to_csv("GoalData.csv")
 
     # Close root window and display start page again. 
     root.destroy()
