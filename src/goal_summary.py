@@ -14,8 +14,8 @@ from rating import Rating
 
 class GoalSummary:
     """
-    This class retrives the goal for each esercise and plot the current situation, 
-    showing what is left
+    This class retrieves the goal for each exercise and plots the current situation, 
+    showing what is left.
 
     Attributes:
     log_workout_dataframe: The dataframe of the workouts of the user
@@ -24,7 +24,7 @@ class GoalSummary:
 
     def __init__(self, log_workout_dataframe: pd.DataFrame, goal_data_frame: pd.DataFrame, messages: list):
         """
-        Initialize a GoalSummary object
+        Initialize a GoalSummary object.
         """
         self.log_workout_dataframe = log_workout_dataframe
         self.goal_data_frame = goal_data_frame
@@ -35,7 +35,7 @@ class GoalSummary:
 
     def plot_goal(self, index_goal):
         """
-        This function shows the plot of the progress from the terminal through the goal
+        This function shows the plot of the progress from the terminal through the goal.
         Args:
         index_goal: user selection of the goal to plot.
         """
@@ -84,20 +84,20 @@ class GoalSummary:
                 
 
 
-    def plot_specific_exercise(self, workout_datafram: pd.DataFrame, exercise: str, start_time: Date, end_time: Date, unit_value: str):
+    def plot_specific_exercise(self, workout_dataframe: pd.DataFrame, exercise: str, start_time: Date, end_time: Date, unit_value: str):
         """
-        This function plot for every specific workout activity the progress
-        made towards the specific goal
+        This function plots for every specific workout activity the progress
+        made towards the specific goal.
         Args:
-        workout_datafram: dataframe of the workouts of the user
-        exercise:type of workout in which you want to achieve the goal. Default is None, to include all types of exercises
+        workout_dataframe: dataframe of the workouts of the user
+        exercise: type of workout in which you want to achieve the goal. Default is None, to include all types of exercises
         start_time (Date): date at which the goals was set
         end_time (Date): date at which the goals should be reached
         unit_value: specific properties that the user wants to see (kcal,km or min)
         """
         # filter the logWorkout dataframe, containing only all the activities with the same exercise
         # and according to the timeframe
-        workout_df = workout_datafram.data
+        workout_df = workout_dataframe.data
         filtered_workout_dataframe = workout_df[(workout_df['activity'] == exercise) &
                                                       (workout_df['date'] >= start_time) &
                                                       (workout_df['date'] <= end_time)]
@@ -135,12 +135,12 @@ class GoalSummary:
     
     def plot_specific_exercise_percentage(self, dataframe: pd.DataFrame, exercise: str ,unit_value: str, value_goal: float):
         """
-        This function plot the a pie chart with the marked workout done towards the goal.
-        If the goal has been reached, the pie chart will be color full otherwise only the part
-        that has been completed with the percentage
+        This function plots a pie chart with the percentage of workouts done towards the goal.
+        If the goal has been reached, the pie chart will be colored full, otherwise only the part
+        that has been completed with the percentage.
         Args:
         dataframe: the dataframe of the workouts of the user
-        unit_value: specific properties that the user wants to see (kcal,km or min)
+        unit_value: specific properties that the user wants to see (kcal, km or min)
         value_goal: the goal that the user wants to reach
         """
         # filter the logWorkout dataframe, containing only all the activities with the same exercise
@@ -154,11 +154,11 @@ class GoalSummary:
             case "min":
                 unit = 'duration'
         # Group date according to the unit choosen
-        # If there are more workout in one day it will sum the unit according
+        # If there are more workout in one day it will sum the unit accordingly
         progression = workout_df[workout_df['activity'] == exercise].groupby('date')[unit].sum().reset_index()
         print(progression)
         # plot using progress pie chart to shows what is left
-        # find th total workout
+        # find the total workout
         total_sum = progression[unit].sum()
         if total_sum >= value_goal:
             # if goal has been reached the pie chart will be complete
@@ -190,7 +190,7 @@ class GoalSummary:
 
     def plot_progression(self, dataframe: pd.DataFrame, unit_value: str, value_goal: float):
         """
-        This function shows the total progression made towards these goal
+        This function shows the total progression made towards these goals
         Args:
         dataframe: the dataframe of the workouts of the user
         unit_value: specific properties that the user wants to see (kcal,km or min)
@@ -238,7 +238,7 @@ class GoalSummary:
 
     def plot_general_workout(self, dataframe: pd.DataFrame, unit_value: str):
         """
-        This function shows the different types of exercise did every day with different color
+        This function shows the different types of exercise done every day with different colors.
         Args:
         dataframe: the dataframe of the workouts of the user
         unit_value: specific properties that the user wants to see (kcal,km or min)
@@ -284,9 +284,9 @@ class GoalSummary:
 
     def plot_percentage(self, dataframe: pd.DataFrame, unit_value: str, value_goal: float):
         """
-        This function plot the a pie chart with the marked workout done towards the goal.
-        If the goal has been reached, the pie chart will be color full otherwise only the part
-        that has been completed with the percentage
+        This function plots the a pie chart with the percentage of workouts done towards the goal.
+        If the goal has been reached, the pie chart will be colored full, otherwise only the part
+        that has been completed with the percentage.
         Args:
         dataframe: the dataframe of the workouts of the user
         unit_value: specific properties that the user wants to see (kcal,km or min)
@@ -642,7 +642,7 @@ class WorkoutSummary:
 
     def get_timescale(self):
         """
-        Promps the timescale the user wants to see in the plot
+        Prompts the user for the timescale they want to see in the plot.
         """
         while True:
             try:
@@ -653,7 +653,7 @@ class WorkoutSummary:
 
     def get_quantity(self):
         """
-        Promps the the workout quantity made by the user
+        Prompts the user for the workout quantity they want to see in the plot.
         """
         while True:
             quantity = input("Would you like to see the summary for duration, distance or calories? ").lower().strip()
@@ -675,7 +675,6 @@ class WorkoutSummary:
                 return exercise_list
             elif exercise.capitalize() in ["Running", "Cycling", "Strength", "Swimming", "Walking", "Skiing", "Climbing", "Others"]:
                 exercise_list.append(exercise.capitalize())
-                return exercise_list
             else:
                 print("Please enter a valid exercise type.")
 
