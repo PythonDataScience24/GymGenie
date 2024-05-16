@@ -41,8 +41,10 @@ class Calories:
         #I am not sure if i should directly modify self.distance
         if a == 'kcal' and b == 'kJ':
             self.calories_value = self.calories_value*4.184
+            self.unit = 'kJ'
         elif a == 'kJ' and b == 'kcal':
             self.calories_value = self.calories_value/4.184
+            self.unit = 'kcal'
 
         
         #Round the distance value with 3 decimals 
