@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+from matplotlib.figure import Figure
 import seaborn as sns
 import random
 from date import Date
@@ -73,21 +74,262 @@ class GoalSummary:
             if exercise in ["Running", "Cycling", "Strength", "Swimming", 
                         "Walking", "Skiing", "Climbing", "Others"]:
 
-                self.plot_specific_exercise(
-                    self.log_workout_dataframe, exercise, start_time, end_time, unit_value)
+                return self.plot_specific_exercise(self.log_workout_dataframe, exercise, start_time, end_time, unit_value),self.plot_specific_exercise_percentage(self.log_workout_dataframe,exercise,unit_value,value_goal),None
             else:
                 # plot progression
-                self.plot_progression(
-                    self.log_workout_dataframe, unit_value, value_goal)
+                return self.plot_progression(self.log_workout_dataframe, unit_value, value_goal),self.plot_general_workout(self.log_workout_dataframe, unit_value),self.plot_percentage(self.log_workout_dataframe, unit_value, value_goal)
                 # plot general workout
-                self.plot_general_workout(
-                    self.log_workout_dataframe, unit_value)
+                
                 # plot total workout left to reach the goal
-                self.plot_percentage(
-                    self.log_workout_dataframe, unit_value, value_goal)
+                
 
 
-        pass
+    def plot_specific_exercise(self, workout_datafram: pd.DataFrame, exercise: str, start_time: Date, end_time: Date, unit_value: str):
+        """
+        This function plot for every specific workout activity the progress
+        made towards the specific goal
+        Args:
+        workout_datafram: dataframe of the workouts of the user
+        exercise:type of workout in which you want to achieve the goal. Default is None, to include all types of exercises
+        start_time (Date): date at which the goals was set
+        end_time (Date): date at which the goals should be reached
+        unit_value: specific properties that the user wants to see (kcal,km or min)
+        """
+        # filter the logWorkout dataframe, containing only all the activities with the same exercise
+        # and according to the timeframe
+        workout_df = workout_datafram.data
+        filtered_workout_dataframe = workout_df[(workout_df['activity'] == exercise) &
+                                                      (workout_df['date'] >= start_time) &
+                                                      (workout_df['date'] <= end_time)]
+        print(filtered_workout_dataframe)
+        # convert all distance in standard km? not necessary for the moment
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax = fig.add_subplot(111)
+        # create a bar plot according to which type of goal we wants to visualize
+        match unit_value:
+            case "kcal":
+                ax.bar(
+                    filtered_workout_dataframe['date'], filtered_workout_dataframe['calories'], edgecolor='gray')
+                ylabel = "Calories"
+            case "km":
+                ax.bar(
+                    filtered_workout_dataframe['date'], filtered_workout_dataframe['distance'], edgecolor='gray')
+                ylabel = "Distance"
+            case "min":
+                ax.bar(
+                    filtered_workout_dataframe['date'], filtered_workout_dataframe['duration'], edgecolor='gray')
+                ylabel = "Duration"
+        # add an encouraging message to the plot
+        message_index = random.randrange(len(self.messages))
+        #ax.subplots_adjust(bottom = 0.2)
+        #ax.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
+        ax.set_ylabel(ylabel, fontsize=12)
+        #ax.set_xticks(rotation=-25, fontsize=8)
+        ax.tick_params(axis='x',labelrotation=45, labelsize=8)
+        # ax.legend(frameon=False)
+        ax.set_title(exercise)
+        #plt.show()
+
+        return fig
+    
+    def plot_specific_exercise_percentage(self, dataframe: pd.DataFrame, exercise: str ,unit_value: str, value_goal: float):
+        """
+        This function plot the a pie chart with the marked workout done towards the goal.
+        If the goal has been reached, the pie chart will be color full otherwise only the part
+        that has been completed with the percentage
+        Args:
+        dataframe: the dataframe of the workouts of the user
+        unit_value: specific properties that the user wants to see (kcal,km or min)
+        value_goal: the goal that the user wants to reach
+        """
+        # filter the logWorkout dataframe, containing only all the activities with the same exercise
+        workout_df = dataframe.data
+        # Depending on the unit choosen in the goal dataframe select different column
+        match unit_value:
+            case "kcal":
+                unit = 'calories'
+            case "km":
+                unit = 'distance'
+            case "min":
+                unit = 'duration'
+        # Group date according to the unit choosen
+        # If there are more workout in one day it will sum the unit according
+        progression = workout_df[workout_df['activity'] == exercise].groupby('date')[unit].sum().reset_index()
+        print(progression)
+        # plot using progress pie chart to shows what is left
+        # find th total workout
+        total_sum = progression[unit].sum()
+        if total_sum >= value_goal:
+            # if goal has been reached the pie chart will be complete
+            percentage_left = round((total_sum/value_goal)*100)
+            slices = [percentage_left]
+            color = ['green']
+        else:
+            # if the goal has NOT been reached the pie chart wont be completed
+            percentage_left = round((total_sum/value_goal)*100)
+            slices = [percentage_left,100-percentage_left]
+            color = ['green', 'white']
+        print(slices)
+        print(percentage_left)
+        print(value_goal)
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax = fig.add_subplot(111)
+        # draw the pie chart
+        ax.pie(slices, colors=color, startangle=90, counterclock=False, normalize=True)
+        # add a circle in the middle to draw a donut
+        my_circle = plt.Circle((0, 0), 0.7, color='white')
+        p = plt.gcf()
+        p.gca().add_artist(my_circle)
+        ax.text(0, 0, f"{percentage_left} %", verticalalignment='center',
+                    horizontalalignment='center', fontsize=25, fontname="fantasy")
+        ax.set_title(f"Total Progress {unit.capitalize()}")
+        #plt.show()
+
+        return fig
+
+    def plot_progression(self, dataframe: pd.DataFrame, unit_value: str, value_goal: float):
+        """
+        This function shows the total progression made towards these goal
+        Args:
+        dataframe: the dataframe of the workouts of the user
+        unit_value: specific properties that the user wants to see (kcal,km or min)
+        value_goal: the goal that the user wants to reach
+        """
+        # Depending on the unit choosen in the goal dataframe select different column
+        match unit_value:
+            case "kcal":
+                unit = 'calories'
+            case "km":
+                unit = 'distance'
+            case "min":
+                unit = 'duration'
+        # Group date according to the unit choosen
+        # If there are more workout in one day it will sum the unit according
+        progression = dataframe.data.groupby('date')[unit].sum().reset_index()
+        print(progression)
+        # create a new column called progress and use the function cumsum
+        # that will do partial sum of the row before
+        progression['progression'] = progression[unit].cumsum().fillna(
+            progression[unit][0])
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax = fig.add_subplot(111)
+        # draw the bar plot with the progression
+        ax.bar(progression['date'], progression['progression'], color="red")
+        # add the label of the partial sum on the top of the bar
+        ax.bar_label(plt.bar(
+            progression['date'], progression['progression'], color='red'), progression['progression'])
+        # Adjust the ylim to have a 'space' after the goal line : Check that is valid for all the cases
+        ax.set_ylim(0, value_goal + 50)
+        # Draw the horizontal line showing the goal
+        ax.axhline(value_goal, linestyle='--', lw=1.2,
+                    color='black', label="Goal", zorder=-1.5)
+        # add an encouraging message to the plot
+        message_index = random.randrange(len(self.messages))
+        #plt.subplots_adjust(bottom = 0.2)
+        #plt.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
+        ax.set_ylabel(unit.capitalize(), fontsize=12)
+        ax.tick_params(axis='x',rotation=25, labelsize=8)
+        ax.legend(frameon=False)
+        #plt.show()
+
+        return fig
+
+    def plot_general_workout(self, dataframe: pd.DataFrame, unit_value: str):
+        """
+        This function shows the different types of exercise did every day with different color
+        Args:
+        dataframe: the dataframe of the workouts of the user
+        unit_value: specific properties that the user wants to see (kcal,km or min)
+        """
+        # Depending on the unit choosen in the goal dataframe select different column
+        match unit_value:
+            case "kcal":
+                unit = 'calories'
+            case "km":
+                unit = 'distance'
+            case "min":
+                unit = 'duration'
+        # group each day every sport
+        grouped_dataframe = dataframe.data.groupby(
+            ['activity', 'date']).sum().reset_index()
+        # create a pivot table
+        pivot_df = grouped_dataframe.pivot(
+            index='date', columns='activity', values=unit)
+        print(pivot_df)
+        # draw the pivot table
+        print(pivot_df.dtypes)
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax = fig.add_subplot(111)
+        pivot_df.plot(kind='bar', ax=ax,stacked=True)
+        # Adding labels on top of each bar
+        # it adds also the 0, not good!
+        # for container in ax.containers:
+        #    print(container.pchanged())
+        #    print(container.get_label())
+        #    ax.bar_label(container, label_type='center')
+        # add an encouraging message to the plot
+        #message_index = random.randrange(len(self.messages))
+        #plt.subplots_adjust(bottom = 0.2)
+        #plt.gcf().text(0.05, 0.05, self.messages[message_index], fontsize = 12)
+        ax.set_xlabel("")
+        ax.set_ylabel(unit_value)
+        ax.tick_params(axis='x',rotation=25, labelsize=8)
+        ax.legend(title='Activity', frameon=False)
+        #plt.show()
+
+        return fig
+
+    def plot_percentage(self, dataframe: pd.DataFrame, unit_value: str, value_goal: float):
+        """
+        This function plot the a pie chart with the marked workout done towards the goal.
+        If the goal has been reached, the pie chart will be color full otherwise only the part
+        that has been completed with the percentage
+        Args:
+        dataframe: the dataframe of the workouts of the user
+        unit_value: specific properties that the user wants to see (kcal,km or min)
+        value_goal: the goal that the user wants to reach
+        """
+        # Depending on the unit choosen in the goal dataframe select different column
+        match unit_value:
+            case "kcal":
+                unit = 'calories'
+            case "km":
+                unit = 'distance'
+            case "min":
+                unit = 'duration'
+        # Group date according to the unit choosen
+        # If there are more workout in one day it will sum the unit according
+        progression = dataframe.data.groupby('date')[unit].sum().reset_index()
+        # plot using progress pie chart to shows what is left
+        # find th total workout
+        total_sum = progression[unit].sum()
+        if total_sum >= value_goal:
+            # if goal has been reached the pie chart will be complete
+            percentage_left = round(total_sum)
+            slices = [percentage_left]
+        else:
+            # if the goal has NOT been reached the pie chart wont be completed
+            percentage_left = round((total_sum/value_goal)*100)
+            slices = [total_sum, round(value_goal-total_sum)]
+
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax = fig.add_subplot(111)
+        # draw the pie chart
+        ax.pie(slices, colors=['green'], startangle=90, counterclock=False)
+        # add a circle in the middle to draw a donut
+        my_circle = plt.Circle((0, 0), 0.7, color='white')
+        p = plt.gcf()
+        p.gca().add_artist(my_circle)
+        ax.text(0, 0, f"{percentage_left} %", verticalalignment='center',
+                 horizontalalignment='center', fontsize=35, fontname="fantasy")
+        ax.set_title(f"Total Progress {unit.capitalize()}")
+        #plt.show()
+
+        return fig
 
     # plot goal using barplot
     def plot_goal_terminale(self, index_goal):
@@ -164,7 +406,7 @@ class GoalSummary:
                                                       (workout_df['date'] >= start_time) &
                                                       (workout_df['date'] <= end_time)]
         print(filtered_workout_dataframe)
-        # convert all distance in standard km? not necessary for the moment TODO
+        # convert all distance in standard km? not necessary for the moment
         # create figure
         ax1 = self.fig.add_subplot(self.grid[0,:])
         # create a bar plot according to which type of goal we wants to visualize
@@ -281,7 +523,7 @@ class GoalSummary:
         # Adjust the ylim to have a 'space' after the goal line : Check that is valid for all the cases
         #plt.ylim(0, value_goal + 100)
         # Draw the horizontal line showing the goal
-        plt.axhline(value_goal, linestyle='--', lw=1.2,
+        ax.axhline(value_goal, linestyle='--', lw=1.2,
                     color='black', label="Goal", zorder=-1.5)
         # add an encouraging message to the plot
         message_index = random.randrange(len(self.messages))
