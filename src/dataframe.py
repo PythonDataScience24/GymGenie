@@ -8,7 +8,7 @@ from date import Date
 from duration import Duration
 from workout import Workout,Climbing
 from calories import Calories
-import pickle
+
 
 class Dataframe(ABC):
     """
@@ -102,15 +102,15 @@ class WorkoutDataframe(Dataframe):
         """
         #print(self.data)
         self.data['date'] = self.data['date'].apply(self.extract_date)
-        self.data['duration'] = self.data['duration'].apply(self.extarct_duration)
+        self.data['duration'] = self.data['duration'].apply(self.extract_duration)
         self.data['distance'] = self.data['distance'].apply(self.extract_distance)
         self.data['calories'] = self.data['calories'].apply(self.extract_calories)
         self.data['rating'] = self.data['rating'].apply(self.extract_rating)
 
 
-    def extarct_duration(self,duration:str):
+    def extract_duration(self,duration:str):
         """
-        Transofmr the duration string in an float for plotting
+        Transforms the duration string in a float for plotting.
         """
         info = duration.split('h')
         
@@ -118,7 +118,7 @@ class WorkoutDataframe(Dataframe):
     
     def extract_distance(self,distance:str):
         """
-        Transform the distance string in a float for plotting
+        Transforms the distance string in a float for plotting.
         """
         info = distance.split(" ")
 
@@ -126,7 +126,7 @@ class WorkoutDataframe(Dataframe):
     
     def extract_calories(self,calories:str):
         """
-        Transform the calories string in a float for plotting
+        Transforms the calories string in a float for plotting.
         """
         info = calories.split(" ")
 
@@ -134,7 +134,7 @@ class WorkoutDataframe(Dataframe):
     
     def extract_rating(self,ratings:str):
         """
-        Transform the rating string in a interger for plotting
+        Transforms the rating string in a interger for plotting.
         """
         return int(ratings)
 
@@ -171,18 +171,18 @@ class GoalDataframe(Dataframe):
         """
         self.data['start_date'] = self.data['start_date'].apply(self.extract_date)
         self.data['end_date'] = self.data['end_date'].apply(self.extract_date)
-        self.data['value'] = self.data['value'].apply(self.exctract_float)
-        self.data['time_scale'] = self.data['time_scale'].apply(self.exctract_integer)
+        self.data['value'] = self.data['value'].apply(self.extract_float)
+        self.data['time_scale'] = self.data['time_scale'].apply(self.extract_integer)
 
-    def exctract_integer(self,value:str):
+    def extract_integer(self,value:str):
         """
-        Transform the time_scale string in a int for plotting the goals
+        Transform the time_scale string in a int for plotting the goals.
         """
         return int(value)
     
-    def exctract_float(self,value:str):
+    def extract_float(self,value:str):
         """
-        Transform the value string in a flora for plotting the goals
+        Transform the value string in a float for plotting the goals.
         """
         return float(value)
 
