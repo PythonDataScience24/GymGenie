@@ -255,7 +255,13 @@ def save_data(frame, workout_type):
 
     # Create objects for each datatype the user has entered.
     try:
-        calories = Calories(calories=calories_entry.get(), unit=selected_unit_calories.get())
+        # checks the calories unit
+        if selected_unit_calories.get() == 'kJ':
+            calories = Calories(calories=float(calories_entry.get()), unit=selected_unit_calories.get())
+            calories.calories_convert('kJ','kcal')
+        else:
+            calories = Calories(calories=float(calories_entry.get()), unit=selected_unit_calories.get())
+        
         rating = Rating(rating=rating_slider.get())
         duration = Duration(hours=int(hours_entry.get()), minutes=int(minutes_entry.get()))
         date_tmp = selected_date.get().split('-')
@@ -267,9 +273,19 @@ def save_data(frame, workout_type):
         date = Date(1, 1, 1)
     # globals is a dictionary. If you want to verify if contains a value you need to extract all values of the keys using values()
     if distance_entry in globals().values():
+        # checks distance unit
         try:
-            distance = int(distance_entry.get())
-            distance_value = Distance(distance=distance, unit=selected_unit_distance.get())
+            if selected_unit_distance.get() == 'm':
+                distance = float(distance_entry.get())
+                distance_value = Distance(distance=distance, unit=selected_unit_distance.get())
+                distance_value.distance_convert('m', 'km')
+            elif selected_unit_distance.get() == 'miles':
+                distance = float(distance_entry.get())
+                distance_value = Distance(distance=distance, unit=selected_unit_distance.get())
+                distance_value.distance_convert('miles','km')
+            else:
+                distance = float(distance_entry.get())
+                distance_value = Distance(distance=distance, unit=selected_unit_distance.get())
         except ValueError:
             distance_value = Distance(0,'km')
     else:
@@ -893,7 +909,16 @@ def save_goal(main_frame, root):
     try:
         #Create goal object
         if set_distance:
-            current_goal = goal.Goal(value=int(e_distance.get()), unit = selected_unit_distance.get() ,time_scale=selected_timescale.get(), 
+            if selected_unit_distance.get() == 'm':
+                value_distance = float(e_distance.get())/1000
+                current_goal = goal.Goal(value=value_distance, unit = 'km' ,time_scale=selected_timescale.get(), 
+                            start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
+            elif selected_unit_distance.get() == 'miles':
+                value_distance = float(e_distance.get())*1.60934
+                current_goal = goal.Goal(value=value_distance, unit = 'km' ,time_scale=selected_timescale.get(), 
+                            start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
+            else:
+                current_goal = goal.Goal(value=int(e_distance.get()), unit = selected_unit_distance.get() ,time_scale=selected_timescale.get(), 
                             start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
         elif set_duration: 
             #create duration object
@@ -902,7 +927,12 @@ def save_goal(main_frame, root):
                             start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
 
         elif set_calories:
-            current_goal = goal.Goal(value=int(e_calories.get()), unit = selected_unit_calories.get() ,time_scale=selected_timescale.get(), 
+            if selected_unit_calories.get() == 'kJ':
+                value_calories = float(e_calories.get())/4.184 
+                current_goal = goal.Goal(value=value_calories, unit = 'kcal' ,time_scale=selected_timescale.get(), 
+                            start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
+            else:
+                current_goal = goal.Goal(value=int(e_calories.get()), unit = selected_unit_calories.get() ,time_scale=selected_timescale.get(), 
                             start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
     except ValueError:
         if set_distance:
