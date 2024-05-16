@@ -8,7 +8,8 @@ from date import Date
 from duration import Duration
 from workout import Workout,Climbing
 from calories import Calories
-import pickle
+from distance import Distance
+from rating import Rating
 
 class Dataframe(ABC):
     """
@@ -52,7 +53,7 @@ class Dataframe(ABC):
         Args:
         row_idx (int): Index of the row that should be removed.
         """
-        self.data.drop(row_idx)
+        self.data.drop(inplace=True,index=row_idx)
         
     def read_from_csv(self, path: str):
         """
@@ -69,8 +70,6 @@ class Dataframe(ABC):
         info =  date.split('-')
 
         return Date(int(info[0]), int(info[1]), int(info[2])).print()
-
-
 class WorkoutDataframe(Dataframe):
     """
     Dataframe  that contains the information about the workouts the user entered.
@@ -137,6 +136,17 @@ class WorkoutDataframe(Dataframe):
         Transform the rating string in a interger for plotting
         """
         return int(ratings)
+    def test_values(self):
+        """
+        Test that the dataframe doesn't contains unrealistic values
+        """
+        index = self.data.index[(self.data['date'] == Date(1,1,1).print()) & (self.data['duration'] == Duration(0,0).print()) &
+                                (self.data['distance'] == Distance(0,"km").print()) & (self.data['calories'] == Calories(0,'kcal').print()) &
+                                (self.data['rating'] == Rating(1).print())].to_list()
+        print(index)
+        if len(index) != 0:
+            # drop all the lines with unrealist values
+            self.delete_entry(index[0])
 
 
 class GoalDataframe(Dataframe):
@@ -185,6 +195,17 @@ class GoalDataframe(Dataframe):
         Transform the value string in a flora for plotting the goals
         """
         return float(value)
+    
+    def test_values(self):
+        """
+        Test that the dataframe doesn't contains unrealistic values
+        """
+        index = self.data.index[(self.data['value'] == 0) & (self.data['start_date'] == Date(1,1,1).print()) &
+                                (self.data['end_date'] == Date(1,1,2).print())].to_list()
+        print(index)
+        if len(index) != 0:
+            # drop all the lines with unrealist values
+            self.delete_entry(index[0])
 
 
 if __name__ == "__main__":
