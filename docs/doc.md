@@ -186,7 +186,7 @@ Depending on the differents workout you did, it will be coloured according to th
 
 The final plot is called total progress and is shown both if you choose *All** or a specific type of exercise.
 
-![alt text](view_goals_pie_chart.png)
+![alt text](view_goals_pie_chart_all.png)
 
 This plot will show you in percentage the total sport that you have done and how much you still need to do. If you already reach the goal it will show you more then *100 %* and this means that you are doing more training as you expected. Instead if you still need to reach the goal it will shows you how much you done.
 
