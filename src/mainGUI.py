@@ -705,11 +705,6 @@ def display_timeframe(main_frame, col , row):
 
 def display_exercise_type(main_frame):
     """
-    Displays the label and option menu to select the type of workout related to the goal.
-
-
-def display_exercise_type(main_frame):
-    """
     Displays the workout label and an option menu to choose which type of exercise the goal is related to.
 
     Parameters
@@ -920,6 +915,15 @@ def save_goal(main_frame, root):
 
 
 def view_goals(root):
+    """
+    Displays the page where you can visualize the dataframe with the goals and select the progress that you want to plot,
+      after the "view goals"-button is clicked on the start page.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    """
     # Remove all widgets from the root window
     for widget in root.winfo_children():
         widget.destroy()
@@ -992,6 +996,14 @@ def view_goals(root):
     quit_button.pack(side=tk.BOTTOM)
 
 def display_message(frame):
+    """
+        Displays a random motivational message on a label.
+
+    Parameters
+    ----------
+    main_frame : tkinter.frame where to be placed.
+ 
+    """
     #create list of motivational messages TODO
     messages = ["You're on the right track, keep going!", "You can either suffer the pain of discipline or the pain of regret", "You may not be there yet, but you are closer than you were yesterday", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
 
@@ -1000,6 +1012,18 @@ def display_message(frame):
     message_label.grid(column=0, row=0)
 
 def old_plot(root,figure1,figure2, index):
+    """
+        Displays the previous figure after the button "Go back" is clicked.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    figure1 (matplotlib.pyplot.figure) : first figure
+    figure2 (matplotlib.pyplot.figure) :  second figure
+    index (int): index of the selected row in the Goal dataframe whose progress is plotted .
+ 
+    """
     # Remove all widgets from the root window
     for widget in root.winfo_children():
         widget.destroy()
@@ -1009,8 +1033,9 @@ def old_plot(root,figure1,figure2, index):
     view_goal_frame.pack(fill=tk.BOTH, expand=True)
     view_goal_frame.columnconfigure(0, weight=1)
     view_goal_frame.rowconfigure(0, weight=1)
-    display_message(view_goal_frame)
 
+    #Display motivational message
+    display_message(view_goal_frame)
 
     #create Canvas
     canvas_df = FigureCanvasTkAgg(figure1, master=root)
@@ -1027,6 +1052,18 @@ def old_plot(root,figure1,figure2, index):
 
 
 def new_plot(root,figure2,figure3, index):
+    """
+        Displays the next figure after the button "Next" is clicked.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    figure1 (matplotlib.pyplot.figure) : second figure
+    figure2 (matplotlib.pyplot.figure) :  third figure
+    index (int): index of the selected row in the Goal dataframe whose progress is plotted .
+ 
+    """
     # Remove all widgets from the root window
     for widget in root.winfo_children():
         widget.destroy()
@@ -1060,6 +1097,19 @@ def new_plot(root,figure2,figure3, index):
     before_button.pack(side='left')
 
 def new_plot_exercise(root,figure2,figure3, index):
+    """
+        Displays a figure after the button "Plot" is clicked.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    figure2 (matplotlib.pyplot.figure) : first figure to be shown.
+    figure3 (matplotlib.pyplot.figure) :  second figure to be shown.
+    index (int): index of the selected row in the Goal dataframe whose progress is plotted .
+ 
+    """
+
     # Remove all widgets from the root window
     for widget in root.winfo_children():
         widget.destroy()
@@ -1090,6 +1140,18 @@ def new_plot_exercise(root,figure2,figure3, index):
 
 
 def plot_button(root,index,summary):
+    """
+        Displays the "Plot" button in the view goals page. Shows the new page with plots after the "Plot"-button is clicked.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    index (int): index of the selected row in the Goal dataframe whose progress is plotted .
+    summary (GoalSummary object): This class retrives the goal for each esercise and plot the current situation, 
+        showing what is left. It needs as arguments the workout dataframe and the goals dataframe.
+ 
+    """
 
     # Remove all widgets from the root window
     for widget in root.winfo_children():
