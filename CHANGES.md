@@ -8,8 +8,12 @@ We used some decomposition on a coarse level when designing the main program. Th
 
 # Change 3: Plot Goal and Progress
 
-In task 2, we needed to produce some plot about the goal and the workouts. For each type of plot we did a different function because they are all indipendent from each other and in this way we kept clean the structure of our code.
+In task 2, we needed to produce some plot about the goal and the workouts. For each type of plot we did a different function because they are all independent from each other and in this way we kept clean the structure of our code.
 
 # Change 4: GUI
 
 In parallel we implemented a GUI. The user will be able to choose if they wants to interact with the terminal or with the GUI made with Tkinter. Each window and functionality needed a function to be implemented, using all the object created in the last task.
+
+# Change 5: Abstraction of GUI functions
+
+When implementing our GUI, we discovered we repeat many of the same settings when we are making a new widget. Therefore, we created functions for creating a frame, button, labels etc. that have default values we often use, but still have the flexibility to change the widgets by allowing kwargs into the functions as well. These functions are in their own module.
