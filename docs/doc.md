@@ -121,7 +121,7 @@ Go in the folder of the repository and type the following command:
 If you are using MacOS or Linux the path of the file has to be adjusted.
 
 After starting the program the start page of GymGenie will appear.
-![alt text](main_page.png = 70x60)
+![alt text](main_page.png)
 
 Have fun exploring our program.
 
