@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import numpy as np
 import calories
 import date
 import distance
@@ -14,13 +13,13 @@ class Goal:
     Attributes:
         value: actual value that should be reached with this goal
         unit: unit of the value the goal is set for
-        time_scale: number of days over which you want to achieve your goal (e.g. 7 to set a goal of )
+        time_scale: number of days over which you want to achieve your goal (e.g. 7 to set a goal of doing a certain amount each week)
         start_date (Date): date at which the goal was set
         end_date (Date): date by which the goal should be reached
-        exercise (Workout): type of workout in which you want to achieve the goal. Default is None, to include all types of exercises.
+        exercise (Workout): type of workout in which you want to achieve the goal. Default is 'All', to include all types of exercises.
     """
 
-    def __init__(self, value: float, unit: str, time_scale: int, start_date: date.Date, end_date: date.Date, exercise=np.NaN):
+    def __init__(self, value: float, unit: str, time_scale: int, start_date: date.Date, end_date: date.Date, exercise='All'):
         if start_date.print() >= end_date.print():
             raise ValueError("The start_date must be before the end_date.")
         self.value = value
@@ -42,8 +41,6 @@ class Goal:
     def get_end_date(self):
         return self.end_date
 
-    # for all attributes?
-
     def subclass_name(self):
         """
         Returns the name of the subclass (quantity for which the goal is set, i.e. calories, duration or distance).
@@ -56,7 +53,7 @@ class CalorieGoal(Goal):
     A goal set for calories. See Goal for attributes. The attribute value has to be of class Calories.
     """
 
-    def __init__(self, value, time_scale, start_date, end_date, exercise=np.NaN):
+    def __init__(self, value, time_scale, start_date, end_date, exercise='All'):
         super().__init__(value, "kcal", time_scale, start_date, end_date, exercise)
 
 
@@ -65,7 +62,7 @@ class DistanceGoal(Goal):
     A goal set for distances. See Goal for attributes. The attribute value has to be of class Distance.
     """
 
-    def __init__(self, value, time_scale, start_date, end_date, exercise=np.NaN):
+    def __init__(self, value, time_scale, start_date, end_date, exercise='All'):
         super().__init__(value, "km", time_scale, start_date, end_date, exercise)
 
 
@@ -74,7 +71,7 @@ class DurationGoal(Goal):
     A goal set for duration of workouts. See Goal for attributes. The attribute value has to be of class Duration.
     """
 
-    def __init__(self, value, time_scale, start_date, end_date, exercise=np.NaN):
+    def __init__(self, value, time_scale, start_date, end_date, exercise='All'):
         super().__init__(value, "min", time_scale, start_date, end_date, exercise)
 
 
