@@ -7,6 +7,7 @@ import workout
 import tkcalendar
 import datetime
 import goal
+import gui
 from tkinter import messagebox
 from calories import Calories
 from date import Date
@@ -15,8 +16,11 @@ from duration import Duration
 from date import Date
 from rating import Rating
 import dataframe
-from dataframe import WorkoutDataframe 
-
+from dataframe import WorkoutDataframe, GoalDataframe
+import goal_summary
+from tkinter import Canvas, Text
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
 
 ### Global variables
 #Create boolean values to keep the workflow
@@ -39,331 +43,6 @@ dark_blue = "#005F73"
 blue = "#357F93"
 light_blue = "#5d99a9"
 
-def create_button(frame, command, text, **kwargs):
-    """
-    Creates a button with customizable properties.
-
-    Parameters
-    ----------
-    frame : tkinter.Frame
-        The frame in which the button should be placed.
-
-    command : function
-        A function for what should happen when the button is clicked.
-
-    text : str
-        The text that should be displayed on the button.
-
-    **kwargs : dict, optional
-        Additional keyword arguments to customize the button.
-        Supported keyword arguments include:
-            - font: Tuple specifying the font (default is ("Arial", 12, "bold"))
-            - width: Width of the button (default is 20)
-            - height: Height of the button (default is 1)
-            - background: Background color of the button (default is dark blue)
-            - foreground: Foreground color of the button (default is white)
-            - activebackground: Background color of the button when active (default is light blue)
-            - activeforeground: Foreground color of the button when active (default is white)
-            - border: Border width of the button (default is 0)
-            - cursor: Cursor style when hovering over the button (default is "hand2")
-
-    Returns
-    -------
-    button : tkinter.Button
-        The created button widget.
-    """
-    # Default values
-    font = kwargs.get("font", ("Arial", 12, "bold"))
-    width = kwargs.get("width", 20)
-    height = kwargs.get("height", 1)
-    background = kwargs.get("background", dark_blue)
-    foreground = kwargs.get("foreground", "white")
-    activebackground = kwargs.get("activebackground", light_blue)
-    activeforeground = kwargs.get("activeforeground", "white")
-    border = kwargs.get("border", 0)
-    cursor = kwargs.get("cursor", "hand2")
-
-    button = tk.Button(
-        frame,
-        command=command,
-        text=text,
-        font=font,
-        background=background,
-        foreground=foreground,
-        activebackground=activebackground,
-        activeforeground=activeforeground,
-        width=width,
-        height=height,
-        border=border,
-        cursor=cursor
-    )
-    return button
-
-def create_entry(frame, **kwargs):
-    """
-    Creates an entry widget with customizable properties.
-
-    Parameters
-    ----------
-    frame : tkinter.Frame
-        The frame in which the entry should be placed.
-
-    **kwargs : dict, optional
-        Additional keyword arguments to customize the entry.
-        Supported keyword arguments include:
-            - font: Tuple specifying the font (default is ("Arial", 10, "normal"))
-            - background: Background color of the entry (default is white)
-            - foreground: Foreground color of the entry (default is black)
-            - width: Width of the entry (default is 10)
-            - show: Character to be displayed in place of the input (default is None)
-            - textvariable: Tkinter variable to associate with the entry (default is None)
-
-    Returns
-    -------
-    entry : tkinter.Entry
-        The created entry widget.
-    """
-    # Default values
-    font = kwargs.get("font", ("Arial", 10, "normal"))
-    background = kwargs.get("background", "white")
-    foreground = kwargs.get("foreground", "black")
-    width = kwargs.get("width", 15)
-    show = kwargs.get("show", None)
-    textvariable = kwargs.get("textvariable", None)
-
-    entry = tk.Entry(
-        frame,
-        font=font,
-        background=background,
-        foreground=foreground,
-        width=width,
-        show=show,
-        textvariable=textvariable
-    )
-    return entry
-
-def create_label(frame, **kwargs):
-    """
-    Creates a label widget with customizable properties.
-
-    Parameters
-    ----------
-    frame : tkinter.Frame
-        The frame in which the label should be placed.
-
-    **kwargs : dict, optional
-        Additional keyword arguments to customize the label.
-        Supported keyword arguments include:
-            - text: String of the text to be displayed on the label.
-            - textvariable: tkinter.StringVar to associate with the label's text.
-            - font: Tuple specifying the font (default is ("Arial", 10, "bold"))
-            - background: Background color of the label (default is blue)
-            - foreground: Foreground color of the label (default is white)
-            - width: Width of the label (default is 10)
-            - height: Height of the label (default is 1)
-
-    Returns
-    -------
-    label : tkinter.Label
-        The created label widget.
-    """
-    # Default values
-    text = kwargs.get("text", "")
-    textvariable = kwargs.get("textvariable", None)
-    font = kwargs.get("font", ("Arial", 10, "bold"))
-    background = kwargs.get("background", blue)
-    foreground = kwargs.get("foreground", white)
-    width = kwargs.get("width", 10)
-    height = kwargs.get("height", 1)
-
-    label = tk.Label(
-        frame,
-        text=text,
-        textvariable=textvariable,
-        font=font,
-        background=background,
-        foreground=foreground,
-        width=width,
-        height=height
-    )
-    return label
-
-def create_scale(frame, **kwargs):
-    """
-    Creates a Scale widget with customizable properties.
-
-    Parameters
-    ----------
-    frame : tkinter.Frame
-        The frame in which the scale should be placed.
-
-    **kwargs : dict, optional
-        Additional keyword arguments to customize the scale.
-        Supported keyword arguments include:
-            - from_: The starting value of the scale.
-            - to: The ending value of the scale.
-            - resolution: The resolution of the scale.
-            - variable: The tkinter variable associated with the scale.
-            - orient: Orientation of the scale ('horizontal' or 'vertical').
-            - length: Length of the scale widget.
-            - command: Function to be called when the scale value changes.
-            - bg: Background color of the scale.
-            - fg: Foreground color of the scale.
-
-    Returns
-    -------
-    scale : tkinter.Scale
-        The created Scale widget.
-    """
-    # Default values
-    from_ = kwargs.get('from_', 1)
-    to = kwargs.get('to', 10)
-    resolution = kwargs.get('resolution', 1)
-    variable = kwargs.get('variable', None)
-    orient = kwargs.get('orient', 'horizontal')
-    length = kwargs.get('length', 100)
-    command = kwargs.get('command', None)
-    bg = kwargs.get('bg', None)
-    fg = kwargs.get('fg', None)
-
-    # Create the scale widget
-    scale = tk.Scale(frame, from_=from_, to=to, resolution=resolution, variable=variable,
-                     orient=orient, length=length, command=command, bg=bg, fg=fg)
-    return scale
-
-def create_option_menu(frame, options, selected_option, **kwargs):
-    """
-    Creates an OptionMenu widget with customizable properties.
-
-    Parameters
-    ----------
-    frame : tkinter.Frame
-        The frame in which the OptionMenu should be placed.
-
-    options : list
-        List of options for the dropdown menu.
-
-    selected_option : tkinter.StringVar
-        Variable to store the selected option.
-
-    command : function, optional
-        Function to be called when an option is selected (default is None).
-
-    **kwargs : dict, optional
-        Additional keyword arguments to customize the OptionMenu.
-        Supported keyword arguments include:
-            - command : Function to be called when an option is selected (default is None).
-            - font: Tuple specifying the font (default is ("Arial", 10, "bold"))
-            - background: Background color of the OptionMenu (default is None)
-            - foreground: Foreground color of the OptionMenu (default is None)
-            - width: Width of the OptionMenu (default is None)
-            - height: Height of the OptionMenu (default is None)
-
-    Returns
-    -------
-    option_menu : tkinter.OptionMenu
-        The created OptionMenu widget.
-    """
-    # Default values
-    command = kwargs.get("command", None)
-    font = kwargs.get("font", ("Arial", 10, "bold"))
-    background = kwargs.get("background", None)
-    foreground = kwargs.get("foreground", None)
-    width = kwargs.get("width", None)
-    height = kwargs.get("height", None)
-
-    # Create the OptionMenu widget
-    option_menu = tk.OptionMenu(frame, selected_option, *options, **kwargs)
-
-    return option_menu
-
-def open_calendar(root, date):
-    """
-    Opens a new window where you can choose a date and updates the provided date variable with the 
-    chosen date.
-
-    Parameters
-    ----------
-    root : tkinter.Tk or tkinter.Toplevel
-        The root or top-level window where the calendar window will be opened.
-
-    date : tkinter.StringVar
-        A tkinter StringVar variable that stores the selected date.
-    """
-
-
-    date_window = tk.Toplevel(root)
-    date_window.title("Pick a Date")
-
-    calendar = tkcalendar.Calendar(date_window)
-    calendar.pack(padx=10, pady=10)
-
-    confirm_button = tk.Button(date_window, text="Confirm", command=lambda: select_date(date, calendar, date_window))
-    confirm_button.pack(pady=10)
-
-def select_date(date, calendar, date_window):
-    """
-    Updates the provided Tkinter variable with the selected date from a calendar widget.
-
-    Parameters
-    ----------
-    date : tkinter.StringVar
-        The Tkinter variable to be updated with the selected date.
-
-    calendar : tkcalendar.Calendar
-        The calendar widget used for selecting the date.
-
-    date_window : tkinter.Toplevel
-        The window containing the calendar widget.
-    """
-    selected_date = calendar.selection_get()
-    date.set(selected_date)
-    date_window.destroy()
-
-def save_data(frame, workout_type):
-    """
-    Saves the logged workout data on the log workout-page.
-
-    Parameters
-    ----------
-    frame : tkinter.Frame
-        The frame containing the logged workout data.
-
-    workout_type : workout.Workout
-        The type of workout being logged as a workout.Workout subclass.
-    """
-
-    # Create objects for each datatype the user has entered.
-    calories = Calories(calories=calories_entry.get(), unit=selected_unit_calories.get())
-    rating = Rating(rating=rating_slider.get())
-    duration = Duration(hours=hours_entry.get(), minutes=minutes_entry.get())
-    date = selected_date.get()
-    if distance_entry in globals():
-        distance = Distance(distance=distance_entry.get(), unit=selected_unit_distance.get())
-    else:
-        distance = np.nan
-
-    # Create a workout object and store it in a dataframe format.
-    workout_type = getattr(workout, workout_type)
-    my_workout = workout_type(calories=calories, rating=rating, duration=duration, date=date, distance=distance)
-    my_workout_dataframe = WorkoutDataframe().add_workout(new_entry=my_workout)
-
-    # Check if a workout dataframe already exists. If not, create one.
-    current_directory = os.getcwd().replace(os.sep,'/')
-    workout_file = current_directory + "/logWorkouts.csv"
-    try:
-        workouts_df = pd.read_csv(workout_file)
-    except FileNotFoundError:
-        workouts_df = pd.DataFrame(columns=['activity', 'date', 'duration','distance (km)' , 'calories (kcal)', 'rating'])
-
-    # Add the workout object to the dataframe and save as csv file
-    workouts_df = pd.concat([workouts_df, my_workout_dataframe], ignore_index=True)
-    workouts_df.to_csv("logWorkouts.csv", encoding='utf-8', index=False)
-
-    root.destroy()
-
-    display_start_page()
-
 def display_start_page():
     """
     Displays the startpage of the workout-application where the user can choose to log a workout,
@@ -373,34 +52,37 @@ def display_start_page():
     # Create root window
     global root
     root = tk.Tk()
-    root.geometry("500x400")
-    #root.resizeable(width=False, height=False) # in case we want to keep a constant size of the window
+    root.geometry("700x600")
     root.title("GymGenie")
 
     # Create frame for the main page
-    main_frame = tk.Frame(root, bg=blue, pady=30)
-    main_frame.pack(fill=tk.BOTH, expand=True)
-    main_frame.columnconfigure(0, weight=1)
-    for i in range(5): # configure 5 rows: one for a label and 4 for buttons
-        main_frame.rowconfigure(i, weight=1)
+    main_frame = gui.create_frame(root=root, rows=7)
 
     # Add welcome label
-    welcome_label = create_label(frame=main_frame, text = "Welcome to GymGenie!", 
-                                 font =("Arial", 16, "bold"), width=20)
+    welcome_label = gui.create_label(frame=main_frame, text = "Welcome to GymGenie!", 
+                                     font =("Arial", 16, "bold"), width=20)
     welcome_label.grid(column=0, row=0)
+
+    # Add logo - currently not working
+    #logo = tk.PhotoImage(file="gymgenie_logo.png")
+    #label = tk.Label(root, image=logo)
+    #label.grid(col=0, row=1)
 
     # Initialize list of buttons containing the button-text and which command should be executed 
     # when the button is clicked.
     start_page_buttons = [("Log a workout", lambda: choose_workout(root)), 
                           ("Set a new goal", lambda: display_set_goal(root)),
                           ("View goals", lambda: view_goals(root)), 
-                          ("View progress and trends", lambda: view_progress_and_trends(root))]
+                          ("View progress and trends", lambda: view_progress_and_trends(root)),
+                          ("Quit", lambda: exit_new)]
 
     # Create and place the buttons on the main frame.
     for i, button in enumerate(start_page_buttons):
-        start_page_button = create_button(frame=main_frame, command=button[1],
-                                          text=button[0], height=2)
-        start_page_button.grid(column=0, row=i+1)
+        start_page_button = gui.create_button(frame=main_frame, command=button[1],
+                                              text=button[0], height=2)
+        start_page_button.grid(column=0, row=i+2)
+
+    root.protocol("WM_DELETE_WINDOW", exit_new)
 
     tk.mainloop()
 
@@ -418,28 +100,34 @@ def choose_workout(root):
     for widget in root.winfo_children():
         widget.destroy()
 
-    # Create frame where you can choose the type of workut you want to log your exercise for.    
-    choose_workout_frame = tk.Frame(root, bg=blue, pady=20)
-    choose_workout_frame.pack(fill=tk.BOTH, expand=True)
-    choose_workout_frame.columnconfigure(0, weight=1)
-    number_workout_types = len(workout.Workout.__subclasses__())
-    for i in range(number_workout_types+1): # include all workout types + one label
-        choose_workout_frame.rowconfigure(i, weight=1)
+    # Create frame where you can choose the type of workut you want to log your exercise for. 
+    rows= len(workout.Workout.__subclasses__()) + 2 # include all workout types + label and exit-button
+    choose_workout_frame = gui.create_frame(root=root, rows=rows)   
 
     # Add label that asks for the type of workout.
-    label = create_label(frame=choose_workout_frame, text = "What type of workout did you do?",
-                         font =("Arial", 14, "bold"), width=40)
+    label = gui.create_label(frame=choose_workout_frame, text = "What type of workout did you do?",
+                             font =("Arial", 14, "bold"), width=40)
     label.grid(column=0, row=0)
 
     # Create list containing the names of all the workout types of class Workout.
     workout_types = [subclass.__name__ for subclass in workout.Workout.__subclasses__()]
 
     # Create a button for each workout type with a command that let's the user log the workout.
+    # Thanks to stackoverflow there is a solution.Before it always had as workout class Other(last in the list)
+    # because it call the function after the loop and for this was always the last values.
+    # Since you are in a list I think you can just do for workout_type in workout_types, but I leave it to you if you
+    # want to change or not.
     for i, workout_type in enumerate(workout_types):
-        choose_workout_button = create_button(frame=choose_workout_frame, 
-                                              command=lambda: log_workout(workout_type),
-                                              text=workout_type)
+        print(workout_type)
+        choose_workout_button = gui.create_button(frame=choose_workout_frame, 
+                                                  command=lambda workout_type=workout_type: log_workout(workout_type),
+                                                  text=workout_type)
         choose_workout_button.grid(column=0, row=i+1)
+
+    # Add exit button
+    exit_button = gui.create_button(frame=choose_workout_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5)
+    exit_button.grid(column=0, row=rows)
 
 def log_workout(workout_type):
     """
@@ -458,85 +146,76 @@ def log_workout(workout_type):
     for widget in root.winfo_children():
         widget.destroy()
 
-    # Create frame where you can choose log in all the dta from your workout.    
-    log_workout_frame = tk.Frame(root, bg=blue, pady=10)
-    log_workout_frame.pack(fill=tk.BOTH, expand=True)
-
-    # Configure 5 columns
-    log_workout_frame.columnconfigure(0, weight=1)
-    log_workout_frame.columnconfigure(1, weight=1)
-    log_workout_frame.columnconfigure(2, weight=1)
-    log_workout_frame.columnconfigure(3, weight=1)
-    log_workout_frame.columnconfigure(4, weight=1)
-
     # Configure rows according to the number of datatypes that should be logged for the specific workout type
     if workout_type == "Climbing" or workout_type == "Strength":
-        workout_datatypes = ["Calories", "Date ", "Duration", "Rating"]
+        workout_datatypes = ["Calories", "Date", "Duration", "Rating"]
     else:
         workout_datatypes = ["Calories", "Date", "Distance", "Duration", "Rating"]
-    for i in range(len(workout_datatypes)+2): # include all datatypes + title and save-button
-        log_workout_frame.rowconfigure(i, weight=1)
+    rows=len(workout_datatypes)+3 # include all datatypes + title, save-button and exit-button
+
+    # Create frame where you can choose log in all the dta from your workout.    
+    log_workout_frame = gui.create_frame(root=root, pady=10, columns=5, rows=rows)
 
     # Add top-label for the log workout-page
-    log_workout_label = create_label(frame=log_workout_frame, text="Log your workout:",
-                                     font=("Arial", 16, "bold"))
+    log_workout_label = gui.create_label(frame=log_workout_frame, text="Log your workout:",
+                                         font=("Arial", 16, "bold"))
     log_workout_label.grid(column=1, row=0, columnspan=3, sticky="ew")
 
     # Create widgets for entering the workout data.
     for i, workout_datatype in enumerate(workout_datatypes):
         # Create labels for each datatype that should be inputed and place them in the first column.
-        datatype_label = create_label(frame=log_workout_frame, text = f"{workout_datatype}:")
+        datatype_label = gui.create_label(frame=log_workout_frame, text = f"{workout_datatype}:")
         datatype_label.grid(column=0, row=i+1, sticky="e")
 
         # Calories: insert an entry and a dropdown menu with options for the unit.
         if workout_datatype == "Calories":
             global calories_entry
-            calories_entry = create_entry(frame=log_workout_frame)
+            calories_entry = gui.create_entry(frame=log_workout_frame)
             calories_entry.grid(column=1, row=i+1)
             calories_units = ["kcal", "kJ"]
 
             global selected_unit_calories 
             selected_unit_calories = tk.StringVar(root)
             selected_unit_calories.set(calories_units[0])
-            calories_units_options = create_option_menu(frame=log_workout_frame, options=calories_units,
-                                                       selected_option=selected_unit_calories) 
+            calories_units_options = gui.create_option_menu(frame=log_workout_frame, options=calories_units,
+                                                            selected_option=selected_unit_calories) 
             calories_units_options.grid(column=2, row=i+1)       
 
         # Distance: insert an entry and a dropdown menu with options for the unit.
         if workout_datatype == "Distance":
             global distance_entry
-            distance_entry = create_entry(log_workout_frame)
+            distance_entry = gui.create_entry(log_workout_frame)
             distance_entry.grid(column=1, row=i+1)
 
             global selected_unit_distance
             distance_units = ["km", "m", "miles"]
             selected_unit_distance = tk.StringVar(root)
             selected_unit_distance.set(distance_units[0])
-            distance_units_options = create_option_menu(frame=log_workout_frame, options=distance_units,
+            distance_units_options = gui.create_option_menu(frame=log_workout_frame, options=distance_units,
                                                        selected_option=selected_unit_distance) 
             distance_units_options.grid(column=2, row=i+1)
 
         # Rating: insert slider and label describing the scale
         if workout_datatype == "Rating":
             global rating_slider
-            rating_slider = create_scale(frame=log_workout_frame)
+            rating_slider = gui.create_scale(frame=log_workout_frame)
             rating_slider.grid(column=1, row=i+1)
-            rating_label = create_label(frame=log_workout_frame, text="Rate workout: 1=Easy, 10=Hard")
+            rating_label = gui.create_label(frame=log_workout_frame, text="Rate workout: 1=Easy, 10=Hard")
             rating_label.grid(column=2, row=i+1, columnspan=2, sticky="ew")
 
 
         # Duration: insert an entry and a label specifying the unit (min)
         if workout_datatype == "Duration":
             global hours_entry
-            hours_entry = create_entry(log_workout_frame)
+            hours_entry = gui.create_entry(log_workout_frame)
             hours_entry.grid(column=1, row=i+1)
-            hours_label = create_label(frame=log_workout_frame, text="hours")
+            hours_label = gui.create_label(frame=log_workout_frame, text="hours")
             hours_label.grid(column=2, row=i+1, sticky="w")
 
             global minutes_entry
-            minutes_entry = create_entry(log_workout_frame)
+            minutes_entry = gui.create_entry(log_workout_frame)
             minutes_entry.grid(column=3, row=i+1)
-            minutes_label = create_label(frame=log_workout_frame, text="minutes")
+            minutes_label = gui.create_label(frame=log_workout_frame, text="minutes")
             minutes_label.grid(column=4, row=i+1, sticky="w")
             
 
@@ -545,20 +224,116 @@ def log_workout(workout_type):
             global selected_date
             selected_date = tk.StringVar()
             selected_date.set(datetime.date.today()) # Set the date initial date to todays date.
-            date_label = create_label(frame=log_workout_frame, textvariable=selected_date)
+            date_label = gui.create_label(frame=log_workout_frame, textvariable=selected_date)
             date_label.grid(column=1, row=i+1)
-            calendar_button = create_button(frame=log_workout_frame, 
-                                            command= lambda: open_calendar(root, selected_date),
-                                            text="Select a date", font=("Arial", 10, "bold"), width=12)
+            calendar_button = gui.create_button(frame=log_workout_frame, 
+                                                command= lambda: gui.open_calendar(root, selected_date),
+                                                text="Select a date", font=("Arial", 10, "bold"), width=12)
             calendar_button.grid(column=2, row=i+1)
     
-    # Add save-button(save all the logged data put in by the user) at the bottom of the page.
-    save_button = create_button(frame=log_workout_frame, text="Save", width=15,
+    # Add save-button(save all the logged data put in by the user)
+    save_button = gui.create_button(frame=log_workout_frame, text="Save", width=10,
                                 command=lambda: save_data(frame=log_workout_frame, 
                                                           workout_type=workout_type))
     save_button.grid(columns=5, row=len(workout_datatypes)+1)
+
+    #Add exit button
+    exit_button = gui.create_button(frame=log_workout_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5, font=("Arial", 10, "bold"))
+    exit_button.grid(column=4, row=len(workout_datatypes)+2)
+
+def save_data(frame, workout_type):
+    """
+    Saves the logged workout data on the log workout-page.
+
+    Parameters
+    ----------
+    frame : tkinter.Frame
+        The frame containing the logged workout data.
+
+    workout_type : str
+        The type of workout being logged as a string.
+    """
+
+    # Create objects for each datatype the user has entered.
+    calories = Calories(calories=calories_entry.get(), unit=selected_unit_calories.get())
+    rating = Rating(rating=rating_slider.get())
+    duration = Duration(hours=int(hours_entry.get()), minutes=int(minutes_entry.get()))
+    date_tmp = selected_date.get().split('-')
+    date = Date(int(date_tmp[0]), int(date_tmp[1]), int(date_tmp[2]))
+    # globals is a dictionary. If you want to verify if contains a value you need to extract all values of the keys using values()
+    if distance_entry in globals().values():
+        distance_value = Distance(distance=distance_entry.get(), unit=selected_unit_distance.get())
+    else:
+        distance_value = Distance(distance=np.NaN,unit='km')
+
+    # Create a workout object and store it in a dataframe format.
+    print(type(workout_type))
+    workout_type = getattr(workout, workout_type)
+    print(workout_type)
+    my_workout = workout_type(calories=calories.print(), rating=rating.print(), duration=duration.print(), date=date.print(), distance=distance_value.print())
+
+    # Check if a workout dataframe already exists. If not, create one.
+    current_directory = os.getcwd().replace(os.sep,'/')
+    workout_file = current_directory + "/logWorkouts.csv"
+    try:
+        workouts_df_data = pd.read_csv(workout_file)
+        workouts_df = dataframe.WorkoutDataframe()
+        workouts_df.data = workouts_df_data
+    except FileNotFoundError:
+        workouts_df = dataframe.WorkoutDataframe()
+
+    # Add the workout object to the dataframe and save as csv file
+    workouts_df.add_workout(my_workout)
+
+    # Save dataframe in a file csv
+    workouts_df.save_to_csv("logWorkouts.csv")
+
+    # Close root window and display start page again. 
+    root.destroy()
+    display_start_page()
          
-    
+def exit_new():
+    """
+    Close the window.
+    """
+    root.quit()
+    root.destroy()
+
+def quit(root):
+    """
+    Closes the window of the application.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    """
+    root.destroy()
+
+
+def exit(root):
+    """
+    Closes the current frame and open the start page.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    """
+    root.destroy()
+
+    display_start_page()
+
+def view_goals(root):
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Create frame for the page where the user can view the goals
+    view_goal_frame = tk.Frame(root, bg=blue, pady=40) # same here for renaming
+    view_goal_frame.pack(fill=tk.BOTH, expand=True)
+
 def view_progress_and_trends(root):
     # Remove all widgets from the root window
     for widget in root.winfo_children():
@@ -597,7 +372,6 @@ def display_set_goal(root):
     goals_frame.rowconfigure(3, weight=1)
     goals_frame.rowconfigure(4, weight=1)
 
-
     #Create goal label
     goal_label = tk.Label(goals_frame, text="Set your goal based on:",
                         font =("Arial", 16, "bold"),
@@ -628,15 +402,20 @@ def display_set_goal(root):
             relief="solid") #Add relief style 
 
         btn.grid(column=0, row=1+i) 
-    
 
+    # Add exit button
+    exit_button = gui.create_button(frame=goals_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5)
+    exit_button.grid(column=0, row=4)
+
+    
 def display_duration(root):
     """
     Displays a new page with the parameters to set the duration goal.
 
     Parameters
     ----------
-        root : tkinter.Window
+    root : tkinter.Window
         The root window of the GUI for GymGenie.
 
     """
@@ -702,12 +481,17 @@ def display_duration(root):
     global set_duration
     set_duration = True
 
-    #Display other common parameters: timeframe, type of exercise and smart tips.
+    #Display other common parameters: timeframe, timescale, type of exercise, save button and smart tips.
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
     display_save_button(main_frame, root)
+
+    # Add exit button
+    exit_button = gui.create_button(frame=main_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5)
+    exit_button.grid(column=4, row=4)
 
 
 
@@ -716,9 +500,9 @@ def display_distance(root):
     """
     Displays a new page with the parameters to set the distance goal.
 
-     Parameters
+    Parameters
     ----------
-        root : tkinter.Window
+    root : tkinter.Window
         The root window of the GUI for GymGenie.
     
     """
@@ -769,11 +553,17 @@ def display_distance(root):
     global set_distance
     set_distance = True
 
+    #Display other common parameters: timeframe, timescale, type of exercise, save button and smart tips.
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
     display_save_button(main_frame, root)
+
+    # Add exit button
+    exit_button = gui.create_button(frame=main_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5)
+    exit_button.grid(column=4, row=4)
 
 
 def display_calories(root):
@@ -782,7 +572,7 @@ def display_calories(root):
 
     Parameters
     ----------
-        root : tkinter.Window
+    root : tkinter.Window
         The root window of the GUI for GymGenie.
     
     """
@@ -833,11 +623,17 @@ def display_calories(root):
     global set_calories
     set_calories = True
 
+    #Display other common parameters: timeframe, timescale, type of exercise, save button and smart tips.
     display_timeframe(main_frame , col = 0 , row = 1 )
     display_exercise_type(main_frame)
     display_smarttips(main_frame)
     display_timescale(main_frame)
     display_save_button(main_frame, root)
+
+    # Add exit button
+    exit_button = gui.create_button(frame=main_frame, command=lambda: exit(root),
+                                    text = "Exit", width=5)
+    exit_button.grid(column=4, row=4)
 
 
 
@@ -865,7 +661,7 @@ def display_timeframe(main_frame, col , row):
                     foreground=black,
                     width=20,
                     height = 1,
-                    command=lambda: open_calendar(root, start_date))
+                    command=lambda: gui.open_calendar(root, start_date))
     
     end_button = tk.Button(main_frame, text="End",
                 font =("Arial", 12, "bold"),
@@ -873,7 +669,7 @@ def display_timeframe(main_frame, col , row):
                 foreground=black,
                 width=20,
                 height = 1,
-                command=lambda: open_calendar(root, end_date))
+                command=lambda: gui.open_calendar(root, end_date))
 
     #Create start date 
     global start_date
@@ -911,9 +707,15 @@ def display_exercise_type(main_frame):
     """
     Displays the label and option menu to select the type of workout related to the goal.
 
-    Args:
-        main_frame : frame where to be displayed.
-    
+
+def display_exercise_type(main_frame):
+    """
+    Displays the workout label and an option menu to choose which type of exercise the goal is related to.
+
+    Parameters
+    ----------
+    main_frame : tkinter.frame where to be placed.
+        
     """
     #Create label
     exercise_label = tk.Label(main_frame, 
@@ -927,6 +729,7 @@ def display_exercise_type(main_frame):
 
     # Create list containing the names of all the workout types of class Workout.
     workout_types = [subclass.__name__ for subclass in workout.Workout.__subclasses__()]
+    workout_types.append('All')
 
     # Variable to keep track of the option 
     # selected in OptionMenu 
@@ -990,12 +793,16 @@ def popup_smarttips():
 def display_timescale(main_frame):
     """
     Displays time-scale and option menu to set a goal as weekly, monthly or yearly.
-  
-    Args:
-        main_frame : frame where to be displayed.
+
+    Parameters
+    ----------
+    main_frame : tkinter.frame where to be placed.
+
+    Parameters
+    ----------
+    main_frame : tkinter.frame where to be placed.
 
     """
-
     #create timescale label
     timescale_label = tk.Label(main_frame, text="Time-scale:",
                         font =("Arial", 16, "bold"),
@@ -1014,7 +821,6 @@ def display_timescale(main_frame):
             height = 1)
     timescale_label.grid(column=2, row=3)
 
-
     #create option menu
     options = [7, 30,365]
     global selected_timescale
@@ -1027,14 +833,16 @@ def display_timescale(main_frame):
 
 def display_save_button(main_frame, root):
     """
-    Displays save button to store the input user data on goals.
+    Displays a save button. When the user clicks on it the goals are saved on a dataframe and exported as csv file.
 
-    Args:
-        main_frame : frame where to be displayed.
-        root : tkinter.Window
+    Parameters
+    ----------
+    root : tkinter.Window
         The root window of the GUI for GymGenie.
-    """
 
+    main_frame : tkinter.frame where to be placed.
+    
+    """
     #Add save button
     save_btn = tk.Button(main_frame, 
         command= lambda: save_goal(main_frame, root) ,
@@ -1055,12 +863,14 @@ def display_save_button(main_frame, root):
 
 def save_goal(main_frame, root):  
     """
-    Stores the user input data on goals.csv file after clicking save button.
-    
-    Args:
-        main_frame : frame where to be displayed.
-        root : tkinter.Window
+    Saves the user input goal data.
+
+    Parameters
+    ----------
+    root : tkinter.Window
         The root window of the GUI for GymGenie.
+
+    main_frame : tkinter.frame where to be placed.
     
     """
 
@@ -1087,9 +897,10 @@ def save_goal(main_frame, root):
                            start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
     print(current_goal)
 
+
     # Check if a goals dataframe already exists. If not, create one.
     current_directory = os.getcwd().replace(os.sep,'/')
-    goals_file = current_directory + "/goals.csv"
+    goals_file = current_directory + "/GoalData.csv"
     try:
         goals_df_data = pd.read_csv(goals_file)
         goals_df = dataframe.GoalDataframe()
@@ -1106,6 +917,216 @@ def save_goal(main_frame, root):
     # Close root window and display start page again. 
     root.destroy()
     display_start_page()
+
+
+def view_goals(root):
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Create frame for the page where the user can view the goals
+    view_goal_frame = tk.Frame(root, bg=blue) 
+    view_goal_frame.pack(fill=tk.BOTH, expand=True)
+    view_goal_frame.columnconfigure(0, weight=1)
+    view_goal_frame.columnconfigure(1, weight=1)
+    view_goal_frame.columnconfigure(2, weight=1)
+    view_goal_frame.columnconfigure(3, weight=1)
+    view_goal_frame.rowconfigure(0, weight=1)
+
+    #read workout.csv and goals.csv
+    #load the workouts from a pickle file, or start a dataframe to store them in if no file was found
+    global workouts_df
+    global goals_df
+    global summary
+    global messages
+    global goal_row_entry
+    current_directory = os.getcwd().replace(os.sep,'/')
+    workout_file = current_directory + "/logWorkouts.csv"
+    workouts_df = WorkoutDataframe()
+    try:
+        workouts_df.read_from_csv(workout_file)
+    except FileNotFoundError:
+        pass
+    # start a dataframe to store the goals and load them from a file
+    goal_file = current_directory + "/GoalData.csv"
+    goals_df = GoalDataframe()
+    try:
+        goals_df.read_from_csv(goal_file)
+    except FileNotFoundError:
+        pass
+
+    #create list of motivational messages
+    messages = ["You're on the right track, keep going!", "You can either suffer the pain of discipline or the pain of regret", "You may not be there yet, but you are closer than you were yesterday", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
+
+    #create Canvas
+    canvas_df = Canvas(root,bg=blue)
+    canvas_df.pack()
+
+    # Convert DataFrame to string representation
+    goals_df_str = goals_df.data.to_string()
+
+    # Create Text widget to display DataFrame
+    text_widget = Text(canvas_df)
+    text_widget.insert(tk.END, goals_df_str)
+    text_widget.grid(column=0, row=0)
+
+    # Create label to choose which goal to plot
+    choose_label = gui.create_label(view_goal_frame, text = "Check the progress on goal number (insert index): ", width=40)
+    goal_row_entry = gui.create_entry(view_goal_frame, width= 5)
+    choose_label.grid(column=0, row=0, columnspan=2)
+    goal_row_entry.grid(column=2, row=0)
+
+    # transform the dataframe of workout and goals for plotting
+    workouts_df.plot_dataframe()
+    goals_df.plot_goals()
+
+    #create GoalSummary object
+    summary = goal_summary.GoalSummary(workouts_df, goals_df, messages)
+
+    #Create plot button
+    plot_btn = gui.create_button(view_goal_frame, command= lambda: plot_button(root,int(goal_row_entry.get()),summary) , text = "Plot", width =5 )
+    plot_btn.grid(column=3, row=0)
+
+    # Add exit button
+    quit_button = tk.Button(root, text="Exit", command=lambda: exit(root))
+    quit_button.pack(side=tk.BOTTOM)
+
+def display_message(frame):
+    #create list of motivational messages TODO
+    messages = ["You're on the right track, keep going!", "You can either suffer the pain of discipline or the pain of regret", "You may not be there yet, but you are closer than you were yesterday", "Consistency is key - keep going", "One step at a time, one day at a time - you're getting closer!"]
+
+    #create a label with the message
+    message_label = gui.create_label(frame, text = random.choice(messages), width = 90)
+    message_label.grid(column=0, row=0)
+
+def old_plot(root,figure1,figure2, index):
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Create frame for the page where the user can view the goals
+    view_goal_frame = tk.Frame(root, bg=blue) 
+    view_goal_frame.pack(fill=tk.BOTH, expand=True)
+    view_goal_frame.columnconfigure(0, weight=1)
+    view_goal_frame.rowconfigure(0, weight=1)
+    display_message(view_goal_frame)
+
+
+    #create Canvas
+    canvas_df = FigureCanvasTkAgg(figure1, master=root)
+    canvas_df.draw()
+    canvas_df.get_tk_widget().pack()
+
+    # Add a quit button
+    quit_button = tk.Button(root, text="Go Back", command=lambda: view_goals(root))
+    quit_button.pack(side=tk.BOTTOM)
+
+    # Add arrow to change plot after
+    next_button = tk.Button(root, text='Before', command=lambda: new_plot(root,figure2,figure1, index))
+    next_button.pack(side='left')
+
+
+def new_plot(root,figure2,figure3, index):
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Create frame for the page where the user can view the goals
+    view_goal_frame = tk.Frame(root, bg=blue) 
+    view_goal_frame.pack(fill=tk.BOTH, expand=True)
+    view_goal_frame.columnconfigure(0, weight=1)
+    view_goal_frame.rowconfigure(0, weight=1)
+
+    display_message(view_goal_frame)
+    
+    #create Canvas
+    #canvas_df = Canvas(root,bg=blue)
+    canvas_df = FigureCanvasTkAgg(figure2, master=root)
+    canvas_df.draw()
+    canvas_widget = canvas_df.get_tk_widget()
+    canvas_widget.config(background=blue)
+    canvas_widget.pack()
+
+    # Add a quit button
+    quit_button = tk.Button(root, text="Go Back", command=lambda: view_goals(root))
+    quit_button.pack(side=tk.BOTTOM)
+
+    # Add arrow to change plot before
+    before_button = tk.Button(root, text='Next', command=lambda: old_plot(root,figure3,figure2, index))
+    before_button.pack(side='right')
+
+     # Add arrow to change plot before
+    before_button = tk.Button(root, text='Before', command=lambda: plot_button(root,index,summary))
+    before_button.pack(side='left')
+
+def new_plot_exercise(root,figure2,figure3, index):
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Create frame for the page where the user can view the goals
+    view_goal_frame = tk.Frame(root, bg=blue) 
+    view_goal_frame.pack(fill=tk.BOTH, expand=True)
+    view_goal_frame.columnconfigure(0, weight=1)
+    view_goal_frame.rowconfigure(0, weight=1)
+
+    display_message(view_goal_frame)
+    
+    #create Canvas
+    #canvas_df = Canvas(root,bg=blue)
+    canvas_df = FigureCanvasTkAgg(figure2, master=root)
+    canvas_df.draw()
+    canvas_widget = canvas_df.get_tk_widget()
+    canvas_widget.config(background=blue)
+    canvas_widget.pack()
+
+    # Add a quit button
+    quit_button = tk.Button(root, text="Go Back", command=lambda: view_goals(root))
+    quit_button.pack(side=tk.BOTTOM)
+
+     # Add arrow to change plot before
+    before_button = tk.Button(root, text='Before', command=lambda: plot_button(root,index,summary))
+    before_button.pack(side='left')
+
+
+def plot_button(root,index,summary):
+
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Create frame for the page where the user can view the goals
+    view_goal_frame = tk.Frame(root, bg=blue) 
+    view_goal_frame.pack(fill=tk.BOTH, expand=True)
+    view_goal_frame.columnconfigure(0, weight=1)
+    view_goal_frame.rowconfigure(0, weight=1)
+
+    display_message(view_goal_frame)
+
+    fig1,fig2,fig3 = summary.plot_goal(index)
+
+    #create Canvas
+    canvas_df = FigureCanvasTkAgg(fig1, master=root)
+    canvas_df.draw()
+    canvas_widget = canvas_df.get_tk_widget()
+    canvas_widget.pack()
+
+    # Add a quit button
+    quit_button = tk.Button(root, text="Go Back", command=lambda: view_goals(root))
+    quit_button.pack(side=tk.BOTTOM)
+
+    if fig1 and fig2 and fig3: # fig2 and fig3
+        # Add arrow to change plot after
+        next_button = tk.Button(root, text='Next', command=lambda: new_plot(root,fig2,fig3, index))
+        next_button.pack(side='right')
+    elif fig1 and fig2:
+
+        # Add arrow to change plot after
+        next_button_new = tk.Button(root, text='Next', command=lambda: new_plot_exercise(root,fig2,fig1, index))
+        next_button_new.pack(side='right')
+
+
+
 
 
 #run it

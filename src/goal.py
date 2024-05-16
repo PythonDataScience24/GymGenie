@@ -1,6 +1,11 @@
 from abc import ABC, abstractmethod
 import numpy as np
-import calories, date, distance, duration, workout
+import calories
+import date
+import distance
+import duration
+import workout
+
 
 class Goal:
     """
@@ -14,7 +19,8 @@ class Goal:
         end_date (Date): date by which the goal should be reached
         exercise (Workout): type of workout in which you want to achieve the goal. Default is None, to include all types of exercises.
     """
-    def __init__(self, value: float, unit: str, time_scale: int, start_date: date.Date, end_date: date.Date, exercise = np.NaN):
+
+    def __init__(self, value: float, unit: str, time_scale: int, start_date: date.Date, end_date: date.Date, exercise=np.NaN):
         if start_date.print() >= end_date.print():
             raise ValueError("The start_date must be before the end_date.")
         self.value = value
@@ -32,11 +38,11 @@ class Goal:
 
     def get_start_date(self):
         return self.start_date
-    
+
     def get_end_date(self):
         return self.end_date
-    
-    #for all attributes?
+
+    # for all attributes?
 
     def subclass_name(self):
         """
@@ -44,22 +50,22 @@ class Goal:
         """
         return self.__class__.__name__
 
-    
-    
+
 class CalorieGoal(Goal):
     """
     A goal set for calories. See Goal for attributes. The attribute value has to be of class Calories.
     """
-    def __init__(self, value, time_scale, start_date, end_date, exercise = np.NaN):
-        super().__init__(value, "kcal", time_scale, start_date, end_date, exercise)
 
+    def __init__(self, value, time_scale, start_date, end_date, exercise=np.NaN):
+        super().__init__(value, "kcal", time_scale, start_date, end_date, exercise)
 
 
 class DistanceGoal(Goal):
     """
     A goal set for distances. See Goal for attributes. The attribute value has to be of class Distance.
     """
-    def __init__(self, value, time_scale, start_date, end_date, exercise  = np.NaN):
+
+    def __init__(self, value, time_scale, start_date, end_date, exercise=np.NaN):
         super().__init__(value, "km", time_scale, start_date, end_date, exercise)
 
 
@@ -67,7 +73,8 @@ class DurationGoal(Goal):
     """
     A goal set for duration of workouts. See Goal for attributes. The attribute value has to be of class Duration.
     """
-    def __init__(self, value, time_scale, start_date, end_date, exercise = np.NaN):
+
+    def __init__(self, value, time_scale, start_date, end_date, exercise=np.NaN):
         super().__init__(value, "min", time_scale, start_date, end_date, exercise)
 
 
@@ -76,17 +83,23 @@ if __name__ == "__main__":
     my_start_date = date.Date(2024, 5, 3)
     my_end_date = date.Date(2024, 10, 31)
     my_distance = distance.Distance(20, "km")
-    my_duration = duration.Duration(hours = 5)
-    #think of a better way to get the type
-    my_workout = workout.Running(my_calories, my_start_date, my_distance, my_duration, 5)
+    my_duration = duration.Duration(hours=5)
+    # think of a better way to get the type
+    my_workout = workout.Running(
+        my_calories, my_start_date, my_distance, my_duration, 5)
 
-    my_duration_goal = DurationGoal(value = my_duration, time_scale = 7, start_date = my_start_date, end_date = my_end_date)
-    my_duration_goal_running = DurationGoal(value = my_duration, time_scale = 14, start_date = my_start_date, end_date = my_end_date, exercise = my_workout.subclass_name())
-    my_distance_goal = DistanceGoal(value = my_distance, time_scale = 7, start_date = my_start_date, end_date = my_end_date)
-    my_calories_goal = CalorieGoal(value = my_calories, time_scale = 7, start_date = my_start_date, end_date = my_end_date)
+    my_duration_goal = DurationGoal(
+        value=my_duration, time_scale=7, start_date=my_start_date, end_date=my_end_date)
+    my_duration_goal_running = DurationGoal(
+        value=my_duration, time_scale=14, start_date=my_start_date, end_date=my_end_date, exercise=my_workout.subclass_name())
+    my_distance_goal = DistanceGoal(
+        value=my_distance, time_scale=7, start_date=my_start_date, end_date=my_end_date)
+    my_calories_goal = CalorieGoal(
+        value=my_calories, time_scale=7, start_date=my_start_date, end_date=my_end_date)
 
     print(my_duration_goal)
     print(my_duration_goal.subclass_name())
 
-    #check the input validation for start and end date works
-    my_error_goal = DurationGoal(value = my_duration, time_scale = 14, start_date = my_end_date, end_date = my_start_date, exercise = my_workout.subclass_name())
+    # check the input validation for start and end date works
+    my_error_goal = DurationGoal(value=my_duration, time_scale=14, start_date=my_end_date,
+                                 end_date=my_start_date, exercise=my_workout.subclass_name())

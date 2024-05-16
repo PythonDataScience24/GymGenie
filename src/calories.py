@@ -7,11 +7,11 @@ class Calories:
         unit (str) : The unit of measurement ('kcal', 'kJ')
     """
     def __init__(self, calories:int, unit:str) :
-        self.calories = calories
+        self.calories_value = calories
         self.unit = unit
 
     def __str__(self):
-        return f"{self.calories} {self.unit}"
+        return f"{self.calories_value} {self.unit}"
 
     # I am not sure if this function is useful at all
     def calories_unit_setting(self, unit):
@@ -40,17 +40,17 @@ class Calories:
         """
         #I am not sure if i should directly modify self.distance
         if a == 'kcal' and b == 'kJ':
-            self.calories = self.calories*4.184
+            self.calories_value = self.calories_value*4.184
         elif a == 'kJ' and b == 'kcal':
-            self.calories = self.calories/4.184
+            self.calories_value = self.calories_value/4.184
 
         
         #Round the distance value with 3 decimals 
-        self.calories = round(self.calories, 3)
+        self.calories_value = round(self.calories_value, 3)
         # Update the unit
         self.unit = b
     def print(self):
-        return f"{self.calories} {self.unit}"
+        return f"{self.calories_value} {self.unit}"
 
 
 # Example usage

@@ -3,7 +3,7 @@
 Welcome to the Roadmap of the fitness tracking application GymGenie. Here you can learn what this project is about, how to get involved, and which stages the development of our project includes.
 We are four Bioinformatics students developing the application. Our application is targeted to anyone who wants to simplify the process of tracking workouts and analysing the progress. With features for setting goals and visualising the progress towards them, we want to make it easier for users to be consistent in their workout schedule and to reach their goals.
 
-If you want to get involved as a contributor, we are happy to learn your suggestions for features our application should include. Or, once the project has developped a bit more, contributors can help by testing the application or proof-reading our code.  Feel free to reach out and send us an e-mail with your suggestions (laura.fernandez@students.unibe.ch, kristin.olsen@students.unibe.ch, dario.bassi@students.unibe.ch, lea.frei@students.unibe.ch).
+If you want to get involved as a contributor, we are happy to learn your suggestions for features our application should include. Contributors may also help by testing the application or proof-reading our code.  Feel free to reach out and send us an e-mail with your suggestions (laura.fernandez@students.unibe.ch, kristin.olsen@students.unibe.ch, dario.bassi@students.unibe.ch, lea.frei@students.unibe.ch).
 
 ## Timeline:
 
@@ -47,22 +47,25 @@ Provide users with visualizations of their exercise data, such as weekly/monthly
   - Allow setting goals for duration, distance, or calories burned 
   - Provide tips for SMART goals
   - Specify the timeframe (week/month/year)
-- Implement `Progress` class for tracking progress toward goals
-  - Plot progress( in terms of duration/calories/distance) over time 
-  - Provide feedback (a goal is reached / "keep going" / not reached yet) on goal achievement
-  - Develop the GUI
-- **Contributors**: Laura, Kristin, Lea, Dario
+- Implement `GoalSummary` class for tracking progress toward goals
+  - Plot progress( in terms of duration/calories/distance) over time
+  - Plot progress as a percentage of how far the user is to reaching the goal
+  - Provide encouraging feedback on goal achievement
+  - **Contributors**: Lea, Dario
+- Develop the GUI
+- **Contributors**: Laura, Kristin
 
 ### Milestone 3:
-- Develop `Summary` class to generate summaries and visualizations of exercise data
-  - Merge different types of exercises (e.g. running and cycling), show weekly and monthly trends
-  - Show specific behaviour in the exercises
-  - Perform linear regression of general exercise and specific sports
+- Develop `WorkoutSummary` class to generate summaries and visualizations of exercise data
+  - Show the activities over different types of workouts
+  - Show specific behaviour in the ratings of the exercises
   - Comparison of different exercises
-- **Contributors**: Laura, Kristin, Lea, Dario
+  - **Contributors**: Lea, Dario
+- Implement these functionalities in the GUI
+- **Contributors**: Laura, Kristin
 
 ## Relevant timeframes:
-31.04.2024 - End subtasks and write documentation
+30.05.2024 - End subtasks and write documentation
 
 
 

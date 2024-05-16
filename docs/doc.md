@@ -115,9 +115,13 @@ If you want to exit the program you can type *q* in the terminal or click exit o
 
 ## GUI
 
+<<<<<<< HEAD
 ### Start the Programm
+=======
+### Start the Program
+>>>>>>> origin/task2And3
 Go in the folder of the repository and type the following command:
-<pre> python .\src\main_gui.py </pre>
+<pre> python .\src\mainGUI.py </pre>
 If you are using MacOS or Linux the path of the file has to be adjusted.
 
 After starting the program the start page of GymGenie will appear.
@@ -204,3 +208,7 @@ We are currently working on it!! Stay tuned!!
 #### Exit
 
 If you want to exit the program you can click quit on the GUI. All your data will be saved and next time you will enter the program you will be able to access all your current data.
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/task2And3
