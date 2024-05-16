@@ -254,21 +254,29 @@ def save_data(frame, workout_type):
     """
 
     # Create objects for each datatype the user has entered.
-    calories = Calories(calories=calories_entry.get(), unit=selected_unit_calories.get())
-    rating = Rating(rating=rating_slider.get())
-    duration = Duration(hours=int(hours_entry.get()), minutes=int(minutes_entry.get()))
-    date_tmp = selected_date.get().split('-')
-    date = Date(int(date_tmp[0]), int(date_tmp[1]), int(date_tmp[2]))
+    try:
+        calories = Calories(calories=calories_entry.get(), unit=selected_unit_calories.get())
+        rating = Rating(rating=rating_slider.get())
+        duration = Duration(hours=int(hours_entry.get()), minutes=int(minutes_entry.get()))
+        date_tmp = selected_date.get().split('-')
+        date = Date(int(date_tmp[0]), int(date_tmp[1]), int(date_tmp[2]))
+    except ValueError:
+        calories = Calories(0,'kcal')
+        rating = Rating(1)
+        duration = Duration(0,0)
+        date = Date(1, 1, 1)
     # globals is a dictionary. If you want to verify if contains a value you need to extract all values of the keys using values()
     if distance_entry in globals().values():
-        distance_value = Distance(distance=distance_entry.get(), unit=selected_unit_distance.get())
+        try:
+            distance = int(distance_entry.get())
+            distance_value = Distance(distance=distance, unit=selected_unit_distance.get())
+        except ValueError:
+            distance_value = Distance(0,'km')
     else:
-        distance_value = Distance(distance=np.NaN,unit='km')
+        distance_value = Distance(distance=0,unit='km')
 
     # Create a workout object and store it in a dataframe format.
-    print(type(workout_type))
     workout_type = getattr(workout, workout_type)
-    print(workout_type)
     my_workout = workout_type(calories=calories.print(), rating=rating.print(), duration=duration.print(), date=date.print(), distance=distance_value.print())
 
     # Check if a workout dataframe already exists. If not, create one.
@@ -283,6 +291,9 @@ def save_data(frame, workout_type):
 
     # Add the workout object to the dataframe and save as csv file
     workouts_df.add_workout(my_workout)
+
+    # checks for unrealistic values
+    workouts_df.test_values()
 
     # Save dataframe in a file csv
     workouts_df.save_to_csv("logWorkouts.csv")
@@ -866,26 +877,36 @@ def save_goal(main_frame, root):
     """
 
     #Give format to dates to be able to add to the dataframe
-    start_date_tmp = start_date.get().split('-')
-    start_date_value = Date(int(start_date_tmp[0]), int(start_date_tmp[1]), int(start_date_tmp[2]))
+    try:
+        start_date_tmp = start_date.get().split('-')
+        start_date_value = Date(int(start_date_tmp[0]), int(start_date_tmp[1]), int(start_date_tmp[2]))
 
-    end_date_tmp = end_date.get().split('-')
-    end_date_value = Date(int(end_date_tmp[0]), int(end_date_tmp[1]), int(end_date_tmp[2]))
+        end_date_tmp = end_date.get().split('-')
+        end_date_value = Date(int(end_date_tmp[0]), int(end_date_tmp[1]), int(end_date_tmp[2]))
+    except ValueError:
+        start_date_value = Date(1,1,1)
+        end_date_value = Date(1,1,2)
+    try:
+        #Create goal object
+        if set_distance:
+            current_goal = goal.Goal(value=int(e_distance.get()), unit = selected_unit_distance.get() ,time_scale=selected_timescale.get(), 
+                            start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
+        elif set_duration: 
+            #create duration object
+            current_duration = Duration(int(e_hours.get()), int(e_min.get()))
+            current_goal = goal.DurationGoal(value=current_duration.minutes ,time_scale=selected_timescale.get(), 
+                            start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
 
-    #Create goal object
-    if set_distance:
-        current_goal = goal.Goal(value=int(e_distance.get()), unit = selected_unit_distance.get() ,time_scale=selected_timescale.get(), 
-                           start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
-    
-    elif set_duration: 
-        #create duration object
-        current_duration = Duration(int(e_hours.get()), int(e_min.get()))
-        current_goal = goal.DurationGoal(value=current_duration.minutes ,time_scale=selected_timescale.get(), 
-                           start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
-
-    elif set_calories:
-        current_goal = goal.Goal(value=int(e_calories.get()), unit = selected_unit_calories.get() ,time_scale=selected_timescale.get(), 
-                           start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
+        elif set_calories:
+            current_goal = goal.Goal(value=int(e_calories.get()), unit = selected_unit_calories.get() ,time_scale=selected_timescale.get(), 
+                            start_date=start_date_value, end_date=end_date_value, exercise=selected_workout.get())
+    except ValueError:
+        if set_distance:
+            current_goal = goal.Goal(value=0,unit='km',time_scale=7, start_date=Date(1,1,1), end_date=Date(1,1,2), exercise='Running')
+        elif set_duration:
+            current_goal = goal.DurationGoal(value=0,unit='min',time_scale=7,start_date=Date(1,1,1),end_date=Date(1,1,2),exercise='Running')
+        elif set_calories:
+            current_goal = goal.Goal(value=0,unit='kcal',time_scale=7, start_date=Date(1,1,1), end_date=Date(1,1,2), exercise='Running')
     print(current_goal)
 
 
@@ -901,6 +922,9 @@ def save_goal(main_frame, root):
 
     # Add the goal object to the dataframe and save as csv file
     goals_df.add_goal(current_goal)
+
+    # checks for unrealistic values
+    goals_df.test_values()
 
     # Save dataframe in a file csv
     goals_df.save_to_csv("GoalData.csv")
