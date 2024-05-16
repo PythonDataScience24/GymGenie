@@ -345,6 +345,10 @@ def view_progress_and_trends(root):
     progress_trend_frame = gui.create_frame(root, rows=3)
     progress_trend_frame.pack(fill=tk.BOTH, expand=True)
 
+    # Add label unnder implementation
+    text = tk.Text(progress_trend_frame,height=8)
+    text.insert('1.0','We are implementing this function! Please come back in a Week!')
+    text.grid(column=0,row=0)
     # Add exit button
     exit_button = gui.create_button(frame=progress_trend_frame, command=lambda: exit(root),
                                     text = "Exit", width=5)
