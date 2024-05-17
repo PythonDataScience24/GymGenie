@@ -332,14 +332,6 @@ def exit(root):
     root.destroy()
     display_start_page()
 
-def view_goals(root):
-    # Remove all widgets from the root window
-    for widget in root.winfo_children():
-        widget.destroy()
-
-    # Create frame for the page where the user can view the goals
-    view_goal_frame = tk.Frame(root, bg=blue, pady=40) # same here for renaming
-    view_goal_frame.pack(fill=tk.BOTH, expand=True)
 
 def view_progress_and_trends(root):
     # Remove all widgets from the root window
