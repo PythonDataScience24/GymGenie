@@ -339,7 +339,7 @@ def view_progress_and_trends(root):
         widget.destroy()
 
     # Create frame for the page where the user can view progress and trends of their workout.
-    progress_trend_frame = gui.create_frame(root, rows=3)
+    progress_trend_frame = gui.create_frame(root, rows=4)
     progress_trend_frame.pack(fill=tk.BOTH, expand=True)
 
     #read workout.csv and goals.csv
@@ -376,12 +376,41 @@ def view_progress_and_trends(root):
     text_widget.insert(tk.END, workouts_df_str)
     text_widget.grid(column=0, row=0)
 
+    #Create label for timescale and entry
+    timescale_label = gui.create_label(progress_trend_frame, text = "Over how many of the past days would you like to see the summary? ", width=60)
+    timescale_entry = gui.create_entry(progress_trend_frame, width= 5)
+    timescale_label.grid(column=0, row=0)
+    timescale_entry.grid(column=1, row=0)
 
+    #Create option menu and label for quantity
+    quantity = ['duration', 'distance', 'calories']
+    selected_quantity = tk.StringVar(root)
+    selected_quantity.set(quantity[0])
+    quantity_options = gui.create_option_menu(frame=progress_trend_frame, options=quantity,
+                                                    selected_option=selected_quantity) 
+    quantity_options.grid(column=1, row=1)
+    quantity_label = gui.create_label(progress_trend_frame, text = "See the summary for: ", width=60)
+    quantity_label.grid(column=0, row=1)
+
+    #create option menu and label for type of exercise --> I THINK THIS PART CAN BE REFRACTORED (it was also on display_exercise_type(), but with the option 'All' too)
+    # Create list containing the names of all the workout types of class Workout.
+    workout_types = [subclass.__name__ for subclass in wk.Workout.__subclasses__()]
+    # Variable to keep track of the option 
+    # selected in OptionMenu 
+    selected_workout = tk.StringVar(progress_trend_frame) 
+    # Set the default value of the variable 
+    selected_workout.set(workout_types[0]) 
+    # Create the optionmenu widget and passing the workout_types and the selected_wotkout to it. 
+    question_menu = tk.OptionMenu(progress_trend_frame, selected_workout, *workout_types, ) 
+    question_menu.grid(column = 1, row = 2) 
+    #create exercise label
+    exercise_label = gui.create_label(progress_trend_frame, text = "Select an exercise: ", width=60)
+    exercise_label.grid(column=0, row=2)
 
     # Add exit button
     exit_button = gui.create_button(frame=progress_trend_frame, command=lambda: exit(root),
                                     text = "Exit", width=5)
-    exit_button.grid(column=0, row=1)
+    exit_button.grid(column=0, row=3)
 
 def display_set_goal(root):
     """
