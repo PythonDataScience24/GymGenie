@@ -342,10 +342,42 @@ def view_progress_and_trends(root):
     progress_trend_frame = gui.create_frame(root, rows=3)
     progress_trend_frame.pack(fill=tk.BOTH, expand=True)
 
-    # Add label unnder implementation
-    text = tk.Text(progress_trend_frame,height=8)
-    text.insert('1.0','We are implementing this function! Please come back in a Week!')
-    text.grid(column=0,row=0)
+    #read workout.csv and goals.csv
+    #load the workouts from a pickle file, or start a dataframe to store them in if no file was found
+    global workouts_df
+    global goals_df
+    global summary
+    global messages
+    global goal_row_entry
+    current_directory = os.getcwd().replace(os.sep,'/')
+    workout_file = current_directory + "/logWorkouts.csv"
+    workouts_df = utl.WorkoutDataframe()
+    try:
+        workouts_df.read_from_csv(workout_file)
+    except FileNotFoundError:
+        pass
+    # start a dataframe to store the goals and load them from a file
+    goal_file = current_directory + "/GoalData.csv"
+    goals_df = utl.GoalDataframe()
+    try:
+        goals_df.read_from_csv(goal_file)
+    except FileNotFoundError:
+        pass
+
+    # Convert DataFrame to string representation
+    workouts_df_str = workouts_df.data.to_string()
+
+    #create Canvas
+    canvas_df = Canvas(root,bg=blue)
+    canvas_df.pack()
+
+    # Create Text widget to display DataFrame
+    text_widget = Text(canvas_df)
+    text_widget.insert(tk.END, workouts_df_str)
+    text_widget.grid(column=0, row=0)
+
+
+
     # Add exit button
     exit_button = gui.create_button(frame=progress_trend_frame, command=lambda: exit(root),
                                     text = "Exit", width=5)
