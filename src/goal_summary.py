@@ -656,7 +656,7 @@ class WorkoutSummary:
                 timescale = int(input("Over how many of the past days would you like to see the summary? "))
                 return timescale
             except ValueError:
-                print('Please insert a valid timescale.')
+                print('Please insert a valid timescale (the number of days as an integer).')
 
     def get_quantity(self):
         """
@@ -667,7 +667,7 @@ class WorkoutSummary:
             if quantity in ['duration', 'distance', 'calories']:
                 return quantity
             else:
-                print("Please select a valid quantity to visualize.")
+                print("Please select a valid quantity to visualize, either duration, distance or calories.")
     
     def get_exercises(self):
         """
@@ -683,7 +683,7 @@ class WorkoutSummary:
             elif exercise.capitalize() in ["Running", "Cycling", "Strength", "Swimming", "Walking", "Skiing", "Climbing", "Others"]:
                 exercise_list.append(exercise.capitalize())
             else:
-                print("Please enter a valid exercise type.")
+                print("Please enter a valid exercise type. Choose from the list above.")
 
     def plot_summary(self, timescale: int, quantity: str):
         """
