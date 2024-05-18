@@ -33,7 +33,18 @@ class GoalSummary:
         self.fig = plt.figure()
         self.grid = gridspec.GridSpec(2, 2, height_ratios=[1, 1])
 
-
+    def get_unit(self,unit_value:str):
+        try:
+            match unit_value:
+                case "kcal":
+                    unit = 'calories'
+                case "km":
+                    unit = 'distance'
+                case "min":
+                    unit = 'duration'
+        except ValueError:
+            print('Unit value incorrect entry!')
+        return unit
     def plot_goal(self, index_goal):
         """
         This function shows the plot of the progress from the terminal through the goal.
@@ -151,13 +162,7 @@ class GoalSummary:
         # filter the logWorkout dataframe, containing only all the activities with the same exercise
         workout_df = dataframe.data
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit accordingly
         progression = workout_df[workout_df['activity'] == exercise].groupby('date')[unit].sum().reset_index()
@@ -202,13 +207,7 @@ class GoalSummary:
         value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
         progression = dataframe.data.groupby('date')[unit].sum().reset_index()
@@ -249,13 +248,7 @@ class GoalSummary:
         unit_value: specific properties that the user wants to see (kcal,km or min)
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # group each day every sport
         grouped_dataframe = dataframe.data.groupby(
             ['activity', 'date']).sum().reset_index()
@@ -298,13 +291,7 @@ class GoalSummary:
         value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
         progression = dataframe.data.groupby('date')[unit].sum().reset_index()
@@ -454,13 +441,7 @@ class GoalSummary:
         # filter the logWorkout dataframe, containing only all the activities with the same exercise
         workout_df = dataframe.data
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
         progression = workout_df[workout_df['activity'] == exercise].groupby('date')[unit].sum().reset_index()
@@ -504,13 +485,7 @@ class GoalSummary:
         value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
         progression = dataframe.data.groupby('date')[unit].sum().reset_index()
@@ -549,13 +524,7 @@ class GoalSummary:
         unit_value: specific properties that the user wants to see (kcal,km or min)
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # group each day every sport
         grouped_dataframe = dataframe.data.groupby(
             ['activity', 'date']).sum().reset_index()
@@ -595,13 +564,7 @@ class GoalSummary:
         value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
         progression = dataframe.data.groupby('date')[unit].sum().reset_index()
