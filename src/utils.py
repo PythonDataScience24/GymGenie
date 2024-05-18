@@ -1,5 +1,5 @@
 """
-This module collect all the object used in the implementation of the program
+This module collects all the objects used in the implementation of the program
 """
 from datetime import date
 import numpy as np
@@ -211,6 +211,8 @@ class Rating:
     
     def print(self):
         return self.rating_value
+    
+    
 class Goal:
     """
     Abstract base class for a goal.
