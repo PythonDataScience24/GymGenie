@@ -164,6 +164,8 @@ def summaryVisualisations(workout_df: utl.WorkoutDataframe):
     workout_summary.compare_exercises(timescale, quantity, exercises)
     # plot the distribution of rating pro exercise
     workout_summary.plot_rating_by_exercises()
+    # plot pie
+    workout_summary.plot_pie_sport(timescale,quantity)
 
 if __name__== "__main__":
     main()

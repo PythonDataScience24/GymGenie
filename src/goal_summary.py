@@ -640,7 +640,7 @@ class WorkoutSummary:
         exercise_list = []
         while entering == "t":
             print(["Running", "Cycling", "Strength", "Swimming", "Walking", "Skiing", "Climbing", "Others"])
-            exercise = input("Select an exercise you want to include in the summary from the list above, or type q to stop: ").strip()
+            exercise = input(f"Select an exercise you want to include in the summary from the list above, or type q to stop: {exercise_list} ").strip()
             if exercise == "q":
                 return exercise_list
             elif exercise.capitalize() in ["Running", "Cycling", "Strength", "Swimming", "Walking", "Skiing", "Climbing", "Others"]:
@@ -669,7 +669,7 @@ class WorkoutSummary:
 
         # plot
         #choose which suplot to occupy
-        ax1 = self.fig.add_subplot(self.grid[0, :])
+        ax1 = self.fig.add_subplot(self.grid[0, 0])
         current_data.plot(kind='bar', stacked=True, ax = ax1)
         plt.xlabel('')
         plt.ylabel(quantity)
@@ -756,8 +756,38 @@ class WorkoutSummary:
         plt.ylabel('Rating')
         plt.xticks(rotation=25)
         plt.tight_layout()
-        plt.show()
+        #plt.show()
+    def plot_pie_sport(self,timescale:int,quantity:str):
+        """
+        Plot the percentage of every exercises in a pie chart
+        Args:
+        timescale: optional argument to select the number of days over which the plot should be 
+            created (back from the date of the most recent workout)
+        quantity: Has to be duration, distance or calories and will be the measure for which the plot is created 
+        """
+        # first, define the cutoff date from which on you want to do the plot
+        latest_date = self.data.data['date'].max()
+        cutoff_date = latest_date - pd.Timedelta(days=timescale)
 
+        # select the relevant data from the total of logged workouts
+        current_data = self.data.data.loc[self.data.data['date']
+                                     >= cutoff_date, ['date', quantity, 'activity']]
+        
+        coloumn_to_plot = quantity
+
+        aggregate_by_sport = current_data.groupby('activity')[coloumn_to_plot].sum()
+
+        # calulcate percentage
+        percentages = (aggregate_by_sport / aggregate_by_sport.sum()) * 100
+
+        # plot
+        ax4 = self.fig.add_subplot(self.grid[0,1])
+
+        ax4.pie(percentages, labels=percentages.index, autopct='%1.1f%%', startangle=140)
+        plt.title(f'Percentage of Total {coloumn_to_plot.capitalize()} by Activity')
+        plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        plt.show()
+        pass
 
 if __name__ == "__main__":
 
