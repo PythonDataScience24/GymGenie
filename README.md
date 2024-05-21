@@ -11,8 +11,7 @@ We are four Bioinformatics students: [Lea](https://github.com/leaf185), [Laura](
 1. Have a look at the [documentation](https://github.com/PythonDataScience24/GymGenie/tree/main/docs) on how to download the application and test it - either as a version with a graphical user interface (GUI) or from the command line. 
 2. Suggest new visualization features that will improve user experience.
 3. Proofread the code to familiarize yourself with the projects structure and functionality.
-4. Or help us write the [documentation](https://github.com/PythonDataScience24/GymGenie/tree/main/docs) to the project.
-5. If you have experience in using the tkinter package we use to develop our GUI, we could use your help in cleaning up the code and resolving some bugs (see [issues](https://github.com/PythonDataScience24/GymGenie/issues))
+4. If you have experience in using the tkinter package we use to develop our GUI, we could use your help in cleaning up the code and resolving some bugs (see [issues](https://github.com/PythonDataScience24/GymGenie/issues))
 
 ## Find out more
 Check out our [documentation](https://github.com/PythonDataScience24/GymGenie/tree/main/docs) to learn how to start the program and find out about all the functionalities.
