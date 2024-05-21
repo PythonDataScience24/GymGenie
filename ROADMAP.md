@@ -3,7 +3,7 @@
 Welcome to the Roadmap of the fitness tracking application GymGenie. Here you can learn what this project is about, how to get involved, and which stages the development of our project includes.
 We are four Bioinformatics students developing the application. Our application is targeted to anyone who wants to simplify the process of tracking workouts and analysing the progress. With features for setting goals and visualising the progress towards them, we want to make it easier for users to be consistent in their workout schedule and to reach their goals.
 
-If you want to get involved as a contributor, we are happy to learn your suggestions for features our application should include. Contributors may also help by testing the application or proof-reading our code.  Feel free to reach out and send us an e-mail with your suggestions (laura.fernandez@students.unibe.ch, kristin.olsen@students.unibe.ch, dario.bassi@students.unibe.ch, lea.frei@students.unibe.ch).
+If you want to get involved as a contributor, we are happy to learn your suggestions for features our application should include. Contributors may also help by testing the application or proof-reading our code and help resolving [issues](https://github.com/PythonDataScience24/GymGenie/issues).  Feel free to reach out and send us an e-mail with your suggestions (laura.fernandez@students.unibe.ch, kristin.olsen@students.unibe.ch, dario.bassi@students.unibe.ch, lea.frei@students.unibe.ch).
 
 ## Timeline:
 
@@ -31,7 +31,7 @@ Provide users with visualizations of their exercise data, such as weekly/monthly
     - `Calories`: Calories burned during the workout
     - `Distance`: Distance covered during the workout (if applicable)
     - `Dataframe`: Pandas dataframe to store workout data. 
-                  It is written in a csv file. When the user close the session the data is saved and then when it re-opens, we can read and re-use it.
+                  It is written in a csv file. When the user closes the session the data is saved and then when it re-opens, we can read and re-use it.
     - `Rating`: Rating of the workout on a scale of 1 to 10
 - **Contributors**: Laura, Kristin
 - Create `main.py` to run the main program 
@@ -66,8 +66,3 @@ Provide users with visualizations of their exercise data, such as weekly/monthly
 
 ## Relevant timeframes:
 30.05.2024 - End subtasks and write documentation
-
-
-
-
-
