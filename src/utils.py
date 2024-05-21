@@ -1,5 +1,5 @@
 """
-This module collect all the object used in the implementation of the program
+This module collects all the objects used in the implementation of the program
 """
 from datetime import date
 import numpy as np
@@ -211,6 +211,8 @@ class Rating:
     
     def print(self):
         return self.rating_value
+    
+    
 class Goal:
     """
     Abstract base class for a goal.
@@ -343,6 +345,7 @@ class Dataframe(ABC):
         info =  date.split('-')
 
         return Date(int(info[0]), int(info[1]), int(info[2])).print()
+    
 class WorkoutDataframe(Dataframe):
     """
     Dataframe  that contains the information about the workouts the user entered.
@@ -409,6 +412,7 @@ class WorkoutDataframe(Dataframe):
         Transforms the rating string in a interger for plotting.
         """
         return int(ratings)
+    
     def test_values(self):
         """
         Test that the dataframe doesn't contains unrealistic values

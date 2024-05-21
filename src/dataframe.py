@@ -68,6 +68,7 @@ class Dataframe(ABC):
         info =  date.split('-')
 
         return Date(int(info[0]), int(info[1]), int(info[2])).print()
+    
 class WorkoutDataframe(Dataframe):
     """
     Dataframe  that contains the information about the workouts the user entered.
@@ -134,6 +135,7 @@ class WorkoutDataframe(Dataframe):
         Transforms the rating string in a interger for plotting.
         """
         return int(ratings)
+    
     def test_values(self):
         """
         Test that the dataframe doesn't contains unrealistic values

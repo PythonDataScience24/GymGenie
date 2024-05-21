@@ -427,12 +427,3 @@ class SetGoal:
                 value = self.get_exercise_type()
 
         return value
-
-
-
-    
-
-
-
-
-
