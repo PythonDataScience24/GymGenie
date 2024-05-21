@@ -608,7 +608,7 @@ class WorkoutSummary:
     def __init__(self, workout_df: WorkoutDataframe):
         self.data = workout_df
         self.fig = plt.figure()
-        self.grid = gridspec.GridSpec(2, 2, height_ratios=[1, 1])
+        self.grid = gridspec.GridSpec(3, 3, height_ratios=[1, 1,1])
 
     def get_timescale(self):
         """
@@ -640,7 +640,7 @@ class WorkoutSummary:
         exercise_list = []
         while entering == "t":
             print(["Running", "Cycling", "Strength", "Swimming", "Walking", "Skiing", "Climbing", "Others"])
-            exercise = input(f"Select an exercise you want to include in the summary from the list above, or type q to stop: {exercise_list} ").strip()
+            exercise = input(f"Select all exercise you want to include in the summary from the list above, or type q to stop: {exercise_list} ").strip()
             if exercise == "q":
                 return exercise_list
             elif exercise.capitalize() in ["Running", "Cycling", "Strength", "Swimming", "Walking", "Skiing", "Climbing", "Others"]:
@@ -719,7 +719,7 @@ class WorkoutSummary:
         complete_df = complete_df.fillna(0)
 
         # plot
-        ax2 = self.fig.add_subplot(self.grid[1, 0])
+        ax2 = self.fig.add_subplot(self.grid[0, 1])
         sns.lineplot(data=complete_df, x='date', y=quantity, hue='activity', ax= ax2)
         plt.title(f'Comparison by {quantity} over the last {timescale} days', fontsize = 8)
         plt.xlabel('')
@@ -747,7 +747,7 @@ class WorkoutSummary:
             current_data = self.data.data.loc[:, ['activity', 'rating']]
 
         # plot
-        ax3 = self.fig.add_subplot(self.grid[1, 1])
+        ax3 = self.fig.add_subplot(self.grid[0, 2])
         sns.violinplot(data=current_data, x="activity",
                        y="rating", inner="point", ax= ax3)
         plt.title(
@@ -781,13 +781,59 @@ class WorkoutSummary:
         percentages = (aggregate_by_sport / aggregate_by_sport.sum()) * 100
 
         # plot
-        ax4 = self.fig.add_subplot(self.grid[0,1])
+        ax4 = self.fig.add_subplot(self.grid[1,0])
 
         ax4.pie(percentages, labels=percentages.index, autopct='%1.1f%%', startangle=140)
-        plt.title(f'Percentage of Total {coloumn_to_plot.capitalize()} by Activity')
+        plt.title(f'Percentage of Total {coloumn_to_plot.capitalize()} by Activity',fontsize = 8)
         plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        #plt.show()
+        #pass
+
+
+    def scatter_calories_duration(self):
+
+        # Plot the relationship between duration and calories burned
+        #plt.figure(figsize=(10, 6))
+        ax5 = self.fig.add_subplot(self.grid[1,1])
+        sns.scatterplot(data=self.data.data, x='duration', y='calories', hue='activity', style='activity', s=100, ax=ax5)
+        plt.title('Relationship Between Duration and Calories Burned',fontsize = 8)
+        plt.xlabel('Duration (minutes)')
+        plt.ylabel('Calories Burned')
+        plt.legend(title='Activity',fontsize = 8, frameon=False)
+        #plt.grid(True)
+        #plt.show()
+
+
+    def calories_per_distance(self):
+
+        # Calculate calories burned per kilometer
+        self.data.data['calories_per_km'] = self.data.data['calories'] / self.data.data['distance']
+
+        # Plot calories burned per kilometer for each activity
+        #plt.figure(figsize=(10, 6))
+        ax6 = self.fig.add_subplot(self.grid[1,2])
+        sns.barplot(data=self.data.data, x='activity', y='calories_per_km', ax=ax6)
+        plt.title('Calories Burned per Kilometer by Activity',fontsize = 8)
+        plt.xlabel('Activity')
+        plt.ylabel('Calories Burned per Kilometer')
+        #plt.grid(True)
+        #plt.show()
+
+
+    def calories_per_duration(self):
+
+        # Calculate caloric efficiency (calories burned per minute)
+        self.data.data['caloric_efficiency'] = self.data.data['calories'] / self.data.data['duration']
+
+        # Plot caloric efficiency for each activity
+        #plt.figure(figsize=(10, 6))
+        ax7 = self.fig.add_subplot(self.grid[2,0])
+        sns.barplot(data=self.data.data, x='activity', y='caloric_efficiency', ax=ax7)
+        plt.title('Caloric Efficiency by Activity',fontsize = 8)
+        plt.xlabel('Activity')
+        plt.ylabel('Calories Burned per Minute')
+        #plt.grid(True)
         plt.show()
-        pass
 
 if __name__ == "__main__":
 
