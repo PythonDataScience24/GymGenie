@@ -8,12 +8,13 @@ GymGenie is an application for tracking your workouts. It lets you log your work
 We are four Bioinformatics students: [Lea](https://github.com/leaf185), [Laura](https://github.com/lfercer), [Dario](https://github.com/ddd42-star) and [Kristin](https://github.com/kristinwo). This project is part of the course "Advanced Python" at Universität Bern lead by Assistant Professor Athina Tzovara.
 
 ## How to get started?
-1. Have a look at the [documentation](https://github.com/ddd42-star/fitnessTracker/tree/main/docs) on how to download the application and test it - either as a version with a graphical user interface (GUI) or from the command line. 
+1. Have a look at the [documentation](https://github.com/PythonDataScience24/GymGenie/tree/main/docs) on how to download the application and test it - either as a version with a graphical user interface (GUI) or from the command line. 
 2. Suggest new visualization features that will improve user experience.
 3. Proofread the code to familiarize yourself with the projects structure and functionality.
-4. Or help us write the [documentation](https://github.com/ddd42-star/fitnessTracker/tree/main/docs) to the project.
+4. Or help us write the [documentation](https://github.com/PythonDataScience24/GymGenie/tree/main/docs) to the project.
+5. If you have experience in using the tkinter package we use to develop our GUI, we could use your help in cleaning up the code and resolving some bugs (see [issues](https://github.com/PythonDataScience24/GymGenie/issues))
 
 ## Find out more
-Check out our [documentation](https://github.com/ddd42-star/fitnessTracker/tree/main/docs) to learn how to start the program and find out about all the functionalities.
+Check out our [documentation](https://github.com/PythonDataScience24/GymGenie/tree/main/docs) to learn how to start the program and find out about all the functionalities.
 
 Feel free to explore and contribute to GymGenie. Let's make workout tracking an easy and encouraging experience 💪
