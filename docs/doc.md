@@ -107,7 +107,12 @@ If you would like to see more types of plots, please contact us and we will add 
 
 #### Summary Visualisation
 
-We are currently working on it!! Stay tuned!!
+The option Summary Visualisation shows you some summary plots of your past activity, based on a few parameters you get to choose. You can choose the number of days over which you would like to see the summary. The timeframe used is always counted as the number of days before the date of the last logged workout. So, for example, if you would like to see a summary of the past month, type 30.
+Next, you can choose whether to see a summary for duration, distance or calories. This will affect some of the plots, some will be shown regardless of what you choose here.
+You can also choose to include some exercises for a comparison from the provided list. For this, type in the names of the exercises you want to include one by one, then type q to stop adding more exercises.
+
+Then, you will see the following plots:
+![plots for summary visualisations](filename.png)
 
 #### Exit
 
