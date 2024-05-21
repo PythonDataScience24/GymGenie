@@ -1,6 +1,8 @@
 # GymGenie
 Welcome to GymGenie, your personal assistant in tracking your workout routine and progress 🏋️‍♀️ Below you will find some information about the project and how to get started. So, let's jump right in! 🏃‍♂️
 
+![GymGenie Logo](./gymgenie_logo.png)
+
 ## What is GymGenie?
 GymGenie is an application for tracking your workouts. It lets you log your workouts, set goals, track your progress and analyse trends in your workouts. Our goal is to simplify the process of tracking workouts, making it easier for people to motivate themselves and be more consistent in their workouts. The application is targeted towards anyone who wants to track their workouts or set goals for their progress. This includes everyone from athletes that need to track their progress closely, to retired people that just want to stay consistent. What makes GymGenie special is its personalised approach to tracking your routines and progress. In GymGenie, you can rate how you were feeling during the workout, and you will receive encouraging feedback and tips on your journey towards your goals. 
 
