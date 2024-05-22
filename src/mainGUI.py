@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import os
 import pandas as pd
 import random
@@ -10,6 +11,10 @@ import utils as utl
 import workout as wk
 import workoutlog as wkl
 import goal_summary as gs
+from matplotlib.figure import Figure 
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 ### Global variables
 #Create boolean values to keep the workflow
@@ -339,17 +344,250 @@ def view_progress_and_trends(root):
         widget.destroy()
 
     # Create frame for the page where the user can view progress and trends of their workout.
-    progress_trend_frame = gui.create_frame(root, rows=3)
+    progress_trend_frame = gui.create_frame(root, rows=4)
     progress_trend_frame.pack(fill=tk.BOTH, expand=True)
 
-    # Add label unnder implementation
-    text = tk.Text(progress_trend_frame,height=8)
-    text.insert('1.0','We are implementing this function! Please come back in a Week!')
-    text.grid(column=0,row=0)
+    #read workout.csv and goals.csv
+    #load the workouts from a pickle file, or start a dataframe to store them in if no file was found
+    global workouts_df
+    current_directory = os.getcwd().replace(os.sep,'/')
+    workout_file = current_directory + "/logWorkouts.csv"
+    workouts_df = utl.WorkoutDataframe()
+    try:
+        workouts_df.read_from_csv(workout_file)
+    except FileNotFoundError:
+        pass
+
+
+    # Convert DataFrame to string representation
+    workouts_df_str = workouts_df.data.to_string()
+
+    #create Canvas
+    canvas_df = Canvas(root,bg=blue)
+    canvas_df.pack()
+
+    # Create Text widget to display DataFrame
+    text_widget = Text(canvas_df)
+    text_widget.insert(tk.END, workouts_df_str)
+    text_widget.grid(column=0, row=0)
+
+    #Create label for timescale and entry
+    timescale_label = gui.create_label(progress_trend_frame, text = "Over how many of the past days would you like to see the summary? ", width=60)
+    global timescale_entry
+    timescale_entry = gui.create_entry(progress_trend_frame, width= 5)
+    timescale_label.grid(column=0, row=0)
+    timescale_entry.grid(column=1, row=0)
+    #Create option menu and label for quantity
+    quantity = ['duration', 'distance', 'calories']
+    global selected_quantity
+    selected_quantity = tk.StringVar(root)
+    selected_quantity.set(quantity[0])
+    quantity_options = gui.create_option_menu(frame=progress_trend_frame, options=quantity,
+                                                    selected_option=selected_quantity) 
+    quantity_options.grid(column=1, row=1)
+    quantity_label = gui.create_label(progress_trend_frame, text = "See the summary for: ", width=60)
+    quantity_label.grid(column=0, row=1)
+
+    #create option menu and label for type of exercise --> I THINK THIS PART CAN BE REFRACTORED (it was also on display_exercise_type(), but with the option 'All' too)
+    # Create list containing the names of all the workout types of class Workout.
+    workout_types = [subclass.__name__ for subclass in wk.Workout.__subclasses__()]
+    # Variable to keep track of the option 
+    # selected in OptionMenu 
+    global selected_workout
+    selected_workout = tk.StringVar(progress_trend_frame) 
+    # Set the default value of the variable 
+    selected_workout.set(workout_types[0])
+    # Create the optionmenu widget and passing the workout_types and the selected_wotkout to it. 
+    question_menu = tk.OptionMenu(progress_trend_frame, selected_workout, *workout_types, ) 
+    question_menu.grid(column = 1, row = 2)
+    #create exercise label
+    exercise_label = gui.create_label(progress_trend_frame, text = "Select an exercise: ", width=60)
+    exercise_label.grid(column=0, row=2)
+
+    # Add plot button
+    plot_button = gui.create_button(frame=progress_trend_frame, command=lambda: see_summary_plots(root, index=int(timescale_entry.get()), quantity=selected_quantity.get(), exercise=[selected_workout.get()]),
+                                    text = "Plot", width=5)
+    plot_button.grid(column=0, row=3)
+
     # Add exit button
     exit_button = gui.create_button(frame=progress_trend_frame, command=lambda: exit(root),
                                     text = "Exit", width=5)
-    exit_button.grid(column=0, row=1)
+    exit_button.grid(column=1, row=3)
+
+   
+
+def see_summary_plots(root,index, quantity, exercise):
+    """
+        Displays the summary plots on view goals and progress page after clicking 'plot' button.
+        The plots are done regarding the input information from the user.
+    """
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+     # Create frame for the page where the user can view the summary
+    plot_frame = tk.Frame(root, bg=blue) 
+    plot_frame.pack(fill=tk.BOTH, expand=True)
+    plot_frame.columnconfigure(0, weight=1)
+    plot_frame.rowconfigure(0, weight=1)
+
+    #Creat WorkoutSummary object
+    workouts_df.plot_dataframe()
+    wk_summary = gs.WorkoutSummary(workouts_df)
+
+    # get the plots
+    figure1 = wk_summary.plot_summary_GUI(timescale=index, quantity=quantity)
+    figure2 = wk_summary.plot_pie_sport_GUI(timescale=index, quantity=str(quantity))
+    figure3 = wk_summary.plot_rating_by_exercises_GUI(timescale=index)
+    figure4 = wk_summary.compare_exercises_GUI(timescale=index,quantity=str(quantity), exercises=exercise)
+    figure5 = wk_summary.scatter_calories_duration_GUI()
+    figure6 = wk_summary.calories_per_distance_GUI()
+    figure7 = wk_summary.calories_per_duration_GUI()
+    global images
+    global counter
+    # create dictonary
+    images = {'1':figure1,'2':figure2, '3':figure3, '4': figure4,'5':figure5, '6': figure6, '7':figure7}
+    # start counter
+    counter = 1
+    #create Canvas
+    figure_canvas1 = FigureCanvasTkAgg(images[str(counter)], master=root)
+    figure_canvas1.draw()
+    canvas_widget1 = figure_canvas1.get_tk_widget()
+    canvas_widget1.pack()
+
+    #Add next button
+    #next_button =  tk.Button(plot_frame, command=lambda: new_summary_plot(root,figure2, figure3, index, quantity),
+    #                                text = "Next", width=5)
+    next_button = tk.Button(plot_frame, text="Next",command=lambda: new_image(root,images, counter))
+    next_button.pack(side=tk.RIGHT)
+
+    #Add before button
+    before_button = tk.Button(plot_frame, text="Before",command=lambda: old_image(root,images, counter))
+    before_button.pack(side=tk.LEFT)
+    # Add a quit button
+    quit_button = tk.Button(plot_frame, text="Go Back", command=lambda: view_progress_and_trends(root))
+    quit_button.pack(side=tk.TOP)
+
+def new_image(root,images:dict, counter:int):
+
+    if counter <= 6:
+        counter += 1
+
+        # Remove all widgets from the root window
+        for widget in root.winfo_children():
+            widget.destroy()
+
+        # Create frame for the page where the user can view the goals
+        view_goal_frame = tk.Frame(root, bg=blue) 
+        view_goal_frame.pack(fill=tk.BOTH, expand=True)
+        view_goal_frame.columnconfigure(0, weight=1)
+        view_goal_frame.rowconfigure(0, weight=1)
+
+        #create Canvas
+        canvas_df = FigureCanvasTkAgg(images[str(counter)], master=root)
+        canvas_df.draw()
+        canvas_df.get_tk_widget().pack()
+
+        #Add next button
+        #next_button =  tk.Button(plot_frame, command=lambda: new_summary_plot(root,figure2, figure3, index, quantity),
+        #                                text = "Next", width=5)
+        next_button = tk.Button(view_goal_frame, text="Next",command=lambda: new_image(root,images, counter))
+        next_button.pack(side=tk.RIGHT)
+
+        #Add before button
+        before_button = tk.Button(view_goal_frame, text="Before",command=lambda: old_image(root,images, counter))
+        before_button.pack(side=tk.LEFT)
+        # Add a quit button
+        quit_button = tk.Button(view_goal_frame, text="Go Back", command=lambda: view_progress_and_trends(root))
+        quit_button.pack(side=tk.TOP)
+        # update states
+    else:
+        # last images only before button visible
+        # Remove all widgets from the root window
+        for widget in root.winfo_children():
+            widget.destroy()
+        # Create frame for the page where the user can view the goals
+        view_goal_frame = tk.Frame(root, bg=blue) 
+        view_goal_frame.pack(fill=tk.BOTH, expand=True)
+        view_goal_frame.columnconfigure(0, weight=1)
+        view_goal_frame.rowconfigure(0, weight=1)
+
+        #create Canvas
+        canvas_df = FigureCanvasTkAgg(images[str(counter)], master=root)
+        canvas_df.draw()
+        canvas_df.get_tk_widget().pack()
+
+
+        #Add before button
+        before_button = tk.Button(view_goal_frame, text="Before",command=lambda: old_image(root,images, counter))
+        before_button.pack(side=tk.LEFT)
+        # Add a quit button
+        quit_button = tk.Button(view_goal_frame, text="Go Back", command=lambda: view_progress_and_trends(root))
+        quit_button.pack(side=tk.TOP)
+        # update states
+
+
+def old_image(root,images:dict, counter:int):
+
+    if counter >= 2:
+        counter -= 1
+
+        # Remove all widgets from the root window
+        for widget in root.winfo_children():
+            widget.destroy()
+
+        # Create frame for the page where the user can view the goals
+        view_goal_frame = tk.Frame(root, bg=blue) 
+        view_goal_frame.pack(fill=tk.BOTH, expand=True)
+        view_goal_frame.columnconfigure(0, weight=1)
+        view_goal_frame.rowconfigure(0, weight=1)
+
+        #create Canvas
+        canvas_df = FigureCanvasTkAgg(images[str(counter)], master=root)
+        canvas_df.draw()
+        canvas_df.get_tk_widget().pack()
+
+        #Add next button
+        #next_button =  tk.Button(plot_frame, command=lambda: new_summary_plot(root,figure2, figure3, index, quantity),
+        #                                text = "Next", width=5)
+        next_button = tk.Button(view_goal_frame, text="Next",command=lambda: new_image(root,images, counter))
+        next_button.pack(side=tk.RIGHT)
+
+        #Add before button
+        before_button = tk.Button(view_goal_frame, text="Before",command=lambda: old_image(root,images, counter))
+        before_button.pack(side=tk.LEFT)
+        # Add a quit button
+        quit_button = tk.Button(view_goal_frame, text="Go Back", command=lambda: view_progress_and_trends(root))
+        quit_button.pack(side=tk.TOP)
+    # update states
+    else:
+        # Remove all widgets from the root window
+        for widget in root.winfo_children():
+            widget.destroy()
+
+        # Create frame for the page where the user can view the goals
+        view_goal_frame = tk.Frame(root, bg=blue) 
+        view_goal_frame.pack(fill=tk.BOTH, expand=True)
+        view_goal_frame.columnconfigure(0, weight=1)
+        view_goal_frame.rowconfigure(0, weight=1)
+
+        #create Canvas
+        canvas_df = FigureCanvasTkAgg(images[str(counter)], master=root)
+        canvas_df.draw()
+        canvas_df.get_tk_widget().pack()
+
+        #Add next button
+        #next_button =  tk.Button(plot_frame, command=lambda: new_summary_plot(root,figure2, figure3, index, quantity),
+        #                                text = "Next", width=5)
+        next_button = tk.Button(view_goal_frame, text="Next",command=lambda: new_image(root,images, counter))
+        next_button.pack(side=tk.RIGHT)
+
+        # Add a quit button
+        quit_button = tk.Button(view_goal_frame, text="Go Back", command=lambda: view_progress_and_trends(root))
+        quit_button.pack(side=tk.TOP)
+
+
+    
 
 def display_set_goal(root):
     """

@@ -44,6 +44,8 @@ def main():
                 summaryVisualisations(workouts_df)
             case "q":
                 #save the workouts and goal dataframe when quitting to a csv
+                workouts_df.print_dataframe()
+                goals_df.print_dataframe()
                 workouts_df.save_to_csv(workout_file)
                 goals_df.save_to_csv(goal_file)
                 # exit the program
@@ -164,6 +166,14 @@ def summaryVisualisations(workout_df: utl.WorkoutDataframe):
     workout_summary.compare_exercises(timescale, quantity, exercises)
     # plot the distribution of rating pro exercise
     workout_summary.plot_rating_by_exercises()
+    # plot pie
+    workout_summary.plot_pie_sport(timescale,quantity)
+    # plot scatter
+    workout_summary.scatter_calories_duration()
+    # calories / kilometer
+    workout_summary.calories_per_distance()
+    # calories / minutes
+    workout_summary.calories_per_duration()
 
 if __name__== "__main__":
     main()

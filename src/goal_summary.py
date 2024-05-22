@@ -33,7 +33,18 @@ class GoalSummary:
         self.fig = plt.figure()
         self.grid = gridspec.GridSpec(2, 2, height_ratios=[1, 1])
 
-
+    def get_unit(self,unit_value:str):
+        try:
+            match unit_value:
+                case "kcal":
+                    unit = 'calories'
+                case "km":
+                    unit = 'distance'
+                case "min":
+                    unit = 'duration'
+        except ValueError:
+            print('Unit value incorrect entry!')
+        return unit
     def plot_goal(self, index_goal):
         """
         This function shows the plot of the progress from the terminal through the goal.
@@ -151,13 +162,7 @@ class GoalSummary:
         # filter the logWorkout dataframe, containing only all the activities with the same exercise
         workout_df = dataframe.data
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit accordingly
         progression = workout_df[workout_df['activity'] == exercise].groupby('date')[unit].sum().reset_index()
@@ -202,13 +207,7 @@ class GoalSummary:
         value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
         progression = dataframe.data.groupby('date')[unit].sum().reset_index()
@@ -249,13 +248,7 @@ class GoalSummary:
         unit_value: specific properties that the user wants to see (kcal,km or min)
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # group each day every sport
         grouped_dataframe = dataframe.data.groupby(
             ['activity', 'date']).sum().reset_index()
@@ -298,13 +291,7 @@ class GoalSummary:
         value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
         progression = dataframe.data.groupby('date')[unit].sum().reset_index()
@@ -454,13 +441,7 @@ class GoalSummary:
         # filter the logWorkout dataframe, containing only all the activities with the same exercise
         workout_df = dataframe.data
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
         progression = workout_df[workout_df['activity'] == exercise].groupby('date')[unit].sum().reset_index()
@@ -504,13 +485,7 @@ class GoalSummary:
         value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
         progression = dataframe.data.groupby('date')[unit].sum().reset_index()
@@ -549,13 +524,7 @@ class GoalSummary:
         unit_value: specific properties that the user wants to see (kcal,km or min)
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # group each day every sport
         grouped_dataframe = dataframe.data.groupby(
             ['activity', 'date']).sum().reset_index()
@@ -595,13 +564,7 @@ class GoalSummary:
         value_goal: the goal that the user wants to reach
         """
         # Depending on the unit choosen in the goal dataframe select different column
-        match unit_value:
-            case "kcal":
-                unit = 'calories'
-            case "km":
-                unit = 'distance'
-            case "min":
-                unit = 'duration'
+        unit = self.get_unit(unit_value)
         # Group date according to the unit choosen
         # If there are more workout in one day it will sum the unit according
         progression = dataframe.data.groupby('date')[unit].sum().reset_index()
@@ -645,7 +608,7 @@ class WorkoutSummary:
     def __init__(self, workout_df: WorkoutDataframe):
         self.data = workout_df
         self.fig = plt.figure()
-        self.grid = gridspec.GridSpec(2, 2, height_ratios=[1, 1])
+        self.grid = gridspec.GridSpec(3, 3, height_ratios=[1, 1,1])
 
     def get_timescale(self):
         """
@@ -677,7 +640,7 @@ class WorkoutSummary:
         exercise_list = []
         while entering == "t":
             print(["Running", "Cycling", "Strength", "Swimming", "Walking", "Skiing", "Climbing", "Others"])
-            exercise = input("Select an exercise you want to include in the summary from the list above, or type q to stop: ").strip()
+            exercise = input(f"Select all exercise you want to include in the summary from the list above, or type q to stop: {exercise_list} ").strip()
             if exercise == "q":
                 return exercise_list
             elif exercise.capitalize() in ["Running", "Cycling", "Strength", "Swimming", "Walking", "Skiing", "Climbing", "Others"]:
@@ -693,9 +656,10 @@ class WorkoutSummary:
             timescale: Number of days over which to plot (starting from the date of the most recent workout back).
             quantity: Has to be duration, distance or calories and will be the measure for which the plot is created.
         """
-
+        self.data.data['date'] = pd.to_datetime(self.data.data['date'])
         # first, define the cutoff date from which on you want to do the plot
         latest_date = self.data.data['date'].max()
+        print(latest_date)
         cutoff_date = latest_date - pd.Timedelta(days=timescale)
 
         # select the relevant data from the total of logged workouts
@@ -706,7 +670,7 @@ class WorkoutSummary:
 
         # plot
         #choose which suplot to occupy
-        ax1 = self.fig.add_subplot(self.grid[0, :])
+        ax1 = self.fig.add_subplot(self.grid[0, 0])
         current_data.plot(kind='bar', stacked=True, ax = ax1)
         plt.xlabel('')
         plt.ylabel(quantity)
@@ -717,6 +681,39 @@ class WorkoutSummary:
         # plt.savefig("summary.png") save the plot, maybe that will make it easier to work with the GUI
         # plt.close(fig)
         # plt.show() don't show yet, to create the compound figure
+    
+    def plot_summary_GUI(self, timescale: int, quantity: str):
+        """
+        Plot the duration, distance or calories over time as a stacked bar plot.
+
+        Args:
+            timescale: Number of days over which to plot (starting from the date of the most recent workout back).
+            quantity: Has to be duration, distance or calories and will be the measure for which the plot is created.
+        """
+
+        # first, define the cutoff date from which on you want to do the plot
+        self.data.data['date'] = pd.to_datetime(self.data.data['date'])
+        latest_date = self.data.data['date'].max()
+        cutoff_date = latest_date - pd.Timedelta(days=timescale)
+        print(cutoff_date)
+        # select the relevant data from the total of logged workouts
+        current_data = self.data.data.loc[self.data.data['date']
+                                     >= cutoff_date, ['date', quantity, 'activity']]
+        current_data = current_data.pivot(
+            index='date', columns='activity', values=quantity)
+        print(current_data)
+        # plot
+        #choose which suplot to occupy
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax1 = fig.add_subplot(111)
+        current_data.plot(kind='bar', stacked=True, ax = ax1)
+        ax1.set_xlabel('')
+        ax1.set_ylabel(quantity)
+        ax1.tick_params(axis='x',rotation=25)
+        ax1.legend(title='Activity', frameon=False, fontsize = 8)
+        ax1.set_title(label=f'Summary of {quantity} over the last {timescale} days', fontsize = 8)
+        return fig
 
     def compare_exercises(self, timescale: int, quantity: str, exercises: list):
         """
@@ -756,7 +753,7 @@ class WorkoutSummary:
         complete_df = complete_df.fillna(0)
 
         # plot
-        ax2 = self.fig.add_subplot(self.grid[1, 0])
+        ax2 = self.fig.add_subplot(self.grid[0, 1])
         sns.lineplot(data=complete_df, x='date', y=quantity, hue='activity', ax= ax2)
         plt.title(f'Comparison by {quantity} over the last {timescale} days', fontsize = 8)
         plt.xlabel('')
@@ -765,6 +762,59 @@ class WorkoutSummary:
         plt.legend(title='Activity', frameon=False, fontsize = 8)
         plt.tight_layout()
         #plt.show()
+
+    def compare_exercises_GUI(self, timescale: int, quantity: str, exercises: list):
+        """
+        Plot the duration, distance or calories compared between two exercises over a specified timescale.
+
+        Args:
+            timescale: Number of days over which to plot (starting from the date of the most recent workout back).
+            quantity: Has to be duration, distance or calories and will be the measure for which the plot is created.
+            exercises: List of exercise types that should be compared.
+        """
+        self.data.data['date'] = pd.to_datetime(self.data.data['date'])
+        # first, define the cutoff date from which on you want to do the plot
+        latest_date = self.data.data['date'].max()
+        cutoff_date = latest_date - pd.Timedelta(days=timescale)
+
+        # select the relevant data from the total of logged workouts
+        current_data = self.data.data.loc[self.data.data['date']
+                                     >= cutoff_date, ['date', quantity, 'activity']]
+        print("current", current_data)
+        print(exercises)
+        # select only the rows with the activities to compare
+        current_data = self.data.data[self.data.data['activity'].isin(exercises)]
+        print(current_data)
+        # make sure both dataframes have the same format of dates for the concatenation
+        current_data['date'] = pd.to_datetime(current_data['date'])
+        #print(current_data)
+
+        # to get all combinations of date and activity in the dataframe, create a date range and all possible combinations with activities
+        dates = pd.date_range(current_data['date'].min(), current_data['date'].max(), freq='1D')
+
+        date_activity_combinations = pd.MultiIndex.from_product(
+            [dates, exercises], names=['date', 'activity'])
+        all_combinations_df = pd.DataFrame(
+            index=date_activity_combinations).reset_index()
+
+        # merge and set the value to 0, if there is no entry for an exercise at any given day
+        complete_df = pd.merge(all_combinations_df, current_data, how='left', on=[
+                               'date', 'activity'], validate="many_to_many")
+        complete_df = complete_df.fillna(0)
+
+        # plot
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax2 = fig.add_subplot(111)
+        sns.lineplot(data=complete_df, x='date', y=quantity, hue='activity', ax= ax2)
+        ax2.set_title(f'Comparison by {quantity} over the last {timescale} days', fontsize = 8)
+        ax2.set_xlabel('')
+        ax2.set_ylabel(quantity)
+        ax2.tick_params(axis='x', rotation=25)
+        ax2.legend(title='Activity', frameon=False, fontsize = 8)
+        
+        return fig
+
 
     def plot_rating_by_exercises(self, timescale: int = None):
         """
@@ -784,7 +834,7 @@ class WorkoutSummary:
             current_data = self.data.data.loc[:, ['activity', 'rating']]
 
         # plot
-        ax3 = self.fig.add_subplot(self.grid[1, 1])
+        ax3 = self.fig.add_subplot(self.grid[0, 2])
         sns.violinplot(data=current_data, x="activity",
                        y="rating", inner="point", ax= ax3)
         plt.title(
@@ -793,8 +843,198 @@ class WorkoutSummary:
         plt.ylabel('Rating')
         plt.xticks(rotation=25)
         plt.tight_layout()
+        #plt.show()
+
+    def plot_rating_by_exercises_GUI(self, timescale: int = None):
+        """
+        Plot the ratings that were given to the workouts by the type of exercise as Violin plots.
+
+        Args:
+            timescale: optional argument to select the number of days over which the plot should be 
+            created (back from the date of the most recent workout)."""
+        self.data.data['date'] = pd.to_datetime(self.data.data['date'])
+        # select the relevant data, if a timescale argument is given
+        if timescale is not None:
+            latest_date = self.data.data['date'].max()
+            cutoff_date = latest_date - pd.Timedelta(days=timescale)
+            current_data = self.data.data.loc[self.data.data['date']
+                                         >= cutoff_date, ['activity', 'rating']]
+        else:
+            current_data = self.data.data.loc[:, ['activity', 'rating']]
+        print(current_data)
+        # plot
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax3 = fig.add_subplot(111)
+        sns.violinplot(data=current_data, x="activity",
+                       y="rating", inner="point", ax= ax3)
+        ax3.set_title(
+            'Distribution of Ratings given to workouts of different exercises', fontsize = 8)
+        ax3.set_xlabel('')
+        ax3.set_ylabel('Rating')
+        ax3.tick_params(axis='x', rotation=25)
+        
+        return fig
+
+    def plot_pie_sport(self,timescale:int,quantity:str):
+        """
+        Plot the percentage of every exercises in a pie chart
+        Args:
+        timescale: optional argument to select the number of days over which the plot should be 
+            created (back from the date of the most recent workout)
+        quantity: Has to be duration, distance or calories and will be the measure for which the plot is created 
+        """
+        # first, define the cutoff date from which on you want to do the plot
+        latest_date = self.data.data['date'].max()
+        cutoff_date = latest_date - pd.Timedelta(days=timescale)
+
+        # select the relevant data from the total of logged workouts
+        current_data = self.data.data.loc[self.data.data['date']
+                                     >= cutoff_date, ['date', quantity, 'activity']]
+        
+        coloumn_to_plot = quantity
+
+        aggregate_by_sport = current_data.groupby('activity')[coloumn_to_plot].sum()
+
+        # calulcate percentage
+        percentages = (aggregate_by_sport / aggregate_by_sport.sum()) * 100
+
+        # plot
+        ax4 = self.fig.add_subplot(self.grid[1,0])
+
+        ax4.pie(percentages, labels=percentages.index, autopct='%1.1f%%', startangle=140)
+        plt.title(f'Percentage of Total {coloumn_to_plot.capitalize()} by Activity',fontsize = 8)
+        plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        #plt.show()
+        #pass
+
+    def plot_pie_sport_GUI(self,timescale:int,quantity:str):
+        """
+        Plot the percentage of every exercises in a pie chart
+        Args:
+        timescale: optional argument to select the number of days over which the plot should be 
+            created (back from the date of the most recent workout)
+        quantity: Has to be duration, distance or calories and will be the measure for which the plot is created 
+        """
+        self.data.data['date'] = pd.to_datetime(self.data.data['date'])
+        # first, define the cutoff date from which on you want to do the plot
+        latest_date = self.data.data['date'].max()
+        cutoff_date = latest_date - pd.Timedelta(days=timescale)
+
+        # select the relevant data from the total of logged workouts
+        current_data = self.data.data.loc[self.data.data['date']
+                                     >= cutoff_date, ['date', quantity, 'activity']]
+        
+        coloumn_to_plot = quantity
+
+        aggregate_by_sport = current_data.groupby('activity')[coloumn_to_plot].sum()
+
+        # calulcate percentage
+        percentages = (aggregate_by_sport / aggregate_by_sport.sum()) * 100
+
+        # plot
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax4 = fig.add_subplot(111)
+
+        ax4.pie(percentages, labels=percentages.index, autopct='%1.1f%%', startangle=140)
+        ax4.set_title(f'Percentage of Total {coloumn_to_plot.capitalize()} by Activity',fontsize = 8)
+        ax4.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        
+        return fig
+
+    def scatter_calories_duration(self):
+
+        # Plot the relationship between duration and calories burned
+        #plt.figure(figsize=(10, 6))
+        ax5 = self.fig.add_subplot(self.grid[1,1])
+        sns.scatterplot(data=self.data.data, x='duration', y='calories', hue='activity', style='activity', s=100, ax=ax5)
+        plt.title('Relationship Between Duration and Calories Burned',fontsize = 8)
+        plt.xlabel('Duration (minutes)')
+        plt.ylabel('Calories Burned')
+        plt.legend(title='Activity',fontsize = 8, frameon=False)
+        #plt.grid(True)
+        #plt.show()
+
+    def scatter_calories_duration_GUI(self):
+
+        # Plot the relationship between duration and calories burned
+        # create the figure
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax5 = fig.add_subplot(111)
+        sns.scatterplot(data=self.data.data, x='duration', y='calories', hue='activity', style='activity', s=100, ax=ax5)
+        ax5.set_title('Relationship Between Duration and Calories Burned',fontsize = 8)
+        ax5.set_xlabel('Duration (minutes)')
+        ax5.set_ylabel('Calories Burned')
+        ax5.legend(title='Activity',fontsize = 8, frameon=False)
+
+        return fig
+
+
+    def calories_per_distance(self):
+
+        # Calculate calories burned per kilometer
+        self.data.data['calories_per_km'] = self.data.data['calories'] / self.data.data['distance']
+
+        # Plot calories burned per kilometer for each activity
+        #plt.figure(figsize=(10, 6))
+        ax6 = self.fig.add_subplot(self.grid[1,2])
+        sns.barplot(data=self.data.data, x='activity', y='calories_per_km', ax=ax6)
+        plt.title('Calories Burned per Kilometer by Activity',fontsize = 8)
+        plt.xlabel('Activity')
+        plt.ylabel('Calories Burned per Kilometer')
+        #plt.grid(True)
+        #plt.show()
+
+    def calories_per_distance_GUI(self):
+
+        # Calculate calories burned per kilometer
+        self.data.data['calories_per_km'] = self.data.data['calories'] / self.data.data['distance']
+
+        # Plot calories burned per kilometer for each activity
+        #plt.figure(figsize=(10, 6))
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax6 = fig.add_subplot(111)
+        sns.barplot(data=self.data.data, x='activity', y='calories_per_km', ax=ax6)
+        ax6.set_title('Calories Burned per Kilometer by Activity',fontsize = 8)
+        ax6.set_xlabel('Activity')
+        ax6.set_ylabel('Calories Burned per Kilometer')
+        
+
+        return fig
+
+
+    def calories_per_duration(self):
+
+        # Calculate caloric efficiency (calories burned per minute)
+        self.data.data['caloric_efficiency'] = self.data.data['calories'] / self.data.data['duration']
+
+        # Plot caloric efficiency for each activity
+        #plt.figure(figsize=(10, 6))
+        ax7 = self.fig.add_subplot(self.grid[2,0])
+        sns.barplot(data=self.data.data, x='activity', y='caloric_efficiency', ax=ax7)
+        plt.title('Caloric Efficiency by Activity',fontsize = 8)
+        plt.xlabel('Activity')
+        plt.ylabel('Calories Burned per Minute')
+        #plt.grid(True)
         plt.show()
 
+    def calories_per_duration_GUI(self):
+
+        # Calculate caloric efficiency (calories burned per minute)
+        self.data.data['caloric_efficiency'] = self.data.data['calories'] / self.data.data['duration']
+
+        # Plot caloric efficiency for each activity
+        #plt.figure(figsize=(10, 6))
+        fig = Figure(figsize=(5,5), dpi=100)
+        ax7 = fig.add_subplot(111)
+        sns.barplot(data=self.data.data, x='activity', y='caloric_efficiency', ax=ax7)
+        ax7.set_title('Caloric Efficiency by Activity',fontsize = 8)
+        ax7.set_xlabel('Activity')
+        ax7.set_ylabel('Calories Burned per Minute')
+        #plt.grid(True)
+        
+        return fig
 
 if __name__ == "__main__":
 
