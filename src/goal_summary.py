@@ -772,6 +772,7 @@ class WorkoutSummary:
             quantity: Has to be duration, distance or calories and will be the measure for which the plot is created.
             exercises: List of exercise types that should be compared.
         """
+        self.data.data['date'] = pd.to_datetime(self.data.data['date'])
         # first, define the cutoff date from which on you want to do the plot
         latest_date = self.data.data['date'].max()
         cutoff_date = latest_date - pd.Timedelta(days=timescale)
@@ -779,13 +780,14 @@ class WorkoutSummary:
         # select the relevant data from the total of logged workouts
         current_data = self.data.data.loc[self.data.data['date']
                                      >= cutoff_date, ['date', quantity, 'activity']]
-        print(current_data)
+        print("current", current_data)
+        print(exercises)
         # select only the rows with the activities to compare
         current_data = self.data.data[self.data.data['activity'].isin(exercises)]
         print(current_data)
         # make sure both dataframes have the same format of dates for the concatenation
         current_data['date'] = pd.to_datetime(current_data['date'])
-        print(current_data)
+        #print(current_data)
 
         # to get all combinations of date and activity in the dataframe, create a date range and all possible combinations with activities
         dates = pd.date_range(current_data['date'].min(), current_data['date'].max(), freq='1D')
@@ -850,7 +852,7 @@ class WorkoutSummary:
         Args:
             timescale: optional argument to select the number of days over which the plot should be 
             created (back from the date of the most recent workout)."""
-
+        self.data.data['date'] = pd.to_datetime(self.data.data['date'])
         # select the relevant data, if a timescale argument is given
         if timescale is not None:
             latest_date = self.data.data['date'].max()
@@ -859,7 +861,7 @@ class WorkoutSummary:
                                          >= cutoff_date, ['activity', 'rating']]
         else:
             current_data = self.data.data.loc[:, ['activity', 'rating']]
-
+        print(current_data)
         # plot
         # create the figure
         fig = Figure(figsize=(5,5), dpi=100)
@@ -914,6 +916,7 @@ class WorkoutSummary:
             created (back from the date of the most recent workout)
         quantity: Has to be duration, distance or calories and will be the measure for which the plot is created 
         """
+        self.data.data['date'] = pd.to_datetime(self.data.data['date'])
         # first, define the cutoff date from which on you want to do the plot
         latest_date = self.data.data['date'].max()
         cutoff_date = latest_date - pd.Timedelta(days=timescale)
@@ -960,7 +963,7 @@ class WorkoutSummary:
         fig = Figure(figsize=(5,5), dpi=100)
         ax5 = fig.add_subplot(111)
         sns.scatterplot(data=self.data.data, x='duration', y='calories', hue='activity', style='activity', s=100, ax=ax5)
-        ax5.title('Relationship Between Duration and Calories Burned',fontsize = 8)
+        ax5.set_title('Relationship Between Duration and Calories Burned',fontsize = 8)
         ax5.set_xlabel('Duration (minutes)')
         ax5.set_ylabel('Calories Burned')
         ax5.legend(title='Activity',fontsize = 8, frameon=False)
