@@ -866,7 +866,7 @@ class WorkoutSummary:
         ax3 = fig.add_subplot(111)
         sns.violinplot(data=current_data, x="activity",
                        y="rating", inner="point", ax= ax3)
-        ax3.title(
+        ax3.set_title(
             'Distribution of Ratings given to workouts of different exercises', fontsize = 8)
         ax3.set_xlabel('')
         ax3.set_ylabel('Rating')
@@ -935,7 +935,7 @@ class WorkoutSummary:
         ax4 = fig.add_subplot(111)
 
         ax4.pie(percentages, labels=percentages.index, autopct='%1.1f%%', startangle=140)
-        ax4.title(f'Percentage of Total {coloumn_to_plot.capitalize()} by Activity',fontsize = 8)
+        ax4.set_title(f'Percentage of Total {coloumn_to_plot.capitalize()} by Activity',fontsize = 8)
         ax4.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
         
         return fig

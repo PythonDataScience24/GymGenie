@@ -10,6 +10,10 @@ import utils as utl
 import workout as wk
 import workoutlog as wkl
 import goal_summary as gs
+from matplotlib.figure import Figure 
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 ### Global variables
 #Create boolean values to keep the workflow
@@ -420,37 +424,121 @@ def see_summary_plots(root,index, quantity):
     for widget in root.winfo_children():
         widget.destroy()
 
-     # Create frame for the page where the user can view the goals
+     # Create frame for the page where the user can view the summary
+    plot_frame = tk.Frame(root, bg=blue) 
+    plot_frame.pack(fill=tk.BOTH, expand=True)
+    plot_frame.columnconfigure(0, weight=1)
+    plot_frame.rowconfigure(0, weight=1)
+
+    #Creat WorkoutSummary object
+    workouts_df.plot_dataframe()
+    wk_summary = gs.WorkoutSummary(workouts_df)
+
+    # get the plots
+    figure1 = wk_summary.plot_summary_GUI(timescale=index, quantity=quantity)
+    figure2 = wk_summary.plot_pie_sport_GUI(timescale=index, quantity=str(quantity))
+    figure3 = wk_summary.plot_rating_by_exercises_GUI(timescale=index)
+
+
+    #create Canvas
+    figure_canvas1 = FigureCanvasTkAgg(figure1, master=root)
+    figure_canvas1.draw()
+    canvas_widget1 = figure_canvas1.get_tk_widget()
+    canvas_widget1.pack()
+
+    #Add next button
+    next_button =  tk.Button(plot_frame, command=lambda: new_summary_plot(root,figure2, figure3, index, quantity),
+                                    text = "Next", width=5)
+    next_button.pack(side=tk.RIGHT)
+
+    # Add a quit button
+    quit_button = tk.Button(plot_frame, text="Go Back", command=lambda: view_progress_and_trends(root))
+    quit_button.pack(side=tk.TOP)
+
+
+
+def old_summary_plot(root,figure1,figure2, index, quantity):
+    """
+        Displays the previous figure after the button "Go back" is clicked.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    figure1 (matplotlib.pyplot.figure) : first figure
+    figure2 (matplotlib.pyplot.figure) :  second figure
+    
+    """
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Create frame for the page where the user can view the goals
     view_goal_frame = tk.Frame(root, bg=blue) 
     view_goal_frame.pack(fill=tk.BOTH, expand=True)
     view_goal_frame.columnconfigure(0, weight=1)
     view_goal_frame.rowconfigure(0, weight=1)
-    workouts_df.plot_dataframe()
-    #Creat WorkoutSummary object
-    wk_summary = gs.WorkoutSummary(workouts_df)
-    #print(timescale_entry.get())
-    # global fig1
-    fig1 = wk_summary.plot_summary_GUI(timescale=index, quantity=quantity)
+
+    #create Canvas
+    canvas_df = FigureCanvasTkAgg(figure1, master=root)
+    canvas_df.draw()
+    canvas_df.get_tk_widget().pack()
+
+    # Add a quit button
+    quit_button = tk.Button(view_goal_frame, text="Go Back", command=lambda: view_progress_and_trends(root))
+    quit_button.pack(side=tk.TOP)
+
+    # Add arrow to change plot after
+    next_button = tk.Button(view_goal_frame, text='Before', command=lambda: new_summary_plot(root,figure2,figure1, index, quantity))
+    next_button.pack(side='left')
+
+
+def new_summary_plot(root,figure2,figure3, index, quantity):
+    """
+        Displays the next figure after the button "Next" is clicked.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    figure1 (matplotlib.pyplot.figure) : second figure
+    figure2 (matplotlib.pyplot.figure) :  third figure
+ 
+    """
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Create frame for the page 
+    view_goal_frame = tk.Frame(root, bg=blue) 
+    view_goal_frame.pack(fill=tk.BOTH, expand=True)
+    view_goal_frame.columnconfigure(0, weight=1)
+    view_goal_frame.rowconfigure(0, weight=1)
     
     #create Canvas
-    canvas_df = FigureCanvasTkAgg(fig1, master=root)
+    #canvas_df = Canvas(root,bg=blue)
+    canvas_df = FigureCanvasTkAgg(figure2, master=root)
     canvas_df.draw()
     canvas_widget = canvas_df.get_tk_widget()
+    canvas_widget.config(background=blue)
     canvas_widget.pack()
-    #create Canvas
-    # canvas = FigureCanvasTkAgg(fig1, master=root)
-    # canvas.draw()
-    # canvas.get_tk_widget().pack()
 
-    #####test what is inside timescale_entry
-    # #create Canvas
-    # canvas_df = Canvas(root,bg=blue)
-    # canvas_df.pack()
+    # Add a quit button
+    quit_button = tk.Button(view_goal_frame, text="Go Back", command=lambda: view_progress_and_trends(root))
+    quit_button.pack(side=tk.TOP)
 
-    # # Create Text widget to display DataFrame
-    # text_widget = Text(canvas_df)
-    # text_widget.insert(tk.END, timescale_entry.get())
-    # text_widget.grid(column=0, row=0)
+    # Add arrow to change plot before
+    next_button = tk.Button(view_goal_frame, text='Next', command=lambda: old_summary_plot(root,figure3,figure2, index, quantity))
+    next_button.pack(side='right')
+
+    # Add arrow to change plot after
+    next_button = tk.Button(view_goal_frame, text='Before', command=lambda: see_summary_plots(root, index, quantity))
+    next_button.pack(side='left')
+
+
+
+
+
 
 
     
