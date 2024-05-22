@@ -656,9 +656,10 @@ class WorkoutSummary:
             timescale: Number of days over which to plot (starting from the date of the most recent workout back).
             quantity: Has to be duration, distance or calories and will be the measure for which the plot is created.
         """
-
+        self.data.data['date'] = pd.to_datetime(self.data.data['date'])
         # first, define the cutoff date from which on you want to do the plot
         latest_date = self.data.data['date'].max()
+        print(latest_date)
         cutoff_date = latest_date - pd.Timedelta(days=timescale)
 
         # select the relevant data from the total of logged workouts
@@ -691,15 +692,16 @@ class WorkoutSummary:
         """
 
         # first, define the cutoff date from which on you want to do the plot
+        self.data.data['date'] = pd.to_datetime(self.data.data['date'])
         latest_date = self.data.data['date'].max()
         cutoff_date = latest_date - pd.Timedelta(days=timescale)
-
+        print(cutoff_date)
         # select the relevant data from the total of logged workouts
         current_data = self.data.data.loc[self.data.data['date']
                                      >= cutoff_date, ['date', quantity, 'activity']]
         current_data = current_data.pivot(
             index='date', columns='activity', values=quantity)
-
+        print(current_data)
         # plot
         #choose which suplot to occupy
         # create the figure

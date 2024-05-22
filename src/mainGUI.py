@@ -372,7 +372,6 @@ def view_progress_and_trends(root):
     timescale_entry = gui.create_entry(progress_trend_frame, width= 5)
     timescale_label.grid(column=0, row=0)
     timescale_entry.grid(column=1, row=0)
-    
     #Create option menu and label for quantity
     quantity = ['duration', 'distance', 'calories']
     global selected_quantity
@@ -401,7 +400,7 @@ def view_progress_and_trends(root):
     exercise_label.grid(column=0, row=2)
 
     # Add plot button
-    plot_button = gui.create_button(frame=progress_trend_frame, command=lambda: see_summary_plots(root),
+    plot_button = gui.create_button(frame=progress_trend_frame, command=lambda: see_summary_plots(root, index=int(timescale_entry.get()), quantity=selected_quantity.get()),
                                     text = "Plot", width=5)
     plot_button.grid(column=0, row=3)
 
@@ -412,7 +411,7 @@ def view_progress_and_trends(root):
 
    
 
-def see_summary_plots(root):
+def see_summary_plots(root,index, quantity):
     """
         Displays the summary plots on view goals and progress page after clicking 'plot' button.
         The plots are done regarding the input information from the user.
@@ -421,13 +420,23 @@ def see_summary_plots(root):
     for widget in root.winfo_children():
         widget.destroy()
 
-
+     # Create frame for the page where the user can view the goals
+    view_goal_frame = tk.Frame(root, bg=blue) 
+    view_goal_frame.pack(fill=tk.BOTH, expand=True)
+    view_goal_frame.columnconfigure(0, weight=1)
+    view_goal_frame.rowconfigure(0, weight=1)
+    workouts_df.plot_dataframe()
     #Creat WorkoutSummary object
     wk_summary = gs.WorkoutSummary(workouts_df)
-
+    #print(timescale_entry.get())
     # global fig1
-    #fig1 = wk_summary.plot_summary_GUI(timescale=int(timescale_entry.get()), quantity=selected_quantity.get())
-  
+    fig1 = wk_summary.plot_summary_GUI(timescale=index, quantity=quantity)
+    
+    #create Canvas
+    canvas_df = FigureCanvasTkAgg(fig1, master=root)
+    canvas_df.draw()
+    canvas_widget = canvas_df.get_tk_widget()
+    canvas_widget.pack()
     #create Canvas
     # canvas = FigureCanvasTkAgg(fig1, master=root)
     # canvas.draw()
