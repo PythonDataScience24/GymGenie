@@ -111,8 +111,9 @@ The option Summary Visualisation shows you some summary plots of your past activ
 Next, you can choose whether to see a summary for duration, distance or calories. This will affect some of the plots, some will be shown regardless of what you choose here.
 You can also choose to include some exercises for a comparison from the provided list. For this, type in the names of the exercises you want to include one by one, then type q to stop adding more exercises.
 
-Then, you will see the following plots:
-![plots for summary visualisations](filename.png)
+Then, you will see the following 8 plots:
+![plots for summary visualisations](summary_visualisations.png)
+The first plot in the top row shows a summary of the chosen quantity (duration, distance, or calories) as a bar plot, with different colours for all different types of exercises performed. In the second plot, only the exercises selected are compared by the chosen quantity. The last plot in the top row shows the distribution of the ratings for all different exercises, so you can see if some types of workouts were consistently easier for you than others. The middle row contains a pie chart with the proportions of the quantity contributed by all different types of exercises, so you can see if you trained different sports equally as much. Next, you can see the relationship between the duration and calories burned for different sports. This same information is also shown for calories burned by distance. The last row shows the plot of the caloric efficiency per sport, if you want to choose your workouts according to the amount of calories you burn in them per time.
 
 #### Exit
 
