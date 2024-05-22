@@ -345,10 +345,6 @@ def view_progress_and_trends(root):
     #read workout.csv and goals.csv
     #load the workouts from a pickle file, or start a dataframe to store them in if no file was found
     global workouts_df
-    global goals_df
-    global summary
-    global messages
-    global goal_row_entry
     current_directory = os.getcwd().replace(os.sep,'/')
     workout_file = current_directory + "/logWorkouts.csv"
     workouts_df = utl.WorkoutDataframe()
@@ -356,13 +352,7 @@ def view_progress_and_trends(root):
         workouts_df.read_from_csv(workout_file)
     except FileNotFoundError:
         pass
-    # start a dataframe to store the goals and load them from a file
-    goal_file = current_directory + "/GoalData.csv"
-    goals_df = utl.GoalDataframe()
-    try:
-        goals_df.read_from_csv(goal_file)
-    except FileNotFoundError:
-        pass
+
 
     # Convert DataFrame to string representation
     workouts_df_str = workouts_df.data.to_string()
@@ -378,12 +368,14 @@ def view_progress_and_trends(root):
 
     #Create label for timescale and entry
     timescale_label = gui.create_label(progress_trend_frame, text = "Over how many of the past days would you like to see the summary? ", width=60)
+    global timescale_entry
     timescale_entry = gui.create_entry(progress_trend_frame, width= 5)
     timescale_label.grid(column=0, row=0)
     timescale_entry.grid(column=1, row=0)
-
+    
     #Create option menu and label for quantity
     quantity = ['duration', 'distance', 'calories']
+    global selected_quantity
     selected_quantity = tk.StringVar(root)
     selected_quantity.set(quantity[0])
     quantity_options = gui.create_option_menu(frame=progress_trend_frame, options=quantity,
@@ -397,6 +389,7 @@ def view_progress_and_trends(root):
     workout_types = [subclass.__name__ for subclass in wk.Workout.__subclasses__()]
     # Variable to keep track of the option 
     # selected in OptionMenu 
+    global selected_workout
     selected_workout = tk.StringVar(progress_trend_frame) 
     # Set the default value of the variable 
     selected_workout.set(workout_types[0]) 
@@ -407,10 +400,51 @@ def view_progress_and_trends(root):
     exercise_label = gui.create_label(progress_trend_frame, text = "Select an exercise: ", width=60)
     exercise_label.grid(column=0, row=2)
 
+    # Add plot button
+    plot_button = gui.create_button(frame=progress_trend_frame, command=lambda: see_summary_plots(root),
+                                    text = "Plot", width=5)
+    plot_button.grid(column=0, row=3)
+
     # Add exit button
     exit_button = gui.create_button(frame=progress_trend_frame, command=lambda: exit(root),
                                     text = "Exit", width=5)
-    exit_button.grid(column=0, row=3)
+    exit_button.grid(column=1, row=3)
+
+   
+
+def see_summary_plots(root):
+    """
+        Displays the summary plots on view goals and progress page after clicking 'plot' button.
+        The plots are done regarding the input information from the user.
+    """
+    # Remove all widgets from the root window
+    for widget in root.winfo_children():
+        widget.destroy()
+
+
+    #Creat WorkoutSummary object
+    wk_summary = gs.WorkoutSummary(workouts_df)
+
+    # global fig1
+    #fig1 = wk_summary.plot_summary_GUI(timescale=int(timescale_entry.get()), quantity=selected_quantity.get())
+  
+    #create Canvas
+    # canvas = FigureCanvasTkAgg(fig1, master=root)
+    # canvas.draw()
+    # canvas.get_tk_widget().pack()
+
+    #####test what is inside timescale_entry
+    # #create Canvas
+    # canvas_df = Canvas(root,bg=blue)
+    # canvas_df.pack()
+
+    # # Create Text widget to display DataFrame
+    # text_widget = Text(canvas_df)
+    # text_widget.insert(tk.END, timescale_entry.get())
+    # text_widget.grid(column=0, row=0)
+
+
+    
 
 def display_set_goal(root):
     """
