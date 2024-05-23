@@ -339,12 +339,21 @@ def exit(root):
 
 
 def view_progress_and_trends(root):
+    """
+    Displays the page where you can visualize the dataframe with the workouts and select the progress that you want to visualize,
+      after the "view progress"-button is clicked on the start page.
+
+    Parameters
+    ----------
+    root : tkinter.Window
+        The root window of the GUI for GymGenie.
+    """
     # Remove all widgets from the root window
     for widget in root.winfo_children():
         widget.destroy()
 
     # Create frame for the page where the user can view progress and trends of their workout.
-    progress_trend_frame = gui.create_frame(root, rows=4)
+    progress_trend_frame = gui.create_frame(root, rows=4, columns = 4)
     progress_trend_frame.pack(fill=tk.BOTH, expand=True)
 
     #read workout.csv and goals.csv
@@ -388,11 +397,11 @@ def view_progress_and_trends(root):
     quantity_label = gui.create_label(progress_trend_frame, text = "See the summary for: ", width=60)
     quantity_label.grid(column=0, row=1)
 
-    #create option menu and label for type of exercise --> I THINK THIS PART CAN BE REFRACTORED (it was also on display_exercise_type(), but with the option 'All' too)
+    #create option menu and label for type of exercise  --> I THINK THIS PART CAN BE REFRACTORED 
     # Create list containing the names of all the workout types of class Workout.
     workout_types = [subclass.__name__ for subclass in wk.Workout.__subclasses__()]
-    # Variable to keep track of the option 
-    # selected in OptionMenu 
+    #Create 3 option menus to allow the user to compare exercises
+
     global selected_workout
     selected_workout = tk.StringVar(progress_trend_frame) 
     # Set the default value of the variable 
@@ -401,11 +410,28 @@ def view_progress_and_trends(root):
     question_menu = tk.OptionMenu(progress_trend_frame, selected_workout, *workout_types, ) 
     question_menu.grid(column = 1, row = 2)
     #create exercise label
-    exercise_label = gui.create_label(progress_trend_frame, text = "Select an exercise: ", width=60)
+    exercise_label = gui.create_label(progress_trend_frame, text = "Select an exercise: ", width=30)
     exercise_label.grid(column=0, row=2)
 
+    global selected_workout2
+    selected_workout2 = tk.StringVar(progress_trend_frame) 
+    # Set the default value of the variable 
+    selected_workout2.set(workout_types[1])
+    # Create the optionmenu widget and passing the workout_types and the selected_wotkout to it. 
+    question_menu = tk.OptionMenu(progress_trend_frame, selected_workout2, *workout_types, ) 
+    question_menu.grid(column = 2, row = 2)
+
+    global selected_workout3
+    selected_workout3 = tk.StringVar(progress_trend_frame) 
+    # Set the default value of the variable 
+    selected_workout3.set(workout_types[2])
+    # Create the optionmenu widget and passing the workout_types and the selected_wotkout to it. 
+    question_menu = tk.OptionMenu(progress_trend_frame, selected_workout3, *workout_types, ) 
+    question_menu.grid(column = 3, row = 2)
+    exercises = [selected_workout.get(), selected_workout2.get(), selected_workout3.get()]
+
     # Add plot button
-    plot_button = gui.create_button(frame=progress_trend_frame, command=lambda: see_summary_plots(root, index=int(timescale_entry.get()), quantity=selected_quantity.get(), exercise=[selected_workout.get()]),
+    plot_button = gui.create_button(frame=progress_trend_frame, command=lambda: see_summary_plots(root, index=int(timescale_entry.get()), quantity=selected_quantity.get(), exercises=exercises),
                                     text = "Plot", width=5)
     plot_button.grid(column=0, row=3)
 
@@ -416,10 +442,14 @@ def view_progress_and_trends(root):
 
    
 
-def see_summary_plots(root,index, quantity, exercise):
+def see_summary_plots(root,index, quantity, exercises):
     """
         Displays the summary plots on view goals and progress page after clicking 'plot' button.
         The plots are done regarding the input information from the user.
+    Args:
+        index (int): timescale (days) between you want to plot
+        quantity: duration, calories or distance
+        exercise: list with the types of exercises to plot
     """
     # Remove all widgets from the root window
     for widget in root.winfo_children():
@@ -439,7 +469,7 @@ def see_summary_plots(root,index, quantity, exercise):
     figure1 = wk_summary.plot_summary_GUI(timescale=index, quantity=quantity)
     figure2 = wk_summary.plot_pie_sport_GUI(timescale=index, quantity=str(quantity))
     figure3 = wk_summary.plot_rating_by_exercises_GUI(timescale=index)
-    figure4 = wk_summary.compare_exercises_GUI(timescale=index,quantity=str(quantity), exercises=exercise)
+    figure4 = wk_summary.compare_exercises_GUI(timescale=index,quantity=str(quantity), exercises=exercises)
     figure5 = wk_summary.scatter_calories_duration_GUI()
     figure6 = wk_summary.calories_per_distance_GUI()
     figure7 = wk_summary.calories_per_duration_GUI()
@@ -469,6 +499,9 @@ def see_summary_plots(root,index, quantity, exercise):
     quit_button.pack(side=tk.TOP)
 
 def new_image(root,images:dict, counter:int):
+    """
+        Displays the next plot.
+    """
 
     if counter <= 6:
         counter += 1
@@ -528,6 +561,9 @@ def new_image(root,images:dict, counter:int):
 
 
 def old_image(root,images:dict, counter:int):
+    """
+        Come back to display the plot that was shown before.
+    """
 
     if counter >= 2:
         counter -= 1
