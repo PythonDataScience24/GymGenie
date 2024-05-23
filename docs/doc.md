@@ -200,7 +200,14 @@ If you would like to see more types of plots, please contact us and we will add 
 
 #### View Progress and Trends
 
-We are currently working on it. Stay tuned!
+When you click the "View progress and trends" button, you will see the page shown below. You can choose the number of days over which you would like to see summary plots of your workout progress and trends. The timeframe used is always counted as the number of days before the date of the last logged workout. So, for example, if you would like to see a summary of the past month, type 30. Next, you can choose whether to see a summary for duration, distance or calories. This will affect some of the plots, some will be shown regardless of what you choose here. You can also choose to include some exercises for a comparison from the provided list.
+
+![alt text](view_progress.png)
+
+Then, you will see the following 8 plots, one plot per page. Use the "Next" or "Go back" buttons to navigate to the plot you want to see.
+![plots for summary visualisations](summary_visualisations.png)
+The first plot in the top row shows a summary of the chosen quantity (duration, distance, or calories) as a bar plot, with different colours for all different types of exercises performed. In the second plot, only the exercises selected are compared by the chosen quantity. The last plot in the top row shows the distribution of the ratings for all different exercises, so you can see if some types of workouts were consistently easier for you than others. The middle row contains a pie chart with the proportions of the quantity contributed by all different types of exercises, so you can see if you trained different sports equally as much. Next, you can see the relationship between the duration and calories burned for different sports. This same information is also shown for calories burned by distance. The last row shows the plot of the caloric efficiency per sport, if you want to choose your workouts according to the amount of calories you burn in them per time.
+
 
 #### Quit
 
