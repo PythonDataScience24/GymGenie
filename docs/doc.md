@@ -5,7 +5,7 @@
 To start our program you need to have installed python. We suggested to use *Anaconda*, an open-source package and environment management system that runs on Windows, macOS, and Linux. For more information click [here](https://docs.anaconda.com/free/anaconda/install/index.html).
 
 After you installed *Anaconda* you can create a environment. In the terminal type the following command:
-<pre> conda create --name my-env </pre>
+<pre> conda create --name my-env python=3.11.5</pre>
 
 In this way, you created your own environment. To activate your environment you can type:
 
